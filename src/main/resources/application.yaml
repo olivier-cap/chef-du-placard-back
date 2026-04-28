@@ -6,15 +6,17 @@ spring:
     url: ${APP_DB_URL:jdbc:postgresql://localhost:5432/chefduplacard}
     username: ${APP_DB_USER:chefduplacard}
     password: ${APP_DB_PASSWORD:chefduplacard}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
 
   flyway:
     enabled: true
     locations: classpath:db/migration
-
-  spring:
-    jpa:
-      open-in-view: false
