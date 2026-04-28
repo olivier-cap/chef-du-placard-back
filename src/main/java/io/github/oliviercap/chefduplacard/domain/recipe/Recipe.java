@@ -39,12 +39,55 @@ public class Recipe {
 
         for (Ingredient ingredient : ingredients) {
             BigDecimal requiredQuantity;
+
+            //Calculation of ingredient for n person
             requiredQuantity = ingredient.getQuantityPerPerson().multiply(BigDecimal.valueOf(nbPeople));
+
             requiredIngredients.add(new Ingredient(requiredQuantity, ingredient.getAliment(), ingredient.getUnit()));
         }
 
         return requiredIngredients;
     }
 
+    /** Getters and Setters **/
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 }

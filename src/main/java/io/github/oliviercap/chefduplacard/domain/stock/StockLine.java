@@ -5,6 +5,10 @@ import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 
 import java.math.BigDecimal;
 
+/**
+ * A Stock Line is a part of a Stock.
+ * A Stock Line represents the quantity actually presents in stock of an aliment.
+ */
 public class StockLine {
 
     private BigDecimal quantity;
@@ -16,6 +20,8 @@ public class StockLine {
         this.aliment = aliment;
         this.unit = unit;
     }
+
+    /** Getters and Setters **/
 
     public BigDecimal getQuantity() {
         return quantity;

@@ -16,12 +16,14 @@ import java.util.Map;
 public class Stock {
     //Pour permettre recherches par aliment, stockage des données dans map.
     private final Map<Aliment, StockLine> stockMap = new HashMap<>();
+    private String name;
 
     /**
      * Constructeur par défaut
      * @param stockLines
      */
-    public Stock(List<StockLine> stockLines) {
+    public Stock(String name, List<StockLine> stockLines) {
+        this.name = name;
         for (StockLine stockLine : stockLines) {
             stockMap.put(stockLine.getAliment(), stockLine);
         }
@@ -52,4 +54,17 @@ public class Stock {
         return coveredIngredients;
     }
 
+    /** Getters and Setters **/
+
+    public Map<Aliment, StockLine> getStockMap() {
+        return stockMap;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

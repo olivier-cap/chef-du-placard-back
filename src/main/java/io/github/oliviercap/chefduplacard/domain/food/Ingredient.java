@@ -18,6 +18,8 @@ public class Ingredient {
         this.unit = unit;
     }
 
+    /** Getters and Setters **/
+
     public BigDecimal getQuantityPerPerson() {
         return quantityPerPerson;
     }
