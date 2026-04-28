@@ -3,6 +3,7 @@ package io.github.oliviercap.chefduplacard.domain.stock;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,8 +40,8 @@ public class Stock {
 
         //Calcul ingrédients présents en quantité suffisante ou non
         for(Ingredient ingredient : requiredIngredients) {
-            double quantityStock = stockMap.get(ingredient.aliment()).getQuantity();
-            if(ingredient.quantityPerPerson() > quantityStock) {
+            BigDecimal quantityStock = stockMap.get(ingredient.getAliment()).getQuantity();
+            if(ingredient.getQuantityPerPerson().compareTo(quantityStock) > 0) {
                 covered = false;
                 uncoveredIngredients.add(ingredient);
             }

@@ -2,6 +2,7 @@ package io.github.oliviercap.chefduplacard.domain.recipe;
 
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,9 @@ public class Recipe {
         requiredIngredients = new ArrayList<>();
 
         for (Ingredient ingredient : ingredients) {
-            double requiredQuantity;
-            requiredQuantity = ingredient.quantityPerPerson() * nbPeople;
-            requiredIngredients.add(new Ingredient(requiredQuantity, ingredient.aliment(), ingredient.unit()));
+            BigDecimal requiredQuantity;
+            requiredQuantity = ingredient.getQuantityPerPerson().multiply(BigDecimal.valueOf(nbPeople));
+            requiredIngredients.add(new Ingredient(requiredQuantity, ingredient.getAliment(), ingredient.getUnit()));
         }
 
         return requiredIngredients;
