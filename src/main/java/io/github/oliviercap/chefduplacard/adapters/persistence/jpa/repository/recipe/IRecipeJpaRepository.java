@@ -1,0 +1,18 @@
+package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe;
+
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+
+public interface IRecipeJpaRepository extends JpaRepository<RecipeJpa, Long> {
+    @Query("""
+        select distinct r
+        from RecipeJpa r
+        left join fetch r.ingredients i
+            left join fetch i.alimentJpa
+            left join fetch i.unitJpa
+    """)
+    List<RecipeJpa> findAllComplete();
+}
