@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.converter.IIngredientJpaToDtoConverter;
+import io.github.oliviercap.chefduplacard.adapters.persistence.converter.ingredient.IIngredientJpaToDtoConverter;
 import io.github.oliviercap.chefduplacard.adapters.persistence.dto.RecipeDTO;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe.IRecipeMapper;

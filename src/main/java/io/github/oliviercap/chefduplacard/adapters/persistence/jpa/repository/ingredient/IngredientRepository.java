@@ -1,8 +1,8 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.ingredient;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.converter.IAlimentJpaToDtoConverter;
-import io.github.oliviercap.chefduplacard.adapters.persistence.converter.IIngredientJpaToDtoConverter;
-import io.github.oliviercap.chefduplacard.adapters.persistence.converter.IUnitJpaToDtoConverter;
+import io.github.oliviercap.chefduplacard.adapters.persistence.converter.aliment.IAlimentJpaToDtoConverter;
+import io.github.oliviercap.chefduplacard.adapters.persistence.converter.ingredient.IIngredientJpaToDtoConverter;
+import io.github.oliviercap.chefduplacard.adapters.persistence.converter.unit.IUnitJpaToDtoConverter;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.ingredient.IIngredientMapper;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import org.springframework.stereotype.Repository;

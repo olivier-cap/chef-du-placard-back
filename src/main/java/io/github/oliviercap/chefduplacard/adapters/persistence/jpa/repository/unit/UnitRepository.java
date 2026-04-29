@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.converter.UnitJpaToDtoConverter;
+import io.github.oliviercap.chefduplacard.adapters.persistence.converter.unit.UnitJpaToDtoConverter;
 import io.github.oliviercap.chefduplacard.adapters.persistence.dto.UnitDTO;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.IUnitMapper;
