@@ -41,6 +41,13 @@ public class StockLineJpa {
     public StockLineJpa() {
     }
 
+    public StockLineJpa(StockJpa stockJpa, AlimentJpa alimentJpa, UnitJpa unitJpa, BigDecimal quantity) {
+        this.stockJpa = stockJpa;
+        this.alimentJpa = alimentJpa;
+        this.unitJpa = unitJpa;
+        this.quantity = quantity;
+    }
+
     /** Getters and Setters **/
 
     public Long getId() {

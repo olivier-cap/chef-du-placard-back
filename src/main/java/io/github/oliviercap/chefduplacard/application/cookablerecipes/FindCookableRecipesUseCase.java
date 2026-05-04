@@ -38,16 +38,10 @@ public class FindCookableRecipesUseCase implements IFindCookableRecipesUseCase{
         Optional<Stock> stockOptional = stockRepository.findByName("test");
         Stock stock = stockOptional.orElseThrow();
 
-        System.out.println("dans usecase, apres recup du stock");
-
         for(Recipe recipe : existingRecipes) {
             List<Ingredient> requiredIngredients = recipe.computeRequiredIngredients(nbPeople);
-            System.out.println("dans usecase, apres recup required ingredients");
-            System.out.println("nom du stock " + stock.getName());
 
             CoveredIngredients coveredIngredients = stock.covers(requiredIngredients);
-            System.out.println("dans usecase, apres stock.covers");
-
 
             if(coveredIngredients.covered()) {
                 coveredRecipes.add(recipe);

@@ -30,6 +30,11 @@ public class StockJpa {
     public StockJpa() {
     }
 
+    public StockJpa(String name, List<StockLineJpa> stockLineJpa) {
+        this.name = name;
+        this.stockLineJpa = stockLineJpa;
+    }
+
     /** Getters and Setters **/
 
     public Long getId() {
