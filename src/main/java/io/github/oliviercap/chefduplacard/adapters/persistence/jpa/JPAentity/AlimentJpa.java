@@ -22,6 +22,12 @@ public class AlimentJpa {
     protected AlimentJpa() {
     }
 
+    public AlimentJpa(String name, String description, boolean active) {
+        this.name = name;
+        this.description = description;
+        this.active = active;
+    }
+
     public Long getId() {
         return id;
     }
