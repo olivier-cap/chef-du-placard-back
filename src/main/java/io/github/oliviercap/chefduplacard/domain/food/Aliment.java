@@ -1,5 +1,7 @@
 package io.github.oliviercap.chefduplacard.domain.food;
 
+import java.util.Objects;
+
 /**
  * Represents an eatable food.
  */
@@ -43,5 +45,16 @@ public class Aliment {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Aliment aliment)) return false;
+        return Objects.equals(name, aliment.name) && Objects.equals(description, aliment.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description);
     }
 }
