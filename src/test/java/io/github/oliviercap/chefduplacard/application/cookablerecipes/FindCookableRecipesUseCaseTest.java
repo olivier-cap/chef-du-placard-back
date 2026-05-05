@@ -19,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 class FakeRecipeRepository implements IRecipeRepository {
-    private Aliment aliment1 = new Aliment("fruit","apple",true);
-    private Aliment aliment2 = new Aliment("fruit","orange",true);
-    private Aliment aliment3 = new Aliment("fruit","grapefruit",true);
+    private Aliment aliment1 = new Aliment("apple", "fruit", true);
+    private Aliment aliment2 = new Aliment("orange", "fruit", true);
+    private Aliment aliment3 = new Aliment("grapefruit", "fruit", true);
 
     Unit unit = new Unit("gramme","g");
 
@@ -39,9 +39,9 @@ class FakeRecipeRepository implements IRecipeRepository {
 }
 
 class FakeStockRepository implements IStockRepository {
-    private Aliment aliment1 = new Aliment("fruit","apple",true);
-    private Aliment aliment2 = new Aliment("fruit","orange",true);
-    private Aliment aliment3 = new Aliment("fruit","grapefruit",true);
+    private Aliment aliment1 = new Aliment("apple", "fruit", true);
+    private Aliment aliment2 = new Aliment("orange", "fruit", true);
+    private Aliment aliment3 = new Aliment("grapefruit", "fruit", true);
 
     Unit unit = new Unit("gramme","g");
 
@@ -77,12 +77,14 @@ public class FindCookableRecipesUseCaseTest {
         assertThat(findCookableRecipesUseCase.execute(nbPeople))
                 .usingRecursiveComparison()
                 .isEqualTo(attendedResult);
+
+        assertThat(findCookableRecipesUseCase.execute(nbPeople)).isEqualTo(attendedResult);
     }
 
     @Test
     void aliments_with_same_name_and_description_are_equal() {
-        Aliment apple1 = new Aliment("fruit", "apple", true);
-        Aliment apple2 = new Aliment("fruit", "apple", true);
+        Aliment apple1 = new Aliment("apple", "fruit", true);
+        Aliment apple2 = new Aliment("apple", "fruit", true);
 
         assertThat(apple1).isEqualTo(apple2);
         assertThat(apple1.hashCode()).isEqualTo(apple2.hashCode());
