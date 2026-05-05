@@ -25,6 +25,11 @@ public class FindCookableRecipesUseCase implements IFindCookableRecipesUseCase{
     //public void execute(IRequestModel requestModel) {
     public List<Recipe> execute(int nbPeople) {
 
+        /*
+        problemes possibles
+        nbPeople == 0
+        */
+
         //List<Recipe> cookableRecipes = findCookableRecipes(requestModel.nbPeople);
         List<Recipe> cookableRecipes = findCookableRecipes(nbPeople);
         return cookableRecipes;
@@ -32,6 +37,14 @@ public class FindCookableRecipesUseCase implements IFindCookableRecipesUseCase{
     }
 
     private List<Recipe> findCookableRecipes(int nbPeople) {
+        /*
+        problemes possibles
+        pas de existing recipes, liste vide
+        NE PAS METTRE LE NOM DU STOCK EN DUR (test ici), LE METTRE EN ARGUMENT DE FINDCOOKABLERECIPES !!
+        stock optional non trouvé
+        stock optional sans aucune stockline ?
+         */
+
         List<Recipe> coveredRecipes = new ArrayList<>();
 
         List<Recipe> existingRecipes = recipeRepository.findAll();
