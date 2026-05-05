@@ -38,7 +38,7 @@ public class StockLineJpa {
     @Column(name = "quantite", nullable = false)
     private BigDecimal quantity;
 
-    public StockLineJpa() {
+    protected StockLineJpa() {
     }
 
     public StockLineJpa(StockJpa stockJpa, AlimentJpa alimentJpa, UnitJpa unitJpa, BigDecimal quantity) {

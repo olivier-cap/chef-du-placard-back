@@ -27,7 +27,7 @@ public class StockJpa {
     private List<StockLineJpa> stockLineJpa = new ArrayList<>();
 
 
-    public StockJpa() {
+    protected StockJpa() {
     }
 
     public StockJpa(String name, List<StockLineJpa> stockLineJpa) {
