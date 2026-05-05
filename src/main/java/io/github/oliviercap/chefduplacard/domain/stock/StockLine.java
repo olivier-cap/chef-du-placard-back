@@ -4,6 +4,7 @@ import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * A Stock Line is a part of a Stock.
@@ -45,5 +46,16 @@ public class StockLine {
 
     public void setUnit(Unit unit) {
         this.unit = unit;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof StockLine stockLine)) return false;
+        return Objects.equals(quantity, stockLine.quantity) && Objects.equals(aliment, stockLine.aliment) && Objects.equals(unit, stockLine.unit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(quantity, aliment, unit);
     }
 }

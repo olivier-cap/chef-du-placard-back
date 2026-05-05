@@ -51,6 +51,6 @@ public class StockRepositoryTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getStockLineJpa().getFirst().getAlimentJpa().getName()).isEqualTo("apple");
-
+        assertThat(result.getFirst()).isEqualTo(stock);
     }
 }
