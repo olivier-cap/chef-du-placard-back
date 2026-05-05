@@ -11,7 +11,7 @@ public class Aliment {
     private String description;
     private Boolean active;
 
-    public Aliment(String description, String name, boolean active) {
+    public Aliment(String name, String description, boolean active) {
         this.description = description;
         this.name = name;
         this.active = active;

@@ -11,8 +11,7 @@ public class AlimentMapper implements IAlimentMapper{
 
     @Override
     public Aliment toDomain(AlimentDTO alimentDTO) {
-        return new Aliment(alimentDTO.name(),
-                alimentDTO.description(),
+        return new Aliment(alimentDTO.name(), alimentDTO.description(),
                 alimentDTO.active());
     }
 }

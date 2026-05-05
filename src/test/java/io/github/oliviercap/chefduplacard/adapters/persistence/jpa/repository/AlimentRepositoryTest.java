@@ -26,5 +26,6 @@ class AlimentRepositoryTest {
 
         assertThat(result).isPresent();
         assertThat(result.get().getName()).isEqualTo("apple");
+        assertThat(result.get()).isEqualTo(apple);
     }
 }
