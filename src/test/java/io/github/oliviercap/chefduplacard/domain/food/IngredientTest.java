@@ -12,8 +12,8 @@ public class IngredientTest {
     @Test
     void ingredient_can_be_create_and_aliment_modified(){
         //GIVEN
-        Aliment apple = new Aliment("fruit", "pomme", true);
-        Aliment grapefruit = new Aliment("fruit", "grapefruit", true);
+        Aliment apple = new Aliment("pomme", "fruit", true);
+        Aliment grapefruit = new Aliment("grapefruit", "fruit", true);
         Unit unit = new Unit("gramme","g");
         BigDecimal quantity = BigDecimal.valueOf(12);
 

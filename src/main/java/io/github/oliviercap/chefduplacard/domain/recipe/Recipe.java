@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Recipe est une recette, dans le domaine (données métier, encapsulées).
@@ -89,5 +90,16 @@ public class Recipe {
 
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Recipe recipe)) return false;
+        return Objects.equals(name, recipe.name) && Objects.equals(instructions, recipe.instructions) && Objects.equals(duration, recipe.duration) && Objects.equals(difficulty, recipe.difficulty) && Objects.equals(ingredients, recipe.ingredients);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, instructions, duration, difficulty, ingredients);
     }
 }

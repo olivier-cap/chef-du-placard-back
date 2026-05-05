@@ -16,7 +16,7 @@ public class StockTest {
     void stock_check_listOfIngredients_is_covered_with_same_unity() {
 
         //Given
-        Aliment apple = new Aliment("fruit", "apple", true);
+        Aliment apple = new Aliment("apple", "fruit", true);
         Unit unit = new Unit("gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockSufficient = BigDecimal.valueOf(25);
@@ -39,7 +39,7 @@ public class StockTest {
     void stock_check_listOfIngredients_is_uncovered_with_same_unity() {
 
         //Given
-        Aliment apple = new Aliment("fruit", "apple", true);
+        Aliment apple = new Aliment("apple", "fruit", true);
         Unit unit = new Unit("gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockInsufficient = BigDecimal.valueOf(2);

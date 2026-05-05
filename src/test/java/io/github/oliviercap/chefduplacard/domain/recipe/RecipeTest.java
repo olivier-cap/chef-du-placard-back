@@ -16,8 +16,8 @@ public class RecipeTest {
     @Test
     void calculate_quantity_of_ingredients_for_nPeople(){
         //With
-        Aliment apple = new Aliment("fruit", "apple", true);
-        Aliment grapefruit = new Aliment("fruit", "grapefruit", true);
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Aliment grapefruit = new Aliment("grapefruit", "fruit", true);
 
         Unit unit = new Unit("gramme","g");
 
@@ -42,5 +42,8 @@ public class RecipeTest {
         assertThat(recipe.computeRequiredIngredients(nbPeople))
                 .usingRecursiveComparison()
                 .isEqualTo(attendedResult);
+
+        //Version equals implanté
+        assertThat(recipe.computeRequiredIngredients(nbPeople)).isEqualTo(attendedResult);
     }
 }

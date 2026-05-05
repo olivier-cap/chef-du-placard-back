@@ -4,10 +4,7 @@ import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Stock d'aliments.
@@ -66,5 +63,16 @@ public class Stock {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Stock stock)) return false;
+        return Objects.equals(stockMap, stock.stockMap) && Objects.equals(name, stock.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stockMap, name);
     }
 }

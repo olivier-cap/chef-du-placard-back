@@ -3,6 +3,7 @@ package io.github.oliviercap.chefduplacard.domain.food;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * An Ingredient is an aliment associated with its quantity per person in a recipe.
@@ -42,5 +43,16 @@ public class Ingredient {
 
     public void setUnit(Unit unit) {
         this.unit = unit;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Ingredient that)) return false;
+        return Objects.equals(quantityPerPerson, that.quantityPerPerson) && Objects.equals(aliment, that.aliment) && Objects.equals(unit, that.unit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(quantityPerPerson, aliment, unit);
     }
 }
