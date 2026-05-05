@@ -3,17 +3,20 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "unite")
+@Table(
+        name = "unite",
+        uniqueConstraints = @UniqueConstraint(columnNames = "code")
+)
 public class UnitJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom")
+    @Column(name = "nom", nullable = false)
     private String name;
 
-    @Column(name = "code")
+    @Column(name = "code",nullable = false, length = 20)
     private String symbol;
 
     protected UnitJpa() {

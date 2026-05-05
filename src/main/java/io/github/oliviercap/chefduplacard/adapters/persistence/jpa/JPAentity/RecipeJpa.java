@@ -6,14 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "recette")
+@Table(
+        name = "recette",
+        uniqueConstraints = @UniqueConstraint(columnNames = "nom")
+)
 public class RecipeJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom", nullable = false)
+    @Column(name = "nom", nullable = false, length = 200)
     private String name;
 
     @Column(name = "instructions", nullable = false)
@@ -22,7 +25,7 @@ public class RecipeJpa {
     @Column(name = "duree_minutes")
     private Integer durationMinutes;
 
-    @Column(name = "difficulte")
+    @Column(name = "difficulte", length = 50)
     private String difficulty;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipeJpa")
