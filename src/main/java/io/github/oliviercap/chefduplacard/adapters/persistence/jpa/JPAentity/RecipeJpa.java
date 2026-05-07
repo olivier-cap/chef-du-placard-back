@@ -28,7 +28,13 @@ public class RecipeJpa {
     @Column(name = "difficulte", length = 50)
     private String difficulty;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "recipeJpa")
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "recipeJpa",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<IngredientJpa> ingredients = new ArrayList<>();
 
     protected RecipeJpa() {
@@ -40,6 +46,16 @@ public class RecipeJpa {
         this.instructions = instructions;
         this.durationMinutes = duration_minutes;
         this.difficulty = difficulty;
+    }
+
+    public void addIngredient(IngredientJpa ingredientJpa) {
+        this.ingredients.add(ingredientJpa);
+        ingredientJpa.setRecipeJpa(this);
+    }
+
+    public void removeIngredient(IngredientJpa ingredientJpa) {
+        this.ingredients.remove(ingredientJpa);
+        ingredientJpa.setRecipeJpa(null);
     }
 
     public Long getId() {
@@ -82,7 +98,4 @@ public class RecipeJpa {
         return ingredients;
     }
 
-    public void setIngredients(List<IngredientJpa> ingredientJpaList) {
-        this.ingredients = ingredientJpaList;
-    }
 }

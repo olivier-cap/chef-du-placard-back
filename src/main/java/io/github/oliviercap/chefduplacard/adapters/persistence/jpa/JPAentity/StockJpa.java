@@ -23,7 +23,12 @@ public class StockJpa {
     @Column(name = "nom", nullable = false ,length = 100)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockJpa")
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "stockJpa",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<StockLineJpa> stockLineJpa = new ArrayList<>();
 
 
@@ -35,6 +40,20 @@ public class StockJpa {
         this.stockLineJpa = stockLineJpa;
     }
 
+    public StockJpa(String name) {
+        this.name = name;
+    }
+
+
+    public void addStockLine(StockLineJpa stockLine) {
+        stockLineJpa.add(stockLine);
+        stockLine.setStockJpa(this);
+    }
+
+    public void removeStockLine(StockLineJpa stockLine) {
+        stockLineJpa.remove(stockLine);
+        stockLine.setStockJpa(null);
+    }
     /** Getters and Setters **/
 
     public Long getId() {
@@ -53,7 +72,4 @@ public class StockJpa {
         return stockLineJpa;
     }
 
-    public void setStockLineJpa(List<StockLineJpa> stockLineJpa) {
-        this.stockLineJpa = stockLineJpa;
-    }
 }
