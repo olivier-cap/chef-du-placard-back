@@ -83,6 +83,7 @@ public final class Aliment {
         return active;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Aliment aliment)) {
@@ -91,8 +92,23 @@ public final class Aliment {
         return Objects.equals(identifier, aliment.identifier);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(identifier);
     }
+
+    /*
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Aliment aliment)) return false;
+        return Objects.equals(name, aliment.name) && Objects.equals(description, aliment.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description);
+    }
+    */
+
 }

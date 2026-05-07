@@ -1,5 +1,6 @@
 package io.github.oliviercap.chefduplacard.domain.food;
 
+import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 
 import java.math.BigDecimal;
@@ -8,12 +9,24 @@ import java.util.Objects;
 /**
  * An Ingredient is an aliment associated with its quantity per person in a recipe.
  */
-public class Ingredient {
-    private BigDecimal quantityPerPerson;
-    private Aliment aliment;
-    private Unit unit;
+public final class Ingredient {
+    private final BigDecimal quantityPerPerson;
+    private final Aliment aliment;
+    private final Unit unit;
 
     public Ingredient(BigDecimal quantityPerPerson, Aliment aliment, Unit unit) {
+        if (quantityPerPerson == null) {
+            throw new DomainException("Quantity per person must not be null");
+        }
+        if (quantityPerPerson.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainException("Quantity must be greater than or equal to 0");
+        }
+        if(aliment == null) {
+            throw new DomainException("Ingredient must have an aliment, aliment cannot be null");
+        }
+        if(unit == null) {
+            throw new DomainException("Ingredient must have a unit, unit cannot be null");
+        }
         this.quantityPerPerson = quantityPerPerson;
         this.aliment = aliment;
         this.unit = unit;
@@ -25,24 +38,12 @@ public class Ingredient {
         return quantityPerPerson;
     }
 
-    public void setQuantityPerPerson(BigDecimal quantityPerPerson) {
-        this.quantityPerPerson = quantityPerPerson;
-    }
-
     public Aliment getAliment() {
         return aliment;
     }
 
-    public void setAliment(Aliment aliment) {
-        this.aliment = aliment;
-    }
-
     public Unit getUnit() {
         return unit;
-    }
-
-    public void setUnit(Unit unit) {
-        this.unit = unit;
     }
 
     @Override

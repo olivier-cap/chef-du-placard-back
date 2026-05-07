@@ -3,6 +3,8 @@ package io.github.oliviercap.chefduplacard.domain.unit;
 //Penser à faire qqchose comme une factory, un visitor ou autre
 //faire une interface unité, puis plein d'unités différentes :)
 
+import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
+
 import java.util.Objects;
 
 /**
@@ -13,6 +15,12 @@ public class Unit {
     private String symbol;
 
     public Unit(String name, String symbol) {
+        if(name.isBlank() || name.isEmpty() || name == null) {
+            throw new DomainException("unit name must not be empty, blank or null");
+        }
+        if(symbol.isBlank() || symbol.isEmpty() || symbol == null) {
+            throw new DomainException("unit symbol must not bet empty, blank or null");
+        }
         this.name = name;
         this.symbol = symbol;
     }
