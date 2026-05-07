@@ -6,6 +6,8 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.dto.StockLineDTO;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * Helper to transform a StockLine JPA Entity into DTO
  */
@@ -22,10 +24,14 @@ public class StockLineJpaToDtoConverter implements IStockLineJpaToDtoConverter{
 
     @Override
     public StockLineDTO toDTO(StockLineJpa stockLineJpa) {
+        Objects.requireNonNull(stockLineJpa, "stockLineJpa must not be null");
+        Objects.requireNonNull(stockLineJpa.getAlimentJpa(), "alimentJpa must not be null");
+        Objects.requireNonNull(stockLineJpa.getUnitJpa(), "unitJpa must not be null");
+
         return new StockLineDTO(
-                stockLineJpa.getQuantity(),
                 alimentJpaToDtoConverter.toDTO(stockLineJpa.getAlimentJpa()),
-                unitJpaToDtoConverter.toDTO(stockLineJpa.getUnitJpa())
+                unitJpaToDtoConverter.toDTO(stockLineJpa.getUnitJpa()),
+                stockLineJpa.getQuantity()
         );
     }
 }
