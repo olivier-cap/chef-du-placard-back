@@ -138,10 +138,54 @@ public class StockTest {
         ).isInstanceOf(DomainException.class);
     }
 
-    /*
-    Tester
-    --covers
-    aliment demandé not in stock, not in stocklines
-    aliment demandé not in stock, in stock lines
-     */
+    @Test
+    void aliment_not_in_stocklines() {
+        //Given
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Aliment grapefruit = new Aliment("grapefruit", "grapefruit", true);
+
+        Unit unit = new Unit("gramme", "g");
+        BigDecimal quantity = BigDecimal.valueOf(12);
+        BigDecimal quantityStockSufficient = BigDecimal.valueOf(25);
+
+        Ingredient ingredient = new Ingredient(quantity, apple, unit);
+        Ingredient grapefruitIngredient = new Ingredient(BigDecimal.valueOf(1), grapefruit, unit);
+
+
+        //sufficient quantity
+        //When
+        StockLine stockLineapple = new StockLine(quantityStockSufficient, apple, unit);
+
+        Stock stock1 = new Stock("test1", List.of(stockLineapple));
+
+        //Then
+        CoveredIngredients covered = new CoveredIngredients(false, List.of(grapefruitIngredient));
+        assertThat(stock1.covers(List.of(ingredient, grapefruitIngredient))).isEqualTo(covered);
+    }
+
+    @Test
+    void aliment_stock_zero() {
+        //Given
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Aliment grapefruit = new Aliment("grapefruit", "grapefruit", true);
+
+        Unit unit = new Unit("gramme", "g");
+        BigDecimal quantity = BigDecimal.valueOf(12);
+        BigDecimal quantityStockSufficient = BigDecimal.valueOf(25);
+
+        Ingredient ingredient = new Ingredient(quantity, apple, unit);
+        Ingredient grapefruitIngredient = new Ingredient(BigDecimal.valueOf(10), grapefruit, unit);
+
+
+        //sufficient quantity
+        //When
+        StockLine stockLineapple = new StockLine(quantityStockSufficient, apple, unit);
+        StockLine stockLinegrapefruit = new StockLine(BigDecimal.valueOf(0), grapefruit, unit);
+
+        Stock stock1 = new Stock("test1", List.of(stockLineapple, stockLinegrapefruit));
+
+        //Then
+        CoveredIngredients covered = new CoveredIngredients(false, List.of(grapefruitIngredient));
+        assertThat(stock1.covers(List.of(ingredient, grapefruitIngredient))).isEqualTo(covered);
+    }
 }

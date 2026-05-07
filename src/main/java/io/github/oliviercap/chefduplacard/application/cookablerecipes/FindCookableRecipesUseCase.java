@@ -56,6 +56,8 @@ public class FindCookableRecipesUseCase implements IFindCookableRecipesUseCase{
 
             CoveredIngredients coveredIngredients = stock.covers(requiredIngredients);
 
+            System.out.println(coveredIngredients);
+
             if(coveredIngredients.covered()) {
                 coveredRecipes.add(recipe);
             }
