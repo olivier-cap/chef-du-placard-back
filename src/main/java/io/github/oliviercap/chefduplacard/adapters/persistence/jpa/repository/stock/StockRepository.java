@@ -7,6 +7,7 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.stock.ISto
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
 import org.springframework.stereotype.Repository;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**

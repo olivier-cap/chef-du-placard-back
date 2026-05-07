@@ -3,8 +3,6 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.s
 import io.github.oliviercap.chefduplacard.adapters.persistence.converter.aliment.IAlimentJpaToDtoConverter;
 import io.github.oliviercap.chefduplacard.adapters.persistence.converter.stockline.IStockLineJpaToDtoConverter;
 import io.github.oliviercap.chefduplacard.adapters.persistence.converter.unit.IUnitJpaToDtoConverter;
-import io.github.oliviercap.chefduplacard.adapters.persistence.dto.StockLineDTO;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.stockline.IStockLineMapper;
 import io.github.oliviercap.chefduplacard.domain.stock.StockLine;
 import org.springframework.stereotype.Repository;
@@ -38,13 +36,5 @@ public class StockLineRepository implements IStockLineRepository {
                 .map(stockLineJpaToDtoConverter::toDTO)
                 .map(stockLineMapper::toDomain)
                 .toList();
-    }
-
-    private StockLineDTO toDTO(StockLineJpa stockLineJpa) {
-        return new StockLineDTO(
-                stockLineJpa.getQuantity(),
-                alimentJpaToDtoConverter.toDTO(stockLineJpa.getAlimentJpa()),
-                unitJpaToDtoConverter.toDTO(stockLineJpa.getUnitJpa())
-        );
     }
 }
