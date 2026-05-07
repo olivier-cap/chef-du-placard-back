@@ -24,9 +24,9 @@ public class StockLineJpaToDtoConverterTest {
         AlimentJpa alimentJpa = new AlimentJpa("name", "description", true);
         UnitJpa unitJpa = new UnitJpa("name", "symbol");
 
-        StockJpa stockJpa = new StockJpa("name", List.of());
+        StockJpa stockJpa = new StockJpa("name");
         StockLineJpa stockLineJpa = new StockLineJpa(stockJpa, alimentJpa, unitJpa, BigDecimal.valueOf(1));
-        stockJpa.setStockLineJpa(List.of(stockLineJpa));
+        stockJpa.addStockLine(stockLineJpa);
 
         AlimentDTO alimentDTO = new AlimentDTO("name", "description", true);
         UnitDTO unitDTO = new UnitDTO("name","symbol");
@@ -35,7 +35,7 @@ public class StockLineJpaToDtoConverterTest {
         IUnitJpaToDtoConverter unitJpaToDtoConverter = new UnitJpaToDtoConverter();
         IStockLineJpaToDtoConverter stockLineJpaToDtoConverter = new StockLineJpaToDtoConverter(alimentJpaToDtoConverter, unitJpaToDtoConverter);
 
-        StockLineDTO expectedDTO = new StockLineDTO(BigDecimal.valueOf(1), alimentDTO, unitDTO);
+        StockLineDTO expectedDTO = new StockLineDTO(alimentDTO, unitDTO, BigDecimal.valueOf(1));
         StockLineDTO stockLineDTO = stockLineJpaToDtoConverter.toDTO(stockLineJpa);
 
         assertThat(stockLineDTO).isEqualTo(expectedDTO);
