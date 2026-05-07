@@ -30,7 +30,7 @@ public class StockMapperTest {
     void creates_stock_domain_from_dto(){
         AlimentDTO alimentDTO = new AlimentDTO("name","description", true);
         UnitDTO unitDTO = new UnitDTO("name","symbol");
-        StockLineDTO stockLineDTO = new StockLineDTO(BigDecimal.valueOf(1), alimentDTO, unitDTO);
+        StockLineDTO stockLineDTO = new StockLineDTO(alimentDTO, unitDTO, BigDecimal.valueOf(1));
         StockDTO stockDTO = new StockDTO("test", List.of(stockLineDTO));
 
         Aliment aliment = new Aliment("name", "description",true);

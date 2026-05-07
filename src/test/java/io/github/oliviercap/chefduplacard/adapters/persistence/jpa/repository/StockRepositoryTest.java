@@ -35,17 +35,16 @@ public class StockRepositoryTest {
     void save_and_load_stock() {
         AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
         UnitJpa unit = new UnitJpa("gramme","g");
-        StockJpa stock = new StockJpa("name", List.of());
+        StockJpa stock = new StockJpa("name");
         StockLineJpa stockLine = new StockLineJpa(stock, apple, unit, BigDecimal.valueOf(12));
 
-        stock.setStockLineJpa(List.of(stockLine));
+        stock.addStockLine(stockLine);
 
         alimentJpaRepository.save(apple);
         unitJpaRepository.save(unit);
         stockJpaRepository.save(stock);
 
         stockLineJpaRepository.save(stockLine);
-
 
         var result = stockJpaRepository.findAll();
 

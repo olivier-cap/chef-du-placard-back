@@ -25,7 +25,7 @@ public class StockLineMapperTest {
     void creates_stockline_domain_from_dto(){
         AlimentDTO alimentDTO = new AlimentDTO("name","description", true);
         UnitDTO unitDTO = new UnitDTO("name","symbol");
-        StockLineDTO stockLineDTO = new StockLineDTO(BigDecimal.valueOf(1), alimentDTO, unitDTO);
+        StockLineDTO stockLineDTO = new StockLineDTO(alimentDTO, unitDTO, BigDecimal.valueOf(1));
 
         Aliment aliment = new Aliment("name", "description",true);
         Unit unit = new Unit("name","symbol");

@@ -1,14 +1,19 @@
 package io.github.oliviercap.chefduplacard.domain.stock;
 
+import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
+import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class StockTest {
 
@@ -55,7 +60,88 @@ public class StockTest {
         //Then
         CoveredIngredients uncovered = new CoveredIngredients(false, List.of(ingredient));
         assertThat(stock2.covers(List.of(ingredient))).isEqualTo(uncovered);
+    }
 
+    @Test
+    void name_null_or_blank_generate_error() {
+
+        //Given
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Unit unit = new Unit("gramme", "g");
+        BigDecimal quantity = BigDecimal.valueOf(12);
+        BigDecimal quantityStockInsufficient = BigDecimal.valueOf(2);
+
+
+        Ingredient ingredient = new Ingredient(quantity, apple, unit);
+        StockLine stockLine = new StockLine(quantityStockInsufficient, apple, unit);
+
+        //then
+        assertThatThrownBy(() ->
+                new Stock("", List.of(stockLine))
+        ).isInstanceOf(DomainException.class);
+
+        assertThatThrownBy(() ->
+                new Stock(null, List.of(stockLine))
+        ).isInstanceOf(DomainException.class);
+    }
+
+    @Test
+    void listStockLines_null_generate_error() {
+        //then
+        assertThatThrownBy(() ->
+                new Stock("name", null)
+        ).isInstanceOf(DomainException.class);
 
     }
+
+    @Test
+    void one_stockLine_null_generate_error() {
+
+        //Given
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Unit unit = new Unit("gramme", "g");
+        BigDecimal quantity = BigDecimal.valueOf(12);
+        BigDecimal quantityStockInsufficient = BigDecimal.valueOf(2);
+
+
+        Ingredient ingredient = new Ingredient(quantity, apple, unit);
+        StockLine stockLine = new StockLine(quantityStockInsufficient, apple, unit);
+        List<StockLine> list = new ArrayList<>();
+        list.add(stockLine);
+
+        //With
+        list.add(null);
+
+        //then
+        assertThatThrownBy(() ->
+                new Stock("name", list)
+        ).isInstanceOf(DomainException.class);
+
+    }
+
+    @Test
+    void duplicate_aliment_generate_error() {
+
+        //Given
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Unit unit = new Unit("gramme", "g");
+        BigDecimal quantity = BigDecimal.valueOf(12);
+        BigDecimal quantityStockInsufficient = BigDecimal.valueOf(2);
+
+
+        Ingredient ingredient = new Ingredient(quantity, apple, unit);
+        StockLine stockLine = new StockLine(quantityStockInsufficient, apple, unit);
+
+        //then
+        assertThatThrownBy(() ->
+                new Stock("name", List.of(stockLine, stockLine))
+        ).isInstanceOf(DomainException.class);
+    }
+
+    /*
+    Tester
+    --covers
+    aliment demandé not in stock, not in stocklines
+    aliment demandé not in stock, in stock lines
+     */
 }

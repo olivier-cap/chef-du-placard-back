@@ -35,7 +35,7 @@ public class RecipeRepositoryTest {
         RecipeJpa recipeJpa = new RecipeJpa("name", "instructions", 1, "difficulty");
         IngredientJpa ingredientJpa = new IngredientJpa(recipeJpa, apple, unit, BigDecimal.valueOf(12));
 
-        recipeJpa.setIngredients(List.of(ingredientJpa));
+        recipeJpa.addIngredient(ingredientJpa);
 
         alimentJpaRepository.save(apple);
         unitJpaRepository.save(unit);

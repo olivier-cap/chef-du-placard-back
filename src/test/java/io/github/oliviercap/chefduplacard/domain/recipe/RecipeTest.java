@@ -1,5 +1,6 @@
 package io.github.oliviercap.chefduplacard.domain.recipe;
 
+import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class RecipeTest {
@@ -46,4 +48,109 @@ public class RecipeTest {
         //Version equals implanté
         assertThat(recipe.computeRequiredIngredients(nbPeople)).isEqualTo(attendedResult);
     }
+
+    @Test
+    void name_null_or_blank_generate_error(){
+        //With
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Aliment grapefruit = new Aliment("grapefruit", "fruit", true);
+
+        Unit unit = new Unit("gramme","g");
+
+        BigDecimal a = BigDecimal.valueOf(5);
+        BigDecimal b = BigDecimal.valueOf(2);
+        Ingredient ingredient1 = new Ingredient(a, apple, unit);
+        Ingredient ingredient2 = new Ingredient(b,grapefruit, unit);
+
+             //then
+        assertThatThrownBy(() ->
+                new Recipe("", "instructions very complex", Duration.ofMinutes(12), "3", List.of(ingredient1, ingredient2))
+        ).isInstanceOf(DomainException.class);
+
+        assertThatThrownBy(() ->
+                new Recipe(null, "instructions very complex", Duration.ofMinutes(12), "3", List.of(ingredient1, ingredient2))
+        ).isInstanceOf(DomainException.class);
+    }
+
+
+    @Test
+    void ingredient_null_or_empty_generate_error(){
+        Unit unit = new Unit("gramme","g");
+
+        //then
+        assertThatThrownBy(() ->
+                new Recipe("name", "instructions very complex", Duration.ofMinutes(12), "3", List.of())
+        ).isInstanceOf(DomainException.class);
+
+        assertThatThrownBy(() ->
+                new Recipe("name", "instructions very complex", Duration.ofMinutes(12), "3", null)
+        ).isInstanceOf(DomainException.class);
+    }
+
+
+    @Test
+    void instructions_null_or_blank_generate_error(){
+        //With
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Aliment grapefruit = new Aliment("grapefruit", "fruit", true);
+
+        Unit unit = new Unit("gramme","g");
+
+        BigDecimal a = BigDecimal.valueOf(5);
+        BigDecimal b = BigDecimal.valueOf(2);
+        Ingredient ingredient1 = new Ingredient(a, apple, unit);
+        Ingredient ingredient2 = new Ingredient(b,grapefruit, unit);
+
+        //then
+        assertThatThrownBy(() ->
+                new Recipe("name", "", Duration.ofMinutes(12), "3", List.of(ingredient1, ingredient2))
+        ).isInstanceOf(DomainException.class);
+
+        assertThatThrownBy(() ->
+                new Recipe("name", null, Duration.ofMinutes(12), "3", List.of(ingredient1, ingredient2))
+        ).isInstanceOf(DomainException.class);
+    }
+
+    @Test
+    void duration_null_generate_error(){
+        //With
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Aliment grapefruit = new Aliment("grapefruit", "fruit", true);
+
+        Unit unit = new Unit("gramme","g");
+
+        BigDecimal a = BigDecimal.valueOf(5);
+        BigDecimal b = BigDecimal.valueOf(2);
+        Ingredient ingredient1 = new Ingredient(a, apple, unit);
+        Ingredient ingredient2 = new Ingredient(b,grapefruit, unit);
+
+        //then
+        assertThatThrownBy(() ->
+                new Recipe("name", "", null, "3", List.of(ingredient1, ingredient2))
+        ).isInstanceOf(DomainException.class);
+    }
+
+    @Test
+    void difficulty_null_generate_error(){
+        //With
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Aliment grapefruit = new Aliment("grapefruit", "fruit", true);
+
+        Unit unit = new Unit("gramme","g");
+
+        BigDecimal a = BigDecimal.valueOf(5);
+        BigDecimal b = BigDecimal.valueOf(2);
+        Ingredient ingredient1 = new Ingredient(a, apple, unit);
+        Ingredient ingredient2 = new Ingredient(b,grapefruit, unit);
+
+        //then
+        assertThatThrownBy(() ->
+                new Recipe("name", "", Duration.ofMinutes(1), null, List.of(ingredient1, ingredient2))
+        ).isInstanceOf(DomainException.class);
+    }
+
+
+    /*
+    compute ingredients (nbPeople < 0)
+     */
 }

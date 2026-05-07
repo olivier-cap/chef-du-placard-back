@@ -39,35 +39,27 @@ public class FindCookableRecipesUseCaseIntegrationTest {
     private IAlimentJpaRepository alimentJpaRepository;
     @Autowired
     IUnitJpaRepository unitJpaRepository;
-    @Autowired
-    IStockLineJpaRepository stockLineJpaRepository;
-    @Autowired
-    IIngredientJpaRepository ingredientJpaRepository;
 
     @Test
     void should_find_cookable_recipes_with_real_persistence_pipeline() {
-        // given : préparer la base H2
         AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
-        UnitJpa unit = new UnitJpa("gramme","g");
-        StockJpa stock = new StockJpa("test", List.of());
-        StockLineJpa stockLine = new StockLineJpa(stock, apple, unit, BigDecimal.valueOf(12));
-        RecipeJpa recipeJpa = new RecipeJpa("r1","", 5,"1");
-        IngredientJpa ingredient = new IngredientJpa(recipeJpa, apple, unit, BigDecimal.valueOf(12));
+        UnitJpa unit = new UnitJpa("gramme", "g");
 
-        stock.setStockLineJpa(List.of(stockLine));
+        StockJpa stock = new StockJpa("test");
+        StockLineJpa stockLine = new StockLineJpa(apple, unit, BigDecimal.valueOf(12));
+        stock.addStockLine(stockLine);
+
+        RecipeJpa recipeJpa = new RecipeJpa("r1", "a", 5, "1");
+        IngredientJpa ingredient = new IngredientJpa(recipeJpa, apple, unit, BigDecimal.valueOf(12));
+        recipeJpa.addIngredient(ingredient);
 
         alimentJpaRepository.save(apple);
         unitJpaRepository.save(unit);
         stockJpaRepository.save(stock);
         recipeJpaRepository.save(recipeJpa);
-        stockLineJpaRepository.save(stockLine);
-        ingredientJpaRepository.save(ingredient);
 
-
-        // when
         List<Recipe> result = useCase.execute(1);
 
-        // then
         assertThat(result)
                 .extracting(Recipe::getName)
                 .containsExactly("r1");

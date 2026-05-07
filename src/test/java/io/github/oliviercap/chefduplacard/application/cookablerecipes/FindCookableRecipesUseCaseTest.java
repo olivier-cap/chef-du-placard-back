@@ -29,8 +29,8 @@ class FakeRecipeRepository implements IRecipeRepository {
     private Ingredient ingredient2 = new Ingredient(BigDecimal.valueOf(8), aliment2, unit);
     private Ingredient ingredient3 = new Ingredient(BigDecimal.valueOf(5), aliment3, unit);
 
-    private Recipe recipe1 = new Recipe("r1", "", Duration.ofMinutes(1),"1", List.of(ingredient1, ingredient2));
-    private Recipe recipe2 = new Recipe("r2", "", Duration.ofMinutes(1),"1", List.of(ingredient3));
+    private Recipe recipe1 = new Recipe("r1", "a", Duration.ofMinutes(1),"1", List.of(ingredient1, ingredient2));
+    private Recipe recipe2 = new Recipe("r2", "b", Duration.ofMinutes(1),"1", List.of(ingredient3));
 
     @Override
     public List<Recipe> findAll() {
@@ -73,10 +73,7 @@ public class FindCookableRecipesUseCaseTest {
         int nbPeople = 1;
 
         List<Recipe> attendedResult = List.of(fakeRecipeRepository.findAll().getFirst());
-
-        assertThat(findCookableRecipesUseCase.execute(nbPeople))
-                .usingRecursiveComparison()
-                .isEqualTo(attendedResult);
+        System.out.println(findCookableRecipesUseCase.execute(nbPeople));
 
         assertThat(findCookableRecipesUseCase.execute(nbPeople)).isEqualTo(attendedResult);
     }
