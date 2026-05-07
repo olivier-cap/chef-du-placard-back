@@ -6,6 +6,8 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.IUnit
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class IngredientMapper implements IIngredientMapper{
     private final IAlimentMapper alimentMapper;
@@ -20,6 +22,9 @@ public class IngredientMapper implements IIngredientMapper{
     //suppose qu'on a créé in AlimentDTO et un UnitDTO integres, dans le repository
     @Override
     public Ingredient toDomain(IngredientDTO ingredientDTO) {
+        Objects.requireNonNull(ingredientDTO, "ingedientDTO must not be null");
+        Objects.requireNonNull(ingredientDTO.alimentDTO(), "alimentDTO must not be null");
+        Objects.requireNonNull(ingredientDTO.unitDTO(), "unitDTO must not be null");
 
         return new Ingredient(ingredientDTO.quantityPerPerson(),
                 alimentMapper.toDomain(ingredientDTO.alimentDTO()),

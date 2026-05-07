@@ -6,6 +6,8 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.IUnit
 import io.github.oliviercap.chefduplacard.domain.stock.StockLine;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class StockLineMapper implements IStockLineMapper{
     private final IAlimentMapper alimentMapper;
@@ -18,10 +20,14 @@ public class StockLineMapper implements IStockLineMapper{
 
     @Override
     public StockLine toDomain(StockLineDTO stockLineDTO) {
+        Objects.requireNonNull(stockLineDTO, "stockLineDTO must not be null");
+        Objects.requireNonNull(stockLineDTO.aliment(), "alimentDTO must not be null");
+        Objects.requireNonNull(stockLineDTO.unit(), "unitDTO must not be null");
+
         return new StockLine(
                 stockLineDTO.quantity(),
-                alimentMapper.toDomain(stockLineDTO.alimentDTO()),
-                unitMapper.toDomain(stockLineDTO.unitDTO())
+                alimentMapper.toDomain(stockLineDTO.aliment()),
+                unitMapper.toDomain(stockLineDTO.unit())
         );
     }
 }

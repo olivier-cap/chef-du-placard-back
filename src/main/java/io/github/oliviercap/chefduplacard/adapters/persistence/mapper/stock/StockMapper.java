@@ -5,6 +5,8 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.stockline.
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class StockMapper implements IStockMapper{
     private final IStockLineMapper stockLineMapper;
@@ -15,9 +17,12 @@ public class StockMapper implements IStockMapper{
 
     @Override
     public Stock toDomain(StockDTO stockDTO) {
+        Objects.requireNonNull(stockDTO, "stockDTO must not be null");
+        Objects.requireNonNull(stockDTO.stockLines(), "stockLinesDTO must not be null");
+
         return new Stock(
                 stockDTO.name(),
-                stockDTO.stockLineDTOs().stream()
+                stockDTO.stockLines().stream()
                         .map(stockLineMapper::toDomain)
                         .toList()
         );
