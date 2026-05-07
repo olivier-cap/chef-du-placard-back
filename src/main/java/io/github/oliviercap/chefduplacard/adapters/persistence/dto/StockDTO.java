@@ -7,5 +7,4 @@ import java.util.List;
  * @param name
  * @param stockLineDTOs
  */
-public record StockDTO(String name, List<StockLineDTO> stockLineDTOs) {
-}
+public record StockDTO(String name, List<StockLineDTO> stockLines) {}

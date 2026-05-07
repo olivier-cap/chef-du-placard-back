@@ -4,9 +4,13 @@ import java.math.BigDecimal;
 
 /**
  * DTO for stock line jpa entity
+ *
  * @param quantity
- * @param alimentDTO
- * @param unitDTO
+ * @param aliment
+ * @param unit
  */
-public record StockLineDTO(BigDecimal quantity, AlimentDTO alimentDTO, UnitDTO unitDTO) {
-}
+public record StockLineDTO(
+        AlimentDTO aliment,
+        UnitDTO unit,
+        BigDecimal quantity
+) {}
