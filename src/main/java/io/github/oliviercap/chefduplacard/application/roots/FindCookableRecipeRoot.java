@@ -2,6 +2,8 @@ package io.github.oliviercap.chefduplacard.application.roots;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockRepository;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.IFindCookableRecipesOutputPort;
+import io.github.oliviercap.chefduplacard.application.converter.reciperesponse.IRecipeToRecipeResponse;
 import io.github.oliviercap.chefduplacard.application.cookablerecipes.FindCookableRecipesUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +21,15 @@ public class FindCookableRecipeRoot {
     @Bean
     public FindCookableRecipesUseCase findCookableRecipesUseCase(
             IRecipeRepository recipeRepository,
-            IStockRepository stockRepository
+            IStockRepository stockRepository,
+            IFindCookableRecipesOutputPort outputPort,
+            IRecipeToRecipeResponse iRecipeToRecipeResponse
     ) {
         return new FindCookableRecipesUseCase(
                 recipeRepository,
-                stockRepository
+                stockRepository,
+                outputPort,
+                iRecipeToRecipeResponse
         );
     }
 

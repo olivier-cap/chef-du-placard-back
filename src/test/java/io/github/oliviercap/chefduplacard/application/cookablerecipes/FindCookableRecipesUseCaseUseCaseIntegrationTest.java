@@ -3,11 +3,12 @@ package io.github.oliviercap.chefduplacard.application.cookablerecipes;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.*;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.ingredient.IIngredientJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stockline.IStockLineJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesRequestModel;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesResponseModel;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.dto.RecipeForPresenter;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class FindCookableRecipesUseCaseIntegrationTest {
+public class FindCookableRecipesUseCaseUseCaseIntegrationTest {
     @Autowired
     private FindCookableRecipesUseCase useCase;
 
@@ -58,11 +59,15 @@ public class FindCookableRecipesUseCaseIntegrationTest {
         stockJpaRepository.save(stock);
         recipeJpaRepository.save(recipeJpa);
 
-        List<Recipe> result = useCase.execute(1);
+        FindCookableRecipesResponseModel result = useCase.execute(new FindCookableRecipesRequestModel(1, "test"));
 
-        assertThat(result)
-                .extracting(Recipe::getName)
+        assertThat(result.recipes())
+                .extracting(RecipeForPresenter::recipeName)
                 .containsExactly("r1");
+
+        assertThat(result.recipes().getFirst().duration())
+                .isEqualTo(Duration.ofMinutes(5));
+
     }
 
 

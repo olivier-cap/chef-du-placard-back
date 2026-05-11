@@ -2,6 +2,10 @@ package io.github.oliviercap.chefduplacard.application.cookablerecipes;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockRepository;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesRequestModel;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesResponseModel;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.IFindCookableRecipesOutputPort;
+import io.github.oliviercap.chefduplacard.application.converter.reciperesponse.IRecipeToRecipeResponse;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import io.github.oliviercap.chefduplacard.domain.stock.CoveredIngredients;
@@ -12,28 +16,33 @@ import java.util.List;
 import java.util.Optional;
 
 //public class FindCookableRecipesUseCase implements IUseCasePort{
-public class FindCookableRecipesUseCase implements IFindCookableRecipesUseCase{
+public class FindCookableRecipesUseCase implements IFindCookableRecipesInputPort {
 
-    private IRecipeRepository recipeRepository;
-    private IStockRepository stockRepository;
+    private final IRecipeRepository recipeRepository;
+    private final IStockRepository stockRepository;
+    private final IFindCookableRecipesOutputPort outputPort;
+    private final IRecipeToRecipeResponse recipeToRecipeResponse;
 
-    public FindCookableRecipesUseCase(IRecipeRepository recipeRepository, IStockRepository stockRepository) {
+    public FindCookableRecipesUseCase(IRecipeRepository recipeRepository,
+                                      IStockRepository stockRepository,
+                                      IFindCookableRecipesOutputPort outputPort,
+                                      IRecipeToRecipeResponse recipeToRecipeResponse) {
         this.recipeRepository = recipeRepository;
         this.stockRepository = stockRepository;
+        this.outputPort = outputPort;
+        this.recipeToRecipeResponse = recipeToRecipeResponse;
     }
 
-    //public void execute(IRequestModel requestModel) {
-    public List<Recipe> execute(int nbPeople) {
+    public FindCookableRecipesResponseModel execute(FindCookableRecipesRequestModel findCookableRecipesRequestModel) {
 
-        /*
-        problemes possibles
-        nbPeople == 0
-        */
-
-        //List<Recipe> cookableRecipes = findCookableRecipes(requestModel.nbPeople);
+        int nbPeople = findCookableRecipesRequestModel.npPeople();
         List<Recipe> cookableRecipes = findCookableRecipes(nbPeople);
-        return cookableRecipes;
-        //ResponseModel responseModel = createResponseModel(cookableRecipes);
+
+        return outputPort.displayCookableRecipes(
+                cookableRecipes.stream()
+                        .map(recipeToRecipeResponse::toDTO)
+                        .toList()
+        );
     }
 
     private List<Recipe> findCookableRecipes(int nbPeople) {
@@ -45,18 +54,18 @@ public class FindCookableRecipesUseCase implements IFindCookableRecipesUseCase{
         stock optional sans aucune stockline ?
          */
 
+        String stockName = "test";
+
         List<Recipe> coveredRecipes = new ArrayList<>();
 
         List<Recipe> existingRecipes = recipeRepository.findAll();
-        Optional<Stock> stockOptional = stockRepository.findByName("test");
+        Optional<Stock> stockOptional = stockRepository.findByName(stockName);
         Stock stock = stockOptional.orElseThrow();
 
         for(Recipe recipe : existingRecipes) {
             List<Ingredient> requiredIngredients = recipe.computeRequiredIngredients(nbPeople);
 
             CoveredIngredients coveredIngredients = stock.covers(requiredIngredients);
-
-            System.out.println(coveredIngredients);
 
             if(coveredIngredients.covered()) {
                 coveredRecipes.add(recipe);
@@ -65,7 +74,5 @@ public class FindCookableRecipesUseCase implements IFindCookableRecipesUseCase{
 
         return coveredRecipes;
     }
-
-
 
 }
