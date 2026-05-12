@@ -1,6 +1,7 @@
 package io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.controllers;
 
 import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesRequestModel;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesResponseModel;
 import io.github.oliviercap.chefduplacard.application.cookablerecipes.IFindCookableRecipesInputPort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,9 +20,15 @@ public class FindCookableRecipesController {
     //get data
     //create requestModel
     //sendRequestModelToUseCase
+
     @GetMapping("/findCookableRecipes")
-    public void findCookableRecipes(@RequestParam int nbPeople, @RequestParam String stock) {
-        inputPort.execute(new FindCookableRecipesRequestModel(nbPeople, stock));
+    public FindCookableRecipesResponseModel findCookableRecipes(
+            @RequestParam int nbPeople,
+            @RequestParam String stock) {
+
+        return inputPort.execute(
+                new FindCookableRecipesRequestModel(nbPeople, stock)
+        );
     }
 
 

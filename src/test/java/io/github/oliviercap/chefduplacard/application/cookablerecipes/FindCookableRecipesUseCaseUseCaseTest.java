@@ -5,8 +5,6 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.st
 import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesRequestModel;
 import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesResponseModel;
 import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.IFindCookableRecipesOutputPort;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.dto.IngredientForPresenter;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.dto.RecipeForPresenter;
 import io.github.oliviercap.chefduplacard.application.converter.reciperesponse.IRecipeToRecipeResponse;
 import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
@@ -62,51 +60,6 @@ class FakeStockRepository implements IStockRepository {
         return Optional.of(new Stock("test", List.of(ingredient1, ingredient2, ingredient3)));
     }
 }
-/*
-class FakeOutputPort implements IFindCookableRecipesOutputPort {
-    private FakeRecipeRepository fakeRecipeRepository = new FakeRecipeRepository();
-
-    @Override
-    public FindCookableRecipesResponseModel displayCookableRecipes(List<RecipeResponse> recipeResponse) {
-        Recipe recipe1 = fakeRecipeRepository.findAll().getFirst();
-        Recipe recipe2 = fakeRecipeRepository.findAll().getLast();
-
-
-        IngredientForPresenter ingredient1 = new IngredientForPresenter(recipe1.getIngredients().getFirst().getQuantityPerPerson(),
-                recipe1.getIngredients().getFirst().getAliment().getName(),
-                recipe1.getIngredients().getFirst().getUnit().getSymbol());
-
-        IngredientForPresenter ingredient2 = new IngredientForPresenter(recipe1.getIngredients().getLast().getQuantityPerPerson(),
-                recipe1.getIngredients().getLast().getAliment().getName(),
-                recipe1.getIngredients().getLast().getUnit().getSymbol());
-
-        IngredientForPresenter ingredient3 = new IngredientForPresenter(recipe1.getIngredients().getLast().getQuantityPerPerson(),
-                recipe1.getIngredients().getLast().getAliment().getName(),
-                recipe1.getIngredients().getLast().getUnit().getSymbol());
-
-        RecipeForPresenter recipePresenter1 = new RecipeForPresenter(
-                recipe1.getName(),
-                recipe1.getInstructions(),
-                Integer.parseInt(recipe1.getDuration().toString()),
-                recipe1.getDifficulty(),
-                List.of(ingredient1, ingredient2)
-        );
-
-        RecipeForPresenter recipePresenter2 = new RecipeForPresenter(
-                recipe2.getName(),
-                recipe2.getInstructions(),
-                Integer.parseInt(recipe2.getDuration().toString()),
-                recipe2.getDifficulty(),
-                List.of(ingredient3)
-        );
-
-        FindCookableRecipesResponseModel response = new FindCookableRecipesResponseModel(List.of(recipePresenter1, recipePresenter2));
-
-        return response;
-    }
-}
-*/
-
 
 class CapturingOutputPort implements IFindCookableRecipesOutputPort {
 
@@ -122,15 +75,6 @@ class CapturingOutputPort implements IFindCookableRecipesOutputPort {
 }
 
 
-/*
-class FakeRecipeToResponse implements IRecipeToRecipeResponse {
-    @Override
-    public RecipeResponse toDTO(Recipe recipe) {
-        return null;
-    }
-}
-*/
-
 
 class FakeRecipeToResponse implements IRecipeToRecipeResponse {
     @Override
@@ -138,7 +82,7 @@ class FakeRecipeToResponse implements IRecipeToRecipeResponse {
         return new RecipeResponse(
                 recipe.getName(),
                 recipe.getInstructions(),
-                recipe.getDuration(), // ou (int) recipe.getDuration().toMinutes()
+                recipe.getDuration(),
                 recipe.getDifficulty(),
                 List.of()
         );
