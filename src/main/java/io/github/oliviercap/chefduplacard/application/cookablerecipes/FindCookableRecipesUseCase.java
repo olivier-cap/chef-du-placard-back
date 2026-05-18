@@ -1,11 +1,8 @@
 package io.github.oliviercap.chefduplacard.application.cookablerecipes;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeRepository;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesRequestModel;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesResponseModel;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.IFindCookableRecipesOutputPort;
-import io.github.oliviercap.chefduplacard.application.converter.reciperesponse.IRecipeToRecipeResponse;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
+import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import io.github.oliviercap.chefduplacard.domain.stock.CoveredIngredients;
@@ -15,44 +12,45 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-//public class FindCookableRecipesUseCase implements IUseCasePort{
+/**
+ * Use case de recherche des recettes réalisables avec le stock actuel.
+ * Produit un ensemble de recettes individuellement réalisable : pas de prise en compte du fait qu'on en fait 3
+ */
 public class FindCookableRecipesUseCase implements IFindCookableRecipesInputPort {
 
     private final IRecipeRepository recipeRepository;
     private final IStockRepository stockRepository;
     private final IFindCookableRecipesOutputPort outputPort;
-    private final IRecipeToRecipeResponse recipeToRecipeResponse;
 
     public FindCookableRecipesUseCase(IRecipeRepository recipeRepository,
                                       IStockRepository stockRepository,
-                                      IFindCookableRecipesOutputPort outputPort,
-                                      IRecipeToRecipeResponse recipeToRecipeResponse) {
+                                      IFindCookableRecipesOutputPort outputPort
+    ) {
         this.recipeRepository = recipeRepository;
         this.stockRepository = stockRepository;
         this.outputPort = outputPort;
-        this.recipeToRecipeResponse = recipeToRecipeResponse;
     }
 
-    public FindCookableRecipesResponseModel execute(FindCookableRecipesRequestModel findCookableRecipesRequestModel) {
+    public void execute(FindCookableRecipesRequestModel findCookableRecipesRequestModel) {
 
         int nbPeople = findCookableRecipesRequestModel.npPeople();
         List<Recipe> cookableRecipes = findCookableRecipes(nbPeople);
 
-        return outputPort.displayCookableRecipes(
-                cookableRecipes.stream()
-                        .map(recipeToRecipeResponse::toDTO)
-                        .toList()
+        outputPort.displayCookableRecipes(
+                new FindCookableRecipesResponseModel(
+                        cookableRecipes.stream()
+                                .map(RecipeResponse::from)
+                                .toList()
+                )
         );
     }
 
+    /**
+     * Recherche les recettes réalisables pour nbPeople.
+     * @param nbPeople nombre de personnes prise en compte pour la recette
+     * @return liste de recettes que le stock permet de faire avec nbPeople. Pas forcément possible de réaliser toutes ces recettes.
+     */
     private List<Recipe> findCookableRecipes(int nbPeople) {
-        /*
-        problemes possibles
-        pas de existing recipes, liste vide
-        NE PAS METTRE LE NOM DU STOCK EN DUR (test ici), LE METTRE EN ARGUMENT DE FINDCOOKABLERECIPES !!
-        stock optional non trouvé
-        stock optional sans aucune stockline ?
-         */
 
         String stockName = "test";
 

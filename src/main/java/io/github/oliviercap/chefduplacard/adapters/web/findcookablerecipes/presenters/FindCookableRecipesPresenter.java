@@ -1,46 +1,49 @@
 package io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters;
 
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesResponseModel;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.dto.IngredientForPresenter;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.dto.RecipeForPresenter;
+
+import io.github.oliviercap.chefduplacard.application.cookablerecipes.FindCookableRecipesResponseModel;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesViewModel;
+import io.github.oliviercap.chefduplacard.application.cookablerecipes.IFindCookableRecipesOutputPort;
 import io.github.oliviercap.chefduplacard.application.dto.IngredientResponse;
 import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.List;
-
-@RequestScope
 @Component
+@RequestScope
 public class FindCookableRecipesPresenter implements IFindCookableRecipesOutputPort {
-    @Override
-    public FindCookableRecipesResponseModel displayCookableRecipes(List<RecipeResponse> recipeResponse) {
-        //liste de recipes aplanis
-        return new FindCookableRecipesResponseModel(
-                recipeResponse.stream()
-                        .map(this::toRecipeResponseModel)
+
+    private FindCookableRecipesViewModel viewModel;
+
+    public void displayCookableRecipes(FindCookableRecipesResponseModel responseModel) {
+        this.viewModel = new FindCookableRecipesViewModel(
+                responseModel.recipeResponses().stream()
+                        .map(this::toRecipeViewModel)
                         .toList()
         );
     }
 
-    private RecipeForPresenter toRecipeResponseModel(RecipeResponse recipeResponse) {
-        return new RecipeForPresenter(
+    private FindCookableRecipesViewModel.RecipeViewModel toRecipeViewModel(RecipeResponse recipeResponse) {
+        return new FindCookableRecipesViewModel.RecipeViewModel(
                 recipeResponse.name(),
                 recipeResponse.instructions(),
                 recipeResponse.duration(),
                 recipeResponse.difficulty(),
                 recipeResponse.ingredients().stream()
-                        .map(this::toIngredientResponseModel)
+                        .map(this::toIngredientViewModel)
                         .toList()
         );
     }
 
-    private IngredientForPresenter toIngredientResponseModel(IngredientResponse ingredientResponse) {
-        return new IngredientForPresenter(
+    private FindCookableRecipesViewModel.IngredientViewModel toIngredientViewModel(IngredientResponse ingredientResponse) {
+        return new FindCookableRecipesViewModel.IngredientViewModel(
                 ingredientResponse.quantityPerPerson(),
                 ingredientResponse.alimentResponse().name(),
                 ingredientResponse.unitResponse().symbol()
         );
     }
-}
 
+    public FindCookableRecipesViewModel getViewModel() {
+        return viewModel;
+    }
+}

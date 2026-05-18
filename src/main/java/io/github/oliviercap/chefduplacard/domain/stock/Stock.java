@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * Stock d'aliments.
- * Le stock est représenté par un ensemble de lignes aliment <-> quantité.
+ * Le stock est représenté par un ensemble de lignes aliment ↔ quantité.
  */
 public final class Stock {
     //Pour permettre recherches par aliment, stockage des données dans map.
@@ -25,18 +25,18 @@ public final class Stock {
             throw new DomainException("stock name cannot be blank or null");
         }
 
-        if (stockLines == null) {
+        if(stockLines == null) {
             throw new DomainException("stock lines cannot be null");
         }
 
         this.name = name;
 
-        for (StockLine stockLine : stockLines) {
-            if (stockLine == null) {
+        for(StockLine stockLine : stockLines) {
+            if(stockLine == null) {
                 throw new DomainException("stock line cannot be null");
             }
 
-            if (stockMap.containsKey(stockLine.getAliment())) {
+            if(stockMap.containsKey(stockLine.getAliment())) {
                 throw new DomainException("stock cannot contain duplicate aliment lines");
             }
 
@@ -50,23 +50,30 @@ public final class Stock {
      * @return coveredIngredient, à true si tout est couvert, à false + liste non couverts sinon.
      */
     public CoveredIngredients covers(List<Ingredient> requiredIngredients){
+        if (requiredIngredients == null) {
+            throw new DomainException("required ingredients list must not be null");
+        }
+
+        if (requiredIngredients.isEmpty()) {
+            throw new DomainException("required ingredients list must not be empty");
+        }
+
+        if (requiredIngredients.stream().anyMatch(Objects::isNull)) {
+            throw new DomainException("required ingredients list must not contain null elements");
+        }
 
         List<Ingredient> uncoveredIngredients = new ArrayList<>();
         CoveredIngredients coveredIngredients;
         boolean covered = true;
 
-        //liste d'ingrédients vide
-        /*if (requiredIngredients.isEmpty()) {
-            covered = false;
-            return new CoveredIngredients(covered, uncoveredIngredients);
-        }*/
+        List<Ingredient> aggregatedIngredients = aggregateQuantities(requiredIngredients);
 
         //Calcul ingrédients présents en quantité suffisante ou non
-        for(Ingredient ingredient : requiredIngredients) {
+        for(Ingredient ingredient : aggregatedIngredients) {
             boolean alimentIsInStock = stockMap.containsKey(ingredient.getAliment());
             if(alimentIsInStock) {
                 BigDecimal quantityStock = stockMap.get(ingredient.getAliment()).getQuantity();
-                if(ingredient.getQuantityPerPerson().compareTo(quantityStock) > 0) {
+                if(ingredient.getQuantity().compareTo(quantityStock) > 0) {
                     covered = false;
                     uncoveredIngredients.add(ingredient);
                 }
@@ -78,8 +85,77 @@ public final class Stock {
         }
 
         coveredIngredients = new CoveredIngredients(covered, uncoveredIngredients);
-
         return coveredIngredients;
+    }
+
+    /*Créer une copie de ce stock pour obtenir une copie virtuelle
+      Copie les lignes de stock une à une, les quantités dans la copie du stock
+      sont indépendantes du stock d'origine
+     */
+    public Stock copyForSimulation(String nameCopy) {
+        Objects.requireNonNull(nameCopy, "nameCopy must not be null");
+        if(nameCopy.isBlank()){
+            throw new IllegalArgumentException("nameCopy must not be blank");
+        }
+
+        return new Stock(
+                nameCopy,
+                this.getStockMap().values().stream()
+                        .map(StockLine::copyForSimulation)
+                        .toList()
+        );
+    }
+
+    /*
+    Déduit une certaine quantité d'un aliment.
+    Retourne true si la consommation/déduction est possible et réalisée
+    Retourne false si le stock est insuffisant, le stock est alors laissé intact
+     */
+    public boolean consume(List<Ingredient> ingredients) {
+        if(ingredients == null) {
+            throw new DomainException("ingredients list must not be null");
+        }
+        CoveredIngredients coveredIngredients = this.covers(ingredients);
+        if(coveredIngredients.covered()){
+            for(Ingredient ingredient : ingredients) {
+                StockLine stockLine = this.stockMap.get(ingredient.getAliment());
+                stockLine.substractQuantity(
+                        new StockLine(
+                                ingredient.getQuantity(),
+                                ingredient.getAliment(),
+                                ingredient.getUnit()
+                        )
+                );
+            }
+            return true;
+        }
+        //Ingredient not covered by stock
+        return false;
+    }
+
+    //Recherche des aliments identiques dans une liste
+    //Creation d'une nouvelle liste où les quantités sont agrégées par ingrédients
+    private List<Ingredient> aggregateQuantities(List<Ingredient> ingredients) {
+        Map<Aliment, Ingredient> aggregatedIngredients = new HashMap<>();
+
+        for (Ingredient ingredient : ingredients) {
+            Aliment aliment = ingredient.getAliment();
+
+            if (aggregatedIngredients.containsKey(aliment)) {
+                aggregatedIngredients.get(aliment).addQuantityFrom(ingredient);
+            } else {
+                aggregatedIngredients.put(
+                        aliment,
+                        new Ingredient(
+                                ingredient.getQuantity(),
+                                ingredient.getAliment(),
+                                ingredient.getUnit()
+                        )
+                );
+            }
+        }
+
+        return aggregatedIngredients.values().stream().toList();
     }
 
     /** Getters and Setters **/

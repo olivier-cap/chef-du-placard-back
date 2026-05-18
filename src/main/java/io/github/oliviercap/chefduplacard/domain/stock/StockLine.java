@@ -13,12 +13,12 @@ import java.util.Objects;
  */
 public final class StockLine {
 
-    private final BigDecimal quantity;
+    private BigDecimal quantity;
     private final Aliment aliment;
     private final Unit unit;
 
     public StockLine(BigDecimal quantity, Aliment aliment, Unit unit) {
-        if(quantity.compareTo(BigDecimal.ZERO) < 0 || quantity == null) {
+        if(quantity == null || quantity.compareTo(BigDecimal.ZERO) < 0 ) {
             throw new DomainException("Ingredient quantity must not be less than zero or null.");
         }
 
@@ -35,6 +35,18 @@ public final class StockLine {
         this.unit = unit;
     }
 
+    /**
+    Create a copy of this stockLine for virtual stock.
+    Only the quantity will be new, same aliment and same unit are used
+    */
+    StockLine copyForSimulation() {
+        return new StockLine(
+                this.getQuantity(),
+                this.getAliment(),
+                this.getUnit()
+        );
+    }
+
     /** Getters and Setters **/
 
     public BigDecimal getQuantity() {
@@ -47,6 +59,31 @@ public final class StockLine {
 
     public Unit getUnit() {
         return unit;
+    }
+
+    private void setQuantity(BigDecimal quantity) {
+        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainException("stock line quantity must not be less than zero or null");
+        }
+
+        this.quantity = quantity;
+    }
+
+    public void substractQuantity(StockLine other) {
+        if (other == null) {
+            throw new DomainException("ingredient to add must not be null");
+        }
+
+        if (!this.aliment.equals(other.aliment)) {
+            throw new DomainException("cannot add quantities from different aliments");
+        }
+
+        if (!this.unit.equals(other.unit)) {
+            throw new DomainException("cannot add quantities with different units in V1");
+        }
+
+        BigDecimal newQuantity = this.quantity.subtract(other.getQuantity());
+        setQuantity(newQuantity);
     }
 
     @Override

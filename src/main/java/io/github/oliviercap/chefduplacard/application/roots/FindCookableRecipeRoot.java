@@ -1,9 +1,8 @@
 package io.github.oliviercap.chefduplacard.application.roots;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeRepository;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.IFindCookableRecipesOutputPort;
-import io.github.oliviercap.chefduplacard.application.converter.reciperesponse.IRecipeToRecipeResponse;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
+import io.github.oliviercap.chefduplacard.application.cookablerecipes.IFindCookableRecipesOutputPort;
 import io.github.oliviercap.chefduplacard.application.cookablerecipes.FindCookableRecipesUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,18 +17,25 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FindCookableRecipeRoot {
 
+    /**
+     * Classe responsable de l'inversion de dépendance.
+     * Injection des classes externes dans le usecase findCookableRecipes
+     * @param recipeRepository
+     * @param stockRepository
+     * @param outputPort
+     * @param iRecipeToRecipeResponse
+     * @return
+     */
     @Bean
     public FindCookableRecipesUseCase findCookableRecipesUseCase(
             IRecipeRepository recipeRepository,
             IStockRepository stockRepository,
-            IFindCookableRecipesOutputPort outputPort,
-            IRecipeToRecipeResponse iRecipeToRecipeResponse
+            IFindCookableRecipesOutputPort outputPort
     ) {
         return new FindCookableRecipesUseCase(
                 recipeRepository,
                 stockRepository,
-                outputPort,
-                iRecipeToRecipeResponse
+                outputPort
         );
     }
 

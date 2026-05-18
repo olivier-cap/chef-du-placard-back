@@ -1,13 +1,10 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.converter.stockline.IStockLineJpaToDtoConverter;
-import io.github.oliviercap.chefduplacard.adapters.persistence.dto.StockDTO;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockJpa;
-import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.stock.IStockMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.stock.StockMapper;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
 import org.springframework.stereotype.Repository;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -15,17 +12,15 @@ import java.util.Optional;
  * Purpose functions to access data in database about stock.
  */
 @Repository
-public class StockRepository implements IStockRepository{
+public class StockRepository implements IStockRepository {
     private final IStockJpaRepository stockJpaRepository;
-    private final IStockMapper stockMapper;
-    private final IStockLineJpaToDtoConverter stockLineJpaToDtoConverter;
+    private final StockMapper stockMapper;
 
     public StockRepository(IStockJpaRepository stockJpaRepository,
-                           IStockMapper stockMapper,
-                           IStockLineJpaToDtoConverter stockLineJpaToDtoConverter) {
+                           StockMapper stockMapper
+                           ) {
         this.stockJpaRepository = stockJpaRepository;
         this.stockMapper = stockMapper;
-        this.stockLineJpaToDtoConverter = stockLineJpaToDtoConverter;
     }
 
     /**
@@ -38,16 +33,7 @@ public class StockRepository implements IStockRepository{
     @Override
     public Optional<Stock> findByName(String name) {
         return stockJpaRepository.findCompleteByName(name)
-                .map(this::toDTO)
                 .map(stockMapper::toDomain);
     }
 
-    private StockDTO toDTO(StockJpa stockJpa) {
-        return new StockDTO(
-                stockJpa.getName(),
-                stockJpa.getStockLineJpa().stream()
-                        .map(stockLineJpaToDtoConverter::toDTO)
-                        .toList()
-        );
-    }
 }

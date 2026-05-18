@@ -55,7 +55,7 @@ public final class Recipe {
             BigDecimal requiredQuantity;
 
             //Calculation of ingredient for n person
-            requiredQuantity = ingredient.getQuantityPerPerson().multiply(BigDecimal.valueOf(nbPeople));
+            requiredQuantity = ingredient.getQuantity().multiply(BigDecimal.valueOf(nbPeople));
 
             requiredIngredients.add(new Ingredient(requiredQuantity, ingredient.getAliment(), ingredient.getUnit()));
         }

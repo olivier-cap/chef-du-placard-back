@@ -1,34 +1,33 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.mapper.ingredient;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.dto.IngredientDTO;
-import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.IAlimentMapper;
-import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.IUnitMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.IngredientJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.UnitMapper;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
 @Component
-public class IngredientMapper implements IIngredientMapper{
-    private final IAlimentMapper alimentMapper;
-    private final IUnitMapper unitMapper;
+public class IngredientMapper {
+    private final AlimentMapper alimentMapper;
+    private final UnitMapper unitMapper;
 
-    public IngredientMapper(IAlimentMapper alimentMapper, IUnitMapper unitMapper) {
+    public IngredientMapper(AlimentMapper alimentMapper,
+                            UnitMapper unitMapper) {
         this.alimentMapper = alimentMapper;
         this.unitMapper = unitMapper;
     }
 
-    //suppose qu'on a créé un IngredientJpa avec toutes ses dépendances (=> son ingredient, sa quantite)
-    //suppose qu'on a créé in AlimentDTO et un UnitDTO integres, dans le repository
-    @Override
-    public Ingredient toDomain(IngredientDTO ingredientDTO) {
-        Objects.requireNonNull(ingredientDTO, "ingedientDTO must not be null");
-        Objects.requireNonNull(ingredientDTO.alimentDTO(), "alimentDTO must not be null");
-        Objects.requireNonNull(ingredientDTO.unitDTO(), "unitDTO must not be null");
+    public Ingredient toDomain(IngredientJpa ingredientJpa) {
+        Objects.requireNonNull(ingredientJpa, "ingedientJpa must not be null");
+        Objects.requireNonNull(ingredientJpa.getAlimentJpa(), "alimentJpa must not be null");
+        Objects.requireNonNull(ingredientJpa.getUnitJpa(), "unitJpa must not be null");
 
-        return new Ingredient(ingredientDTO.quantityPerPerson(),
-                alimentMapper.toDomain(ingredientDTO.alimentDTO()),
-                unitMapper.toDomain(ingredientDTO.unitDTO())
+        return new Ingredient(ingredientJpa.getQuantityPerPerson(),
+                alimentMapper.toDomain(ingredientJpa.getAlimentJpa()),
+                unitMapper.toDomain(ingredientJpa.getUnitJpa())
         );
     }
+
 }

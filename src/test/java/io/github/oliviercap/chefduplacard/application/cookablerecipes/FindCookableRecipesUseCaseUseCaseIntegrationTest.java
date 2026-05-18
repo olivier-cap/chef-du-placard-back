@@ -6,10 +6,8 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.al
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesRequestModel;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesResponseModel;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.dto.RecipeForPresenter;
-import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.FindCookableRecipesPresenter;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @Transactional
 public class FindCookableRecipesUseCaseUseCaseIntegrationTest {
+
     @Autowired
     private FindCookableRecipesUseCase useCase;
 
-    // Repository JPA pour préparer les données
+    @Autowired
+    private FindCookableRecipesPresenter presenter;
+
     @Autowired
     private IRecipeJpaRepository recipeJpaRepository;
     @Autowired
@@ -39,10 +40,11 @@ public class FindCookableRecipesUseCaseUseCaseIntegrationTest {
     @Autowired
     private IAlimentJpaRepository alimentJpaRepository;
     @Autowired
-    IUnitJpaRepository unitJpaRepository;
+    private IUnitJpaRepository unitJpaRepository;
 
     @Test
     void should_find_cookable_recipes_with_real_persistence_pipeline() {
+        // GIVEN
         AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
         UnitJpa unit = new UnitJpa("gramme", "g");
 
@@ -51,7 +53,10 @@ public class FindCookableRecipesUseCaseUseCaseIntegrationTest {
         stock.addStockLine(stockLine);
 
         RecipeJpa recipeJpa = new RecipeJpa("r1", "a", 5, "1");
-        IngredientJpa ingredient = new IngredientJpa(recipeJpa, apple, unit, BigDecimal.valueOf(12));
+
+        IngredientJpa ingredient =
+                new IngredientJpa(recipeJpa, apple, unit, BigDecimal.valueOf(12));
+
         recipeJpa.addIngredient(ingredient);
 
         alimentJpaRepository.save(apple);
@@ -59,16 +64,17 @@ public class FindCookableRecipesUseCaseUseCaseIntegrationTest {
         stockJpaRepository.save(stock);
         recipeJpaRepository.save(recipeJpa);
 
-        FindCookableRecipesResponseModel result = useCase.execute(new FindCookableRecipesRequestModel(1, "test"));
+        // WHEN
+        useCase.execute(new FindCookableRecipesRequestModel(1, "test"));
 
+        FindCookableRecipesViewModel result = presenter.getViewModel();
+
+        // THEN
         assertThat(result.recipes())
-                .extracting(RecipeForPresenter::recipeName)
+                .extracting(FindCookableRecipesViewModel.RecipeViewModel::recipeName)
                 .containsExactly("r1");
 
         assertThat(result.recipes().getFirst().duration())
                 .isEqualTo(Duration.ofMinutes(5));
-
     }
-
-
 }
