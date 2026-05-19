@@ -1,5 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.cookablerecipes;
 
+import io.github.oliviercap.chefduplacard.application.cookablerecipes.ports.IFindCookableRecipesOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
 import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;

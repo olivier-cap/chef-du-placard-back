@@ -3,7 +3,7 @@ package io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.pres
 
 import io.github.oliviercap.chefduplacard.application.cookablerecipes.FindCookableRecipesResponseModel;
 import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesViewModel;
-import io.github.oliviercap.chefduplacard.application.cookablerecipes.IFindCookableRecipesOutputPort;
+import io.github.oliviercap.chefduplacard.application.cookablerecipes.ports.IFindCookableRecipesOutputPort;
 import io.github.oliviercap.chefduplacard.application.dto.IngredientResponse;
 import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
 import org.springframework.stereotype.Component;

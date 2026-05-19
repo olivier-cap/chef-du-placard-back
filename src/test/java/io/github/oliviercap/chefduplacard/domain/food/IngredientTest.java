@@ -52,6 +52,32 @@ public class IngredientTest {
         assertThat(i1).isEqualTo(i2);
     }
 
+    @Test
+    void add_quantity_reject_bad_arguments() {
+        Ingredient inull = null;
+        Ingredient ingredient = new Ingredient(BigDecimal.ONE, apple, gram);
 
+        Aliment grapefruit = new Aliment("grapefruit","", true);
+        Ingredient i2 = new Ingredient(BigDecimal.ONE, grapefruit, gram);
+
+        //ingredient to add is null
+        assertThatThrownBy(() ->
+                ingredient.addQuantityFrom(inull)
+        ).isInstanceOf(DomainException.class);
+
+        //add quantity from an other type of aliment
+        assertThatThrownBy(() ->
+                ingredient.addQuantityFrom(i2)
+        ).isInstanceOf(DomainException.class);
+    }
+
+    @Test
+    void add_quantity_to_aliment() {
+        Ingredient ingredient = new Ingredient(BigDecimal.valueOf(10), apple, gram);
+
+        ingredient.addQuantityFrom(new Ingredient(BigDecimal.valueOf(14), apple, gram));
+
+        assertThat(ingredient.getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(24));
+    }
 
 }

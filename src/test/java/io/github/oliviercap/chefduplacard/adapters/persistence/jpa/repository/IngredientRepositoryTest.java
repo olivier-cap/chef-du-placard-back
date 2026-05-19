@@ -46,7 +46,7 @@ public class IngredientRepositoryTest {
         var result = ingredientJpaRepository.findAll();
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getAlimentJpa().getName()).isEqualTo("apple");
+        assertThat(result.getFirst().getAlimentJpa().getName()).isEqualTo("apple");
         assertThat(result.getFirst()).isEqualTo(ingredient);
     }
 }

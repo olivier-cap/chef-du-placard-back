@@ -1,5 +1,7 @@
     package io.github.oliviercap.chefduplacard.application.cookablemenus;
 
+    import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusInputPort;
+    import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusOutputPort;
     import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
     import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
     import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;

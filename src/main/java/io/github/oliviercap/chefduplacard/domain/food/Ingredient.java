@@ -32,6 +32,28 @@ public final class Ingredient {
         this.unit = unit;
     }
 
+
+    /**
+     * Augmente la quantité d'un ingredient. Reçoit un ingrédient en argument qui présente : la quantité à ajouter,
+     * l'unité à utiliser et l'aliment concerné.
+     * @param other Ingredient contenant informations sur la modification de quantité.
+     */
+    public void addQuantityFrom(Ingredient other) {
+        if (other == null) {
+            throw new DomainException("ingredient to add must not be null");
+        }
+
+        if (!this.aliment.equals(other.aliment)) {
+            throw new DomainException("cannot add quantities from different aliments");
+        }
+
+        if (!this.unit.equals(other.unit)) {
+            throw new DomainException("cannot add quantities with different units in V1");
+        }
+        
+        setQuantity(this.quantity.add(other.quantity));
+    }
+
     /** Getters and Setters **/
 
     public BigDecimal getQuantity() {
@@ -46,28 +68,16 @@ public final class Ingredient {
         return unit;
     }
 
+    /**
+     * Definir ou modifier la quantite d'un aliment
+     * @param quantity
+     */
     private void setQuantity(BigDecimal quantity) {
         if (quantity == null || quantity.compareTo(BigDecimal.ZERO) < 0) {
             throw new DomainException("quantityPerPerson must not be less than zero or null");
         }
 
         this.quantity = quantity;
-    }
-
-    public void addQuantityFrom(Ingredient other) {
-        if (other == null) {
-            throw new DomainException("ingredient to add must not be null");
-        }
-
-        if (!this.aliment.equals(other.aliment)) {
-            throw new DomainException("cannot add quantities from different aliments");
-        }
-
-        if (!this.unit.equals(other.unit)) {
-            throw new DomainException("cannot add quantities with different units in V1");
-        }
-
-        setQuantity(this.quantity.add(other.quantity));
     }
 
     @Override

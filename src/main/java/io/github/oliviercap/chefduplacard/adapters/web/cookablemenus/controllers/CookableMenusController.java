@@ -3,8 +3,7 @@ package io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.controller
 import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.CookableMenusViewModel;
 import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.presenters.CookableMenusPresenter;
 import io.github.oliviercap.chefduplacard.application.cookablemenus.CookableMenusRequestModel;
-import io.github.oliviercap.chefduplacard.application.cookablemenus.ICookableMenusInputPort;
-import io.github.oliviercap.chefduplacard.domain.recipefilters.RecipeFilter;
+import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusInputPort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

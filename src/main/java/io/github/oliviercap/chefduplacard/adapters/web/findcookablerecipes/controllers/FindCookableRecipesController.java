@@ -3,7 +3,7 @@ package io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.cont
 import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesViewModel;
 import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.FindCookableRecipesPresenter;
 import io.github.oliviercap.chefduplacard.application.cookablerecipes.FindCookableRecipesRequestModel;
-import io.github.oliviercap.chefduplacard.application.cookablerecipes.IFindCookableRecipesInputPort;
+import io.github.oliviercap.chefduplacard.application.cookablerecipes.ports.IFindCookableRecipesInputPort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

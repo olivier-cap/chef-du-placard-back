@@ -1,9 +1,9 @@
-package io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.controllers;
+package io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.controllers;
 
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.FindCookableRecipesPresenter;
-import io.github.oliviercap.chefduplacard.application.cookablerecipes.FindCookableRecipesRequestModel;
-import io.github.oliviercap.chefduplacard.application.cookablerecipes.ports.IFindCookableRecipesInputPort;
+import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.CookableMenusViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.presenters.CookableMenusPresenter;
+import io.github.oliviercap.chefduplacard.application.cookablemenus.CookableMenusRequestModel;
+import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusInputPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -14,31 +14,31 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(FindCookableRecipesController.class)
-public class FindCookableRecipesControllerTest {
+@WebMvcTest(CookableMenusController.class)
+public class CookableMenusControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
-    private IFindCookableRecipesInputPort inputPort;
+    private ICookableMenusInputPort inputPort;
 
     @MockitoBean
-    private FindCookableRecipesPresenter presenter;
+    private CookableMenusPresenter presenter;
+
 
     @Test
-    void should_return_cookable_recipes() throws Exception {
+    void should_return_cookable_menu() throws Exception {
 
         // GIVEN
-        FindCookableRecipesViewModel.RecipeViewModel recipe =
-                new FindCookableRecipesViewModel.RecipeViewModel(
+        CookableMenusViewModel.RecipeViewModel recipe =
+                new CookableMenusViewModel.RecipeViewModel(
                         "r1",
                         "instructions",
                         Duration.ofMinutes(5),
@@ -46,21 +46,25 @@ public class FindCookableRecipesControllerTest {
                         List.of()
                 );
 
-        FindCookableRecipesViewModel viewModel =
-                new FindCookableRecipesViewModel(
-                        List.of(recipe)
+        CookableMenusViewModel viewModel =
+                new CookableMenusViewModel(
+                        true,
+                        List.of(recipe),
+                        "message"
                 );
 
         doNothing().when(inputPort)
-                .execute(any(FindCookableRecipesRequestModel.class));
+                .execute(any(CookableMenusRequestModel.class));
 
         when(presenter.getViewModel())
                 .thenReturn(viewModel);
 
         // WHEN / THEN
-        mockMvc.perform(get("/findCookableRecipes")
+        mockMvc.perform(get("/cookableMenus")
                         .param("nbPeople", "1")
-                        .param("stock", "test"))
+                        .param("nbMeal", "1")
+                        .param("stockName", "stockname")
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.recipes[0].recipeName").value("r1"))
                 .andExpect(jsonPath("$.recipes[0].recipeInstructions").value("instructions"))
@@ -69,7 +73,7 @@ public class FindCookableRecipesControllerTest {
                 .andExpect(jsonPath("$.recipes[0].ingredients").isArray());
 
         verify(inputPort)
-                .execute(any(FindCookableRecipesRequestModel.class));
+                .execute(any(CookableMenusRequestModel.class));
 
         verify(presenter)
                 .getViewModel();

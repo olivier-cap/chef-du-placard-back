@@ -14,7 +14,6 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,7 +49,7 @@ public class StockLineRepositoryTest {
         var result = stockLineJpaRepository.findAll();
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getAlimentJpa().getName()).isEqualTo("apple");
+        assertThat(result.getFirst().getAlimentJpa().getName()).isEqualTo("apple");
         assertThat(result.getFirst()).isEqualTo(stockLine);
 
 

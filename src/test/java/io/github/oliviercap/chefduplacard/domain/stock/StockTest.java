@@ -3,12 +3,10 @@ package io.github.oliviercap.chefduplacard.domain.stock;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
-import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,5 +185,36 @@ public class StockTest {
         //Then
         CoveredIngredients covered = new CoveredIngredients(false, List.of(grapefruitIngredient));
         assertThat(stock1.covers(List.of(ingredient, grapefruitIngredient))).isEqualTo(covered);
+    }
+
+    @Test
+    void can_consume_aliment_in_stock() {
+        //Given
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Unit unit = new Unit("gramme", "g");
+
+        Ingredient ingredient = new Ingredient(BigDecimal.valueOf(5), apple, unit);
+        StockLine stockLine = new StockLine(BigDecimal.valueOf(10), apple, unit);
+
+        Stock stock1 = new Stock("test1", List.of(stockLine));
+
+        assertThat(stock1.consume(List.of(ingredient))).isTrue();
+        assertThat(stock1.getStockMap().get(apple).getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(5));
+    }
+
+    @Test
+    void can_aggregate_aliment_quantities_when_consume() {
+        Aliment apple = new Aliment("apple", "fruit", true);
+        Unit unit = new Unit("gramme", "g");
+
+        Ingredient ingredient = new Ingredient(BigDecimal.valueOf(5), apple, unit);
+        Ingredient ingredient2 = new Ingredient(BigDecimal.valueOf(5), apple, unit);
+
+        StockLine stockLine = new StockLine(BigDecimal.valueOf(10), apple, unit);
+
+        Stock stock1 = new Stock("test1", List.of(stockLine));
+
+        assertThat(stock1.consume(List.of(ingredient, ingredient2))).isTrue();
+        assertThat(stock1.getStockMap().get(apple).getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(0));
     }
 }

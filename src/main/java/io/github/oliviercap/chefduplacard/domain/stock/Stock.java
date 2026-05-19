@@ -159,7 +159,6 @@ public final class Stock {
     }
 
     /** Getters and Setters **/
-
     public Map<Aliment, StockLine> getStockMap() {
         return Map.copyOf(stockMap);
     }

@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class FindCookableRecipesUseCaseUseCaseIntegrationTest {
+public class FindCookableRecipesUseCaseIntegrationTest {
 
     @Autowired
     private FindCookableRecipesUseCase useCase;
