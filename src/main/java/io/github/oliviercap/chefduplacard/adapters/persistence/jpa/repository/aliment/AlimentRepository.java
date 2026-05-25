@@ -1,5 +1,6 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment;
 
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
@@ -30,6 +31,10 @@ public class AlimentRepository implements IAlimentRepository {
     public Optional<Aliment> findAlimentByName(String name) {
         return alimentJpaRepository.findByName(name)
                 .map(alimentMapper::toDomain);
+    }
+
+    public List<AlimentJpa> findAllJpa() {
+        return alimentJpaRepository.findAll();
     }
 
 }

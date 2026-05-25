@@ -23,4 +23,14 @@ public class AlimentMapper {
         );
     }
 
+    public AlimentJpa toEntity(Aliment aliment) {
+        Objects.requireNonNull(aliment, "aliment must not be null");
+
+        return new AlimentJpa(
+                aliment.getName(),
+                aliment.getDescription(),
+                aliment.isActive()
+        );
+    }
+
 }

@@ -69,7 +69,12 @@ public final class StockLine {
         this.quantity = quantity;
     }
 
-    public void substractQuantity(StockLine other) {
+    /**
+     * Subtract quantity of an aliment by quantity in "other"
+     * If result is less than 0, quantity is defined to 0
+     * @param other
+     */
+    public void subtractQuantity(StockLine other) {
         if (other == null) {
             throw new DomainException("ingredient to add must not be null");
         }
@@ -83,7 +88,12 @@ public final class StockLine {
         }
 
         BigDecimal newQuantity = this.quantity.subtract(other.getQuantity());
-        setQuantity(newQuantity);
+        if(newQuantity.compareTo(BigDecimal.ZERO) < 0) {
+            setQuantity(BigDecimal.ZERO);
+        }
+        else {
+            setQuantity(newQuantity);
+        }
     }
 
     @Override

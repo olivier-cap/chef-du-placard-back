@@ -20,4 +20,6 @@ public interface IStockJpaRepository extends JpaRepository<StockJpa, Long> {
             where s.name =:name
             """)
     Optional<StockJpa> findCompleteByName(@Param("name") String name);
+
+
 }

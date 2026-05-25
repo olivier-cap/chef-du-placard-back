@@ -115,22 +115,29 @@ public final class Stock {
         if(ingredients == null) {
             throw new DomainException("ingredients list must not be null");
         }
-        CoveredIngredients coveredIngredients = this.covers(ingredients);
-        if(coveredIngredients.covered()){
-            for(Ingredient ingredient : ingredients) {
-                StockLine stockLine = this.stockMap.get(ingredient.getAliment());
-                stockLine.substractQuantity(
-                        new StockLine(
-                                ingredient.getQuantity(),
-                                ingredient.getAliment(),
-                                ingredient.getUnit()
-                        )
-                );
-            }
-            return true;
+
+        boolean sufficientStock = this.covers(ingredients).covered() ? true : false;
+
+        //Changement : "consommation" TOUJOURS POSSIBLE
+        //SI ingrédients en quantité insuffisante, Quantité fixée à 0. Dans ce cas, return false.
+
+        List<Ingredient> aggregatedIngredients = aggregateQuantities(ingredients);
+
+        for(Ingredient ingredient : aggregatedIngredients) {
+            StockLine stockLine = this.stockMap.get(ingredient.getAliment());
+            stockLine.subtractQuantity(
+                    new StockLine(
+                            ingredient.getQuantity(),
+                            ingredient.getAliment(),
+                            ingredient.getUnit()
+                    )
+            );
         }
+
+        return sufficientStock;
+        //}
         //Ingredient not covered by stock
-        return false;
+        //return false;
     }
 
     //Recherche des aliments identiques dans une liste

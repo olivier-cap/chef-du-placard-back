@@ -6,6 +6,8 @@ import io.github.oliviercap.chefduplacard.application.ports.persistence.IUnitRep
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UnitRepository implements IUnitRepository {
     private final IUnitJpaRepository unitJpaRepository;
@@ -28,5 +30,10 @@ public class UnitRepository implements IUnitRepository {
     public Unit findUnitById(Long id) {
         UnitJpa unitJpa = unitJpaRepository.findUnitJpaById(id);
         return unitMapper.toDomain(unitJpa);
+    }
+
+    @Override
+    public List<UnitJpa> findAllJpa() {
+        return unitJpaRepository.findAll();
     }
 }

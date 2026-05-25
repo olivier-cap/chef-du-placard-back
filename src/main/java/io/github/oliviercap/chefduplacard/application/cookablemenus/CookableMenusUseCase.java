@@ -55,7 +55,7 @@
             String message;
             if (menu.size() == cookableMenusRequestModel.nbMealToPrepare()) {
                 message = "nbmeal recipes founded";
-            } else if (menu.size() > 0) {
+            } else if (!menu.isEmpty()) {
                 message = "insufficient stock or filters";
             } else {
                 message = "no recipe found";
@@ -83,13 +83,15 @@
         private List<Recipe> findCookableMenus(String stockName, int nbMealToPrepare, int nbPeople, List<RecipeFilter> recipeFilters) {
             List<Recipe> menusRecipes = new ArrayList<>(); //liste des recettes du menu
 
-            Stock stock = stockRepository.findByName(stockName).orElseThrow();
+            Stock stock = stockRepository.findByName(stockName).orElseThrow(() -> new DomainException("Stock not found"));
             VirtualStockFactory virtualStockFactory = new VirtualStockFactory();
             VirtualStock virtualStock = virtualStockFactory.createForMenuPreparation(stock);//Utilisation du virtualstock exclusivement ici
 
             List<Recipe> recipes = recipeRepository.findAll();
             boolean recipeCandidatesExist = !recipes.isEmpty();
 
+            //tant qu'il reste des recettes pour lesquelles on vérifie que le stock est disponible
+            //et tant qu'on n'a pas encore trouvé le nb de recettes demandé
             while (recipeCandidatesExist && menusRecipes.size() < nbMealToPrepare) {
                 List<Recipe> recipesCandidates = new ArrayList<>();
                 //recettes pas encore sélectionnées

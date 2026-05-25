@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface IStockRepository {
     public Optional<Stock> findByName(String name);
+
+    public void save(Stock stock);
 }

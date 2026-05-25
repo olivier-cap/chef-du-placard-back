@@ -6,6 +6,7 @@ import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class RecipeRepository implements IRecipeRepository {
@@ -25,5 +26,16 @@ public class RecipeRepository implements IRecipeRepository {
         return recipeJpaRepository.findAllComplete().stream()
                 .map(recipeMapper::toDomain)
                 .toList();
+    }
+
+    /**
+     * Find a recipe in database by its name
+     * @param recipeName
+     * @return
+     */
+    @Override
+    public Optional<Recipe> findByName(String recipeName) {
+        return recipeJpaRepository.finbCompleteByName(recipeName)
+                .map(recipeMapper::toDomain);
     }
 }

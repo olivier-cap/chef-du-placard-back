@@ -62,6 +62,11 @@ class FakeRecipeRepository implements IRecipeRepository {
     public List<Recipe> findAll() {
         return List.of(recipe1, recipe2, recipe3, recipe4, recipe5, recipe6, recipe7);
     }
+
+    @Override
+    public Optional<Recipe> findByName(String recipeName) {
+        return Optional.empty();
+    }
 }
 
 class FakeStockRepository implements IStockRepository {
@@ -94,6 +99,11 @@ class FakeStockRepository implements IStockRepository {
                 stockLine6,
                 stockLine7
         )));
+    }
+
+    @Override
+    public void save(Stock stock) {
+
     }
 }
 
