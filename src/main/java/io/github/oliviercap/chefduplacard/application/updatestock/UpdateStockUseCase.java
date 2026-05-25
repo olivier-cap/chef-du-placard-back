@@ -3,6 +3,7 @@ package io.github.oliviercap.chefduplacard.application.updatestock;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
 import io.github.oliviercap.chefduplacard.application.updatestock.port.IUpdateStockInputPort;
+import io.github.oliviercap.chefduplacard.application.updatestock.port.IUpdateStockOutputPort;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
@@ -18,17 +19,20 @@ public class UpdateStockUseCase implements IUpdateStockInputPort {
 
     private final IRecipeRepository recipeRepository;
     private final IStockRepository stockRepository;
+    private final IUpdateStockOutputPort outputPort;
 
     public UpdateStockUseCase(IRecipeRepository recipeRepository,
-                              IStockRepository stockRepository) {
+                              IStockRepository stockRepository,
+                              IUpdateStockOutputPort outputPort) {
         this.recipeRepository = recipeRepository;
         this.stockRepository = stockRepository;
+        this.outputPort = outputPort;
     }
-
 
     @Override
     public void execute(UpdateStockRequestModel requestModel) {
-
+        UpdateStockResponseModel response = updateStockByRecipe(requestModel.recipeName(), requestModel.nbPeople(), requestModel.stockName());
+        outputPort.updateStockResponse(response);
     }
 
     //Necessite ecriture du stock dans base de données

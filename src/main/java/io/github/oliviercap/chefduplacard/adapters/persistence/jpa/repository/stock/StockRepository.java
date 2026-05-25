@@ -87,6 +87,4 @@ public class StockRepository implements IStockRepository {
         //redondant pour les stocks existant mais nécessaire pour les nouveaux stocks
         stockJpaRepository.save(stockJpa);
     }
-
-
 }
