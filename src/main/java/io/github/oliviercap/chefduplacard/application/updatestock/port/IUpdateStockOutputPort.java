@@ -4,6 +4,6 @@ import io.github.oliviercap.chefduplacard.adapters.web.updatestock.UpdateStockVi
 import io.github.oliviercap.chefduplacard.application.updatestock.UpdateStockResponseModel;
 
 public interface IUpdateStockOutputPort {
-    UpdateStockViewModel updateStockResponse(UpdateStockResponseModel updateStockResponseModel);
+    void updateStockResponse(UpdateStockResponseModel updateStockResponseModel);
     UpdateStockViewModel getViewModel();
 }

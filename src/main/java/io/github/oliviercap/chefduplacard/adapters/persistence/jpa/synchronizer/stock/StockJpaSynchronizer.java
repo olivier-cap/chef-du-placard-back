@@ -6,12 +6,14 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Sto
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.stockline.StockLineMapper;
+import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
 import io.github.oliviercap.chefduplacard.domain.stock.StockLine;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,18 @@ public class StockJpaSynchronizer implements IStockJpaSynchronizer {
                             Map<String, AlimentJpa> existingAliment,
                             Map<String, UnitJpa> existingUnit)
     {
+        Objects.requireNonNull(stockJpa, "stockJpa must not be null");
+        Objects.requireNonNull(newStock, "newStock must not be null");
+        Objects.requireNonNull(existingAliment, "existingAliment must not be null");
+        Objects.requireNonNull(existingUnit, "existingUnit must not be null");
+
+        if(existingAliment.isEmpty()) {
+            throw new DomainException("There is not Aliment in database");
+        }
+
+        if(existingUnit.isEmpty()) {
+            throw new DomainException("There is no Unit in database");
+        }
 
         //<alimentName stockLineWithThisAliment>
         //issus du stock précédent (dans la base de données)

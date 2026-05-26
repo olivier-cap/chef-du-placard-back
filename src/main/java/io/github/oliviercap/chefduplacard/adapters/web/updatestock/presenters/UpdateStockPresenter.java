@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component;
 public class UpdateStockPresenter implements IUpdateStockOutputPort {
     private UpdateStockViewModel viewModel;
 
-
     @Override
-    public UpdateStockViewModel updateStockResponse(UpdateStockResponseModel updateStockResponseModel) {
+    public void updateStockResponse(UpdateStockResponseModel updateStockResponseModel) {
         viewModel = new UpdateStockViewModel(updateStockResponseModel.sufficientStock(), updateStockResponseModel.responseMessage());
     }
 
