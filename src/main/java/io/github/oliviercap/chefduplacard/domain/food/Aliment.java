@@ -67,6 +67,14 @@ public final class Aliment {
         }
     }
 
+    /**
+     * Check this aliment
+     * @return true if this aliment is correctly formed
+     */
+    public boolean check() {
+        return this.name != null && !name.isBlank();
+    }
+
     public String getIdentifier() {
         return identifier;
     }

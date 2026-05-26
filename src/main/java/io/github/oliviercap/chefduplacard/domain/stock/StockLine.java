@@ -47,6 +47,14 @@ public final class StockLine {
         );
     }
 
+    /**
+     * Check is this stockline is complete and correct
+     * @return true if stockline is correctly formed
+     */
+    public boolean check() {
+        return this.quantity != null && this.aliment.check() && this.unit.check();
+    }
+
     /** Getters and Setters **/
 
     public BigDecimal getQuantity() {
