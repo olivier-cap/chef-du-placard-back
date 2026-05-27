@@ -4,7 +4,9 @@ import io.github.oliviercap.chefduplacard.adapters.web.getaliments.GetAlimentsVi
 import io.github.oliviercap.chefduplacard.application.dto.AlimentResponse;
 import io.github.oliviercap.chefduplacard.application.getaliments.GetAlimentsResponseModel;
 import io.github.oliviercap.chefduplacard.application.getaliments.ports.IGetAlimentsOutputPort;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GetAlimentsPresenter implements IGetAlimentsOutputPort {
     private GetAlimentsViewModel viewModel;
 

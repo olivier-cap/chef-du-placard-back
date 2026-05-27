@@ -1,6 +1,5 @@
 package io.github.oliviercap.chefduplacard.application.getaliments;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
 import io.github.oliviercap.chefduplacard.application.dto.AlimentResponse;
 import io.github.oliviercap.chefduplacard.application.getaliments.ports.IGetAlimentsInputPort;
 import io.github.oliviercap.chefduplacard.application.getaliments.ports.IGetAlimentsOutputPort;
@@ -14,14 +13,11 @@ import java.util.List;
  */
 public class GetAlimentsUseCase implements IGetAlimentsInputPort {
     private final IAlimentRepository alimentRepository;
-    private final AlimentMapper alimentMapper;
     private final IGetAlimentsOutputPort outputPort;
 
     public GetAlimentsUseCase(IAlimentRepository alimentRepository,
-                              AlimentMapper alimentMapper,
                               IGetAlimentsOutputPort outputPort) {
         this.alimentRepository = alimentRepository;
-        this.alimentMapper = alimentMapper;
         this.outputPort = outputPort;
     }
 
