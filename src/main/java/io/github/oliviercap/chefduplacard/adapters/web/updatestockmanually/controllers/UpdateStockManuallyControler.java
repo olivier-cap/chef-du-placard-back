@@ -4,6 +4,7 @@ import io.github.oliviercap.chefduplacard.adapters.web.updatestockmanually.Updat
 import io.github.oliviercap.chefduplacard.application.updatestockmanually.UpdateStockManuallyRequestModel;
 import io.github.oliviercap.chefduplacard.application.updatestockmanually.port.IUpdateStockManuallyInputPort;
 import io.github.oliviercap.chefduplacard.application.updatestockmanually.port.IUpdateStockManuallyOutputPort;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,8 +21,7 @@ public class UpdateStockManuallyControler {
         this.outputPort = outputPort;
     }
 
-
-
+    @PostMapping("/updateStockManually")
     public UpdateStockManuallyViewModel updateStockManuallyViewModel(
         @RequestParam String stockName,
         @RequestParam List<UpdateStockManuallyRequestModel.UpdateStockAliment> updateStockAlimentList

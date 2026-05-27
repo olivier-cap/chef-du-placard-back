@@ -5,11 +5,13 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.st
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.UnitRepository;
 import io.github.oliviercap.chefduplacard.application.updatestockmanually.UpdateStockManuallyUseCase;
 import io.github.oliviercap.chefduplacard.application.updatestockmanually.port.IUpdateStockManuallyOutputPort;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class UpdateStockManuallyRoot {
 
+    @Bean
     public UpdateStockManuallyUseCase UpdateStockManuallyRoot(StockRepository stockRepository,
                                                               AlimentRepository alimentRepository,
                                                               UnitRepository unitRepository,
