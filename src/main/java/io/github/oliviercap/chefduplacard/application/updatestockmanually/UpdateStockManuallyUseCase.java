@@ -1,10 +1,10 @@
 package io.github.oliviercap.chefduplacard.application.updatestockmanually;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.synchronizer.stock.IStockJpaSynchronizer;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IUnitRepository;
 import io.github.oliviercap.chefduplacard.application.updatestockmanually.port.IUpdateStockManuallyInputPort;
+import io.github.oliviercap.chefduplacard.application.updatestockmanually.port.IUpdateStockManuallyOutputPort;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
@@ -18,24 +18,25 @@ public class UpdateStockManuallyUseCase implements IUpdateStockManuallyInputPort
     private final IStockRepository stockRepository;
     private final IAlimentRepository alimentRepository;
     private final IUnitRepository unitRepository;
-    private final IStockJpaSynchronizer stockJpaSynchronizer;
+    private final IUpdateStockManuallyOutputPort outputPort;
     private boolean stockSaved;
 
     public UpdateStockManuallyUseCase(IStockRepository stockRepository,
                                       IAlimentRepository alimentRepository,
                                       IUnitRepository unitRepository,
-                                      IStockJpaSynchronizer stockJpaSynchronizer) {
+                                      IUpdateStockManuallyOutputPort outputPort) {
         this.stockRepository = stockRepository;
         this.alimentRepository = alimentRepository;
         this.unitRepository = unitRepository;
-        this.stockJpaSynchronizer = stockJpaSynchronizer;
+        this.outputPort = outputPort;
     }
 
     @Override
     public void execute(UpdateStockManuallyRequestModel requestModel) {
         updateStock(requestModel.stockName(), requestModel.updateStockAliments());
 
-        outputPort.present(new UpdateStockManuallyResponsetModel(stockSaved));
+        String reponseMessage = stockSaved ? "Stock saved" : "Problem occurred during stock save";
+        outputPort.present(new UpdateStockManuallyResponseModel(stockSaved, reponseMessage));
     }
 
     /**
