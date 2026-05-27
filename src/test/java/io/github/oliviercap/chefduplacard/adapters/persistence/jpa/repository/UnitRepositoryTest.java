@@ -25,7 +25,7 @@ public class UnitRepositoryTest {
         var result = unitJpaRepository.findUnitJpaByName("name");
 
 
-        assertThat(result).isEqualTo(unitJpa);
+        assertThat(result.orElseThrow()).isEqualTo(unitJpa);
 
     }
 }
