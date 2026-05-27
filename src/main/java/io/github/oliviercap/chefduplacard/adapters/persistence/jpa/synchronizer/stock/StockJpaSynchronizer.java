@@ -33,7 +33,16 @@ public class StockJpaSynchronizer implements IStockJpaSynchronizer {
         this.stockLineMapper = stockLineMapper;
     }
 
-
+    /**
+     * Mets à jour le stock de la Base de Donnée en mettant à jour le stockJpa.
+     * StockJpa est managed par jpa, et tous ses composants aussi -> modification et suppressions prises en compte automatiquement
+     * La nouvelle référence est le newStock : on met à jour la base avec les infos de ce nouveau stock
+     * Les aliments et les unités doivent déjà exister dans la base
+     * @param stockJpa
+     * @param newStock
+     * @param existingAliment
+     * @param existingUnit
+     */
     @Override
     public void synchronize(StockJpa stockJpa,
                             Stock newStock,

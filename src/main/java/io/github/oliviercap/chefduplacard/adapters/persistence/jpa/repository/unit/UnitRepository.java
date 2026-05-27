@@ -7,6 +7,7 @@ import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UnitRepository implements IUnitRepository {
@@ -21,15 +22,15 @@ public class UnitRepository implements IUnitRepository {
 
 
     @Override
-    public Unit findUnitByName(String name) {
-        UnitJpa unitJpa = unitJpaRepository.findUnitJpaByName(name);
-        return unitMapper.toDomain(unitJpa);
+    public Optional<Unit> findUnitByName(String name) {
+        return unitJpaRepository.findUnitJpaByName(name)
+                .map(unitMapper::toDomain);
     }
 
     @Override
-    public Unit findUnitById(Long id) {
-        UnitJpa unitJpa = unitJpaRepository.findUnitJpaById(id);
-        return unitMapper.toDomain(unitJpa);
+    public Optional<Unit> findUnitById(Long id) {
+        return unitJpaRepository.findUnitJpaById(id).
+                map(unitMapper::toDomain);
     }
 
     @Override

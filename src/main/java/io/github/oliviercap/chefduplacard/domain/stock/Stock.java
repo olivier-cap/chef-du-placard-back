@@ -140,6 +140,23 @@ public final class Stock {
         //return false;
     }
 
+    /**
+     * Ajoute une stockLine au stock actuel.
+     * La stockline n'est pas sauvegardée dans la base à ce stade !
+     * Passer par stockRepo.save si sauvegarde souhaitée
+     * @param stockLine
+     */
+    public void addNewStockLine(StockLine stockLine) {
+        if(stockLine == null) {
+            throw new DomainException("stockLine must not be null");
+        }
+        if(!stockLine.check()) {
+            throw new DomainException("StockLine is not correctly formed");
+        }
+
+        stockMap.put(stockLine.getAliment(), stockLine);
+    }
+
     //Recherche des aliments identiques dans une liste
     //Creation d'une nouvelle liste où les quantités sont agrégées par ingrédients
     private List<Ingredient> aggregateQuantities(List<Ingredient> ingredients) {

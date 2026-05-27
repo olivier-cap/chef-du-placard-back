@@ -3,8 +3,10 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.u
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 
 public interface IUnitJpaRepository extends JpaRepository<UnitJpa, Long> {
-    UnitJpa findUnitJpaByName(String name);
-    UnitJpa findUnitJpaById(Long id);
+    Optional<UnitJpa> findUnitJpaByName(String name);
+    Optional<UnitJpa> findUnitJpaById(Long id);
 }

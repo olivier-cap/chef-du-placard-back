@@ -15,14 +15,22 @@ public class Unit {
     private String symbol;
 
     public Unit(String name, String symbol) {
-        if(name.isBlank() || name.isEmpty() || name == null) {
+        if(name.isBlank() || name == null) {
             throw new DomainException("unit name must not be empty, blank or null");
         }
-        if(symbol.isBlank() || symbol.isEmpty() || symbol == null) {
+        if(symbol.isBlank() || symbol == null) {
             throw new DomainException("unit symbol must not bet empty, blank or null");
         }
         this.name = name;
         this.symbol = symbol;
+    }
+
+    /**
+     * Check this unit
+     * @return true if this unit is correctly formed
+     */
+    public boolean check() {
+        return name != null && !name.isBlank() && symbol != null && !symbol.isBlank();
     }
 
     /** Getters and Setters **/
