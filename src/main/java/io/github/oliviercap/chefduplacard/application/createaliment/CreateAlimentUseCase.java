@@ -25,29 +25,26 @@ public class CreateAlimentUseCase implements ICreateAlimentInputPort {
     }
 
     private String createAliment(String nomAliment, String descriptionAliment, boolean isActive) {
-        String responseMessage;
 
         Aliment newAliment = new Aliment(nomAliment, descriptionAliment, isActive);
 
-        //Vérification de l'intégrité des données du nouvel aliment
+        // validation métier
         if(!newAliment.check()) {
             throw new DomainException("Incorrect data for the new ingredient");
         }
 
-        //Vérification si l'aliment existe déjà ou non dans la base
+        // doublon
         if(alimentRepository.findAlimentByName(nomAliment).isPresent()) {
-            responseMessage = "Aliment name already used";
+            return "Aliment name already used";
         }
-        else {
-            //Enregistrement du nouvel aliment
-            try{
-                alimentRepository.save(newAliment);
-            } catch (Exception e) {
-                throw new DomainException("Impossible to save the new Aliment" + newAliment.getName());
-            }
-        }
-        responseMessage = "Aliment saved";
 
-        return responseMessage;
+        // persistence
+        try{
+            alimentRepository.save(newAliment);
+        } catch (Exception e) {
+            throw new DomainException("Impossible to save the new Aliment " + newAliment.getName());
+        }
+
+        return "Aliment saved";
     }
 }
