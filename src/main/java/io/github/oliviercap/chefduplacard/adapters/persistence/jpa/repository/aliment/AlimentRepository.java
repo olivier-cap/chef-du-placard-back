@@ -4,6 +4,7 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Ali
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,6 +36,12 @@ public class AlimentRepository implements IAlimentRepository {
 
     public List<AlimentJpa> findAllJpa() {
         return alimentJpaRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public void save(Aliment newAliment) {
+        alimentJpaRepository.save(alimentMapper.toEntity(newAliment));
     }
 
 }
