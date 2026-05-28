@@ -1,28 +1,30 @@
 package io.github.oliviercap.chefduplacard.application.createaliment;
 
 import io.github.oliviercap.chefduplacard.application.createaliment.ports.ICreateAlimentInputPort;
+import io.github.oliviercap.chefduplacard.application.createaliment.ports.ICreateAlimentOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 
 public class CreateAlimentUseCase implements ICreateAlimentInputPort {
 
-    private final ICreateAlimentInputPort alimentInputPort;
+    private final ICreateAlimentOutputPort outputPort;
     private final IAlimentRepository alimentRepository;
 
-    public CreateAlimentUseCase(ICreateAlimentInputPort alimentInputPort,
+    public CreateAlimentUseCase(ICreateAlimentOutputPort outputPort,
                                 IAlimentRepository alimentRepository) {
-        this.alimentInputPort = alimentInputPort;
+        this.outputPort = outputPort;
         this.alimentRepository = alimentRepository;
     }
 
 
     @Override
     public void execute(CreateAlimentRequestModel requestModel) {
-        createAliment(requestModel.nomAliment(), requestModel.descriptionAliment(), requestModel.isAtive());
+        String response = createAliment(requestModel.nomAliment(), requestModel.descriptionAliment(), requestModel.isActive());
+        outputPort.createAlimentResponse(new CreateAlilmentResponseModel(response));
     }
 
-    private void createAliment(String nomAliment, String descriptionAliment, boolean isActive) {
+    private String createAliment(String nomAliment, String descriptionAliment, boolean isActive) {
         String responseMessage;
 
         Aliment newAliment = new Aliment(nomAliment, descriptionAliment, isActive);
@@ -44,5 +46,8 @@ public class CreateAlimentUseCase implements ICreateAlimentInputPort {
                 throw new DomainException("Impossible to save the new Aliment" + newAliment.getName());
             }
         }
+        responseMessage = "Aliment saved";
+
+        return responseMessage;
     }
 }
