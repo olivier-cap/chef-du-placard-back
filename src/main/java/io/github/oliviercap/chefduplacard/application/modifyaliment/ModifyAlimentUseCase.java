@@ -1,6 +1,5 @@
 package io.github.oliviercap.chefduplacard.application.modifyaliment;
 
-import io.github.oliviercap.chefduplacard.application.createaliment.ports.ICreateAlimentOutputPort;
 import io.github.oliviercap.chefduplacard.application.modifyaliment.ports.IModifyAlimentInputPort;
 import io.github.oliviercap.chefduplacard.application.modifyaliment.ports.IModifyAlimentOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
