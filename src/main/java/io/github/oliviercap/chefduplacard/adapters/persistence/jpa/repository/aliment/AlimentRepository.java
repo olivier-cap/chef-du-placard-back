@@ -54,7 +54,7 @@ public class AlimentRepository implements IAlimentRepository {
 
     @Transactional
     @Override
-    public void modify(Aliment aliment) {
+    public void modify(Aliment aliment, String newAlimentName, String newAlimentDescription) {
         Objects.requireNonNull(aliment);
 
         if(!aliment.check()) {
@@ -65,13 +65,13 @@ public class AlimentRepository implements IAlimentRepository {
                 .orElseThrow(() -> new DomainException("Aliment not found " + aliment.getName()));
 
         //Changement du nom
-        if(!alimentJpa.getName().equals(aliment.getName())) {
-            alimentJpa.setName(aliment.getName());
+        if(!alimentJpa.getName().equals(newAlimentName)) {
+            alimentJpa.setName(newAlimentName);
         }
 
         //Changement de la description
-        if(!alimentJpa.getDescription().equals(aliment.getDescription())) {
-            alimentJpa.setDescription(aliment.getDescription());
+        if(!alimentJpa.getDescription().equals(newAlimentDescription)) {
+            alimentJpa.setDescription(newAlimentDescription);
         }
     }
 

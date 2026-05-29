@@ -17,9 +17,10 @@ public class ModifyAlimentController {
     @PostMapping("/modfiyAliment")
     public ModifyAlimentViewModel modifyAliment(
         @RequestParam String alimentName,
+        @RequestParam String newAlimentName,
         @RequestParam String alimentDescription
     ){
-        inputPort.execute(new ModifyAlimentRequestModel(alimentName, alimentDescription));
+        inputPort.execute(new ModifyAlimentRequestModel(alimentName, newAlimentName, alimentDescription));
 
         return outputPort.getViewModel();
     }

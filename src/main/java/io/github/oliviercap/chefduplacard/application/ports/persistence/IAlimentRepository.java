@@ -11,5 +11,5 @@ public interface IAlimentRepository {
     Optional<Aliment> findAlimentByName(String name);
     List<AlimentJpa> findAllJpa();
     void save(Aliment newAliment);
-    void modify(Aliment aliment);
+    void modify(Aliment aliment, String newAlimentName, String newAlimentDescription);
 }
