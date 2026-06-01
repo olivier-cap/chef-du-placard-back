@@ -35,7 +35,7 @@ public class RecipeRepository implements IRecipeRepository {
      */
     @Override
     public Optional<Recipe> findByName(String recipeName) {
-        return recipeJpaRepository.finbCompleteByName(recipeName)
+        return recipeJpaRepository.findCompleteByName(recipeName)
                 .map(recipeMapper::toDomain);
     }
 }
