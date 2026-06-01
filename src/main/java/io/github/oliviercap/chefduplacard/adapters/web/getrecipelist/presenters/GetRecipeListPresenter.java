@@ -3,7 +3,6 @@ package io.github.oliviercap.chefduplacard.adapters.web.getrecipelist.presenters
 import io.github.oliviercap.chefduplacard.adapters.web.getrecipelist.GetRecipeListViewModel;
 import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
 import io.github.oliviercap.chefduplacard.application.getrecipelist.GetRecipeListResponseModel;
-import io.github.oliviercap.chefduplacard.application.getrecipelist.GetRecipeListUseCase;
 import io.github.oliviercap.chefduplacard.application.getrecipelist.ports.IGetRecipeListOutPort;
 import org.springframework.stereotype.Component;
 
