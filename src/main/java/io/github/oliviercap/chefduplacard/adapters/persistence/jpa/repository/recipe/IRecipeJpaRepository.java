@@ -26,5 +26,5 @@ public interface IRecipeJpaRepository extends JpaRepository<RecipeJpa, Long> {
             left join fetch i.unitJpa
         where r.name = :recipeName
     """)
-    Optional<RecipeJpa> finbCompleteByName(@Param("recipeName") String recipeName);
+    Optional<RecipeJpa> findCompleteByName(@Param("recipeName") String recipeName);
 }
