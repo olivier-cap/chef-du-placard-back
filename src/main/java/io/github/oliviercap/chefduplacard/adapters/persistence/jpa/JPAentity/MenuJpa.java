@@ -1,12 +1,13 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 
 import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Entity
 @Table(
-
+    name="menu"
 )
 public class MenuJpa {
 
@@ -21,4 +22,35 @@ public class MenuJpa {
             orphanRemoval = true
     )
     private List<MenuLineJpa> menuLineJpaList;
+
+    @Column(name = "nom", nullable = false, unique = true)
+    private String name;
+
+    public MenuJpa() {
+    }
+
+    public MenuJpa(List<MenuLineJpa> menuLineJpaList, String name) {
+        this.menuLineJpaList = menuLineJpaList;
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<MenuLineJpa> getMenuLineJpaList() {
+        return menuLineJpaList;
+    }
+
+    public void setMenuLineJpaList(List<MenuLineJpa> menuLineJpaList) {
+        this.menuLineJpaList = menuLineJpaList;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

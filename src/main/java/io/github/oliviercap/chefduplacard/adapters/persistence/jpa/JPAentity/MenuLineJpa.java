@@ -3,8 +3,6 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(
@@ -20,31 +18,28 @@ public class MenuLineJpa {
     @JoinColumn(name = "menu_id", nullable = false)
     private MenuJpa menuJpa;
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<RecipeJpa> recipeJpaList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "recette_id", nullable = false)
+    private RecipeJpa recipeJpa;
 
     @Column(name = "nombre_personnes", nullable = false, precision = 10, scale = 2)
-    private BigDecimal quantityPerPerson;
+    private BigDecimal nbPerson;
 
     public MenuLineJpa() {
     }
 
     public MenuLineJpa(MenuJpa menuJpa,
-                       List<RecipeJpa> recipeJpaList,
-                       BigDecimal quantityPerPerson) {
+                       RecipeJpa recipeJpa,
+                       BigDecimal nbPerson) {
         this.menuJpa = menuJpa;
-        this.recipeJpaList = recipeJpaList;
-        this.quantityPerPerson = quantityPerPerson;
+        this.recipeJpa = recipeJpa;
+        this.nbPerson = nbPerson;
     }
 
-    public MenuLineJpa(List<RecipeJpa> recipeJpaList,
-                       BigDecimal quantityPerPerson) {
-        this.recipeJpaList = recipeJpaList;
-        this.quantityPerPerson = quantityPerPerson;
+    public MenuLineJpa(RecipeJpa recipeJpa,
+                       BigDecimal nbPerson) {
+        this.recipeJpa = recipeJpa;
+        this.nbPerson = nbPerson;
     }
 
     public Long getId() {
@@ -59,19 +54,19 @@ public class MenuLineJpa {
         this.menuJpa = menuJpa;
     }
 
-    public List<RecipeJpa> getRecipeJpaList() {
-        return recipeJpaList;
+    public RecipeJpa getRecipeJpa() {
+        return recipeJpa;
     }
 
-    public void setRecipeJpaList(List<RecipeJpa> recipeJpaList) {
-        this.recipeJpaList = recipeJpaList;
+    public void setRecipeJpa(RecipeJpa recipeJpa) {
+        this.recipeJpa = recipeJpa;
     }
 
-    public BigDecimal getQuantityPerPerson() {
-        return quantityPerPerson;
+    public BigDecimal getNbPerson() {
+        return nbPerson;
     }
 
-    public void setQuantityPerPerson(BigDecimal quantityPerPerson) {
-        this.quantityPerPerson = quantityPerPerson;
+    public void setNbPerson(BigDecimal quantityPerPerson) {
+        this.nbPerson = quantityPerPerson;
     }
 }
