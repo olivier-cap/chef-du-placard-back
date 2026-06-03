@@ -26,7 +26,7 @@ public final class Recipe {
             throw new DomainException("recipe name cannot be blank or null");
         }
         if(ingredients == null || ingredients.isEmpty()) {
-            throw new DomainException("a recipe must have at leat one ingredient");
+            throw new DomainException("a recipe must have at least one ingredient");
         }
         if(instructions == null || instructions.isBlank()) {
             throw new DomainException("a recipe must have a description");
