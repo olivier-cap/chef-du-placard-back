@@ -1,11 +1,12 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.menu.MenuMapper;
-import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.menu.Menu;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public class MenuRepository {
 
     private final IMenuJpaRepository menuJpaRepository;
