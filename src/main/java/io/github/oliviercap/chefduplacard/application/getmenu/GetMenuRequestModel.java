@@ -1,4 +1,4 @@
 package io.github.oliviercap.chefduplacard.application.getmenu;
 
-public record GetMenuRequestModel() {
+public record GetMenuRequestModel(String menuName) {
 }
