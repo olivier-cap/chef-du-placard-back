@@ -48,6 +48,11 @@ class FakeRecipeRepository implements IRecipeRepository {
     public Optional<RecipeJpa> findJpaById(Long id) {
         return Optional.empty();
     }
+
+    @Override
+    public Optional<RecipeJpa> findJpaByName(String recipeName) {
+        return Optional.empty();
+    }
 }
 
 class FakeStockRepository implements IStockRepository {
