@@ -5,7 +5,7 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.Al
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class AlimentRepository implements IAlimentRepository {
         alimentJpaRepository.save(alimentMapper.toEntity(newAliment));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public void modify(Aliment aliment, String newAlimentName, String newAlimentDescription) {
         Objects.requireNonNull(aliment);

@@ -27,4 +27,14 @@ public interface IRecipeJpaRepository extends JpaRepository<RecipeJpa, Long> {
         where r.name = :recipeName
     """)
     Optional<RecipeJpa> findCompleteByName(@Param("recipeName") String recipeName);
+
+    @Query("""
+        select distinct r
+        from RecipeJpa r
+        left join fetch r.ingredients i
+            left join fetch i.alimentJpa
+            left join fetch i.unitJpa
+        where r.name = :recipeID
+    """)
+    Optional<RecipeJpa> findCompleteById(@Param("recipeID") Long recipeID);
 }
