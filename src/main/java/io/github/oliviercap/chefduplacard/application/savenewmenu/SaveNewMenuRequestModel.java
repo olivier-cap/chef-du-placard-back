@@ -1,6 +1,8 @@
 package io.github.oliviercap.chefduplacard.application.savenewmenu;
 
-import io.github.oliviercap.chefduplacard.domain.menu.Menu;
+import io.github.oliviercap.chefduplacard.adapters.web.updatestock.controllers.NewMenuRecord;
 
-public record SaveNewMenuRequestModel(Menu newMenu) {
+import java.util.List;
+
+public record SaveNewMenuRequestModel(NewMenuRecord newMenuRecord) {
 }
