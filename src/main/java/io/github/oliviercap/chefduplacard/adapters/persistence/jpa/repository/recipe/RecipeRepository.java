@@ -44,4 +44,9 @@ public class RecipeRepository implements IRecipeRepository {
     public Optional<RecipeJpa> findJpaById(Long id) {
         return recipeJpaRepository.findCompleteById(id);
     }
+
+    @Override
+    public Optional<RecipeJpa> findJpaByName(String recipeName) {
+        return recipeJpaRepository.findCompleteByName(recipeName);
+    }
 }
