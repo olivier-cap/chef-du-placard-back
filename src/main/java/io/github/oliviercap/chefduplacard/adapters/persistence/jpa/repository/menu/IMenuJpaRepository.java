@@ -13,7 +13,7 @@ public interface IMenuJpaRepository extends JpaRepository<MenuJpa, Long> {
         select distinct m
         from MenuJpa m
         left join fetch m.menuLineJpaList ml
-            left join fetch ml.recipeJpa
+            left join fetch ml.recipeJpa 
         where m.name = :menuName
     """)
     Optional<MenuJpa> findMenuDetailsByName(@Param("menuName") String menuName);
