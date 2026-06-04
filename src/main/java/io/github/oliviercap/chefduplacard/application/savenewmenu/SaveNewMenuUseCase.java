@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.savenewmenu;
 
-import io.github.oliviercap.chefduplacard.adapters.web.updatestock.controllers.NewMenuRecord;
+import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.UpdateStockRequest;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IMenuRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.savenewmenu.port.ISaveNewMenuInputPort;
@@ -36,13 +36,13 @@ public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
         outputPort.saved(new SaveNewMenuResponseModel(saved));
     }
 
-    private boolean saveNewMenu(NewMenuRecord newMenuRecord) {
+    private boolean saveNewMenu(UpdateStockRequest newMenuRecord) {
         Objects.requireNonNull(newMenuRecord, "menu must not be null");
 
         //reconstruction d'un menu à partir des données
         Menu menu;
         List<MenuLine> menuLineList = new ArrayList<>();
-        for (NewMenuRecord.MenuLine menuLine : newMenuRecord.menuLines()) {
+        for (UpdateStockRequest.MenuLine menuLine : newMenuRecord.menuLines()) {
             //getRecipe
             Recipe recipe = recipeRepository.findByName(menuLine.recipeName())
                     .orElseThrow(() -> new DomainException("Recipe " + menuLine.recipeName() + " not found"));

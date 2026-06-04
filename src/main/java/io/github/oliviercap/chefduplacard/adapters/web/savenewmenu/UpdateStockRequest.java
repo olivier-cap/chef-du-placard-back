@@ -1,9 +1,9 @@
-package io.github.oliviercap.chefduplacard.adapters.web.updatestock.controllers;
+package io.github.oliviercap.chefduplacard.adapters.web.savenewmenu;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public record NewMenuRecord(
+public record UpdateStockRequest(
         String menuName,
         List<MenuLine> menuLines
 ) {
