@@ -102,10 +102,12 @@ public class MenuRepository implements IMenuRepository {
         }
 
         //Fabrication du nouveau menu
-        MenuJpa newMenuJpa = new MenuJpa(
-                menuLineJpaList,
-                menu.getName()
-        );
+        MenuJpa newMenuJpa = new MenuJpa();
+        newMenuJpa.setName(menu.getName());
+
+        for (MenuLineJpa menuLineJpa : menuLineJpaList) {
+            newMenuJpa.addMenuLine(menuLineJpa);
+        }
 
         //Sauvegarde du nouveau menu
         menuJpaRepository.save(newMenuJpa);
