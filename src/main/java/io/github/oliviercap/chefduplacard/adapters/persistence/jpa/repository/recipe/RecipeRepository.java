@@ -1,5 +1,6 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe;
 
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe.RecipeMapper;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
@@ -37,5 +38,10 @@ public class RecipeRepository implements IRecipeRepository {
     public Optional<Recipe> findByName(String recipeName) {
         return recipeJpaRepository.findCompleteByName(recipeName)
                 .map(recipeMapper::toDomain);
+    }
+
+    @Override
+    public Optional<RecipeJpa> findJpaById(Long id) {
+        return recipeJpaRepository.findCompleteById(id);
     }
 }
