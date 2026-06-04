@@ -38,8 +38,14 @@ public class MenuRepository implements IMenuRepository {
         //Deuxième requête: chargement fetch de la 2e liste : liste des ingrédients de la recette
         //hibernate ne gère pas le fecth de 2 listes (qu'il voit comme deux "bags") en même temps
 
+        if(menuJpaOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        MenuJpa menuJpa = menuJpaOptional.get();
+
         //Création de la liste des ids des recettes
-        Set<Long> recipeIds = menuJpaOptional.orElseThrow(() -> new DomainException("menuJpa not found"))
+        Set<Long> recipeIds = menuJpa
                 .getMenuLineJpaList()
                 .stream()
                 .map(MenuLineJpa::getRecipeJpa)
