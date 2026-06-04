@@ -1,5 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.cookablemenus;
 
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
 import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
@@ -65,6 +66,11 @@ class FakeRecipeRepository implements IRecipeRepository {
 
     @Override
     public Optional<Recipe> findByName(String recipeName) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<RecipeJpa> findJpaById(Long id) {
         return Optional.empty();
     }
 }
