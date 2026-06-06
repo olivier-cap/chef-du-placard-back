@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.getaliments;
 
-import io.github.oliviercap.chefduplacard.application.dto.AlimentResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.AlimentResponse;
 
 import java.util.List;
 

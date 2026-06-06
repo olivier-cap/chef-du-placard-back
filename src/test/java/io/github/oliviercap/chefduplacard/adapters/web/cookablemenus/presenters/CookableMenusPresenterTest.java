@@ -2,10 +2,10 @@ package io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.presenters
 
 import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.CookableMenusViewModel;
 import io.github.oliviercap.chefduplacard.application.cookablemenus.CookableMenusResponseModel;
-import io.github.oliviercap.chefduplacard.application.dto.AlimentResponse;
-import io.github.oliviercap.chefduplacard.application.dto.IngredientResponse;
-import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
-import io.github.oliviercap.chefduplacard.application.dto.UnitResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.AlimentResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.IngredientResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.UnitResponse;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

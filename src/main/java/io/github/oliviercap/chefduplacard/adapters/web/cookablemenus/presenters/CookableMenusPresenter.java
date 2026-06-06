@@ -3,8 +3,8 @@ package io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.presenters
 import io.github.oliviercap.chefduplacard.application.cookablemenus.CookableMenusResponseModel;
 import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.CookableMenusViewModel;
 import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusOutputPort;
-import io.github.oliviercap.chefduplacard.application.dto.IngredientResponse;
-import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.IngredientResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 

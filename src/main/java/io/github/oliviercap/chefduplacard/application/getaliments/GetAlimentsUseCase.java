@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.getaliments;
 
-import io.github.oliviercap.chefduplacard.application.dto.AlimentResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.AlimentResponse;
 import io.github.oliviercap.chefduplacard.application.getaliments.ports.IGetAlimentsInputPort;
 import io.github.oliviercap.chefduplacard.application.getaliments.ports.IGetAlimentsOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
