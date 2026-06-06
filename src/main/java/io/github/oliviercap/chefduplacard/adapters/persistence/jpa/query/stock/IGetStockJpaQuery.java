@@ -17,9 +17,9 @@ public interface IGetStockJpaQuery extends JpaRepository<StockJpa, Long> {
                         u.symbol
                         )
             from StockJpa s
-                left join StockLineJpa sl
-                    left join AlimentJpa a
-                    left join UnitJpa u
+                left join s.stockLineJpa sl
+                    left join sl.alimentJpa a
+                    left join sl.unitJpa u
             where s.name = :stockName
             """)
     List<GetStockQuery> getMenuView(@Param("stockName") String stockName);
