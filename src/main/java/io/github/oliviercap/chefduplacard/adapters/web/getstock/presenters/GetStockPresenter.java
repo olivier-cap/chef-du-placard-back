@@ -1,7 +1,7 @@
 package io.github.oliviercap.chefduplacard.adapters.web.getstock.presenters;
 
 import io.github.oliviercap.chefduplacard.adapters.web.getstock.GetStockViewModel;
-import io.github.oliviercap.chefduplacard.application.dto.StockLineResponse;
+import io.github.oliviercap.chefduplacard.application.getstock.GetStockQuery;
 import io.github.oliviercap.chefduplacard.application.getstock.GetStockResponseModel;
 import io.github.oliviercap.chefduplacard.application.getstock.ports.IGetStockOutputPort;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ public class GetStockPresenter implements IGetStockOutputPort {
 
     @Override
     public void displayStock(GetStockResponseModel responseModel) {
-        viewModel = new GetStockViewModel(responseModel.stockResponse().stockLines().stream()
+        viewModel = new GetStockViewModel(responseModel.getStockQueryList().stream()
                 .map(this::toStockLineViewModel)
                 .toList()
         );
@@ -23,11 +23,11 @@ public class GetStockPresenter implements IGetStockOutputPort {
         return viewModel;
     }
 
-    private GetStockViewModel.StockLineViewModel toStockLineViewModel(StockLineResponse lineResponse) {
+    private GetStockViewModel.StockLineViewModel toStockLineViewModel(GetStockQuery getStockQuery) {
         return new GetStockViewModel.StockLineViewModel(
-                lineResponse.quantity(),
-                lineResponse.aliment().name(),
-                lineResponse.unit().symbol()
+                getStockQuery.quantity(),
+                getStockQuery.alimentName(),
+                getStockQuery.unitSymbol()
         );
     }
 }

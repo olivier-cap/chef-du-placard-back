@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.getstock;
 
-import io.github.oliviercap.chefduplacard.application.dto.StockResponse;
+import java.util.List;
 
-public record GetStockResponseModel(StockResponse stockResponse) {
+public record GetStockResponseModel(List<GetStockQuery> getStockQueryList) {
 }
