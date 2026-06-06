@@ -1,9 +1,9 @@
 package io.github.oliviercap.chefduplacard.adapters.web.getonerecipe.presenters;
 
 import io.github.oliviercap.chefduplacard.adapters.web.getonerecipe.GetOneRecipeViewModel;
-import io.github.oliviercap.chefduplacard.application.dto.AlimentResponse;
-import io.github.oliviercap.chefduplacard.application.dto.IngredientResponse;
-import io.github.oliviercap.chefduplacard.application.dto.UnitResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.AlimentResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.IngredientResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.UnitResponse;
 import io.github.oliviercap.chefduplacard.application.getonerecipe.GetOneRecipeResponseModel;
 import io.github.oliviercap.chefduplacard.application.getonerecipe.ports.IGetOneRecipeOutputPort;
 import org.springframework.stereotype.Component;

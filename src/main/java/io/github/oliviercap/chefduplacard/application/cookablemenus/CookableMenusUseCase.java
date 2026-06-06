@@ -4,7 +4,7 @@
     import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusOutputPort;
     import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
     import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
-    import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
+    import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
     import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
     import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
     import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;

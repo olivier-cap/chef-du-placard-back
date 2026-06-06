@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.cookablemenus;
 
-import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
 
 import java.util.List;
 

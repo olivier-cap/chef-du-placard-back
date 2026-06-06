@@ -1,10 +1,12 @@
 package io.github.oliviercap.chefduplacard.adapters.web.getrecipelist.presenters;
 
 import io.github.oliviercap.chefduplacard.adapters.web.getrecipelist.GetRecipeListViewModel;
-import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
+import io.github.oliviercap.chefduplacard.application.getrecipelist.GetRecipeListQuery;
 import io.github.oliviercap.chefduplacard.application.getrecipelist.GetRecipeListResponseModel;
 import io.github.oliviercap.chefduplacard.application.getrecipelist.ports.IGetRecipeListOutPort;
 import org.springframework.stereotype.Component;
+
+import java.time.Duration;
 
 @Component
 public class GetRecipeListPresenter implements IGetRecipeListOutPort {
@@ -14,7 +16,7 @@ public class GetRecipeListPresenter implements IGetRecipeListOutPort {
 
     @Override
     public void displayRecipeList(GetRecipeListResponseModel responseModel) {
-        viewModel = new GetRecipeListViewModel(responseModel.recipeResponseList().stream()
+        viewModel = new GetRecipeListViewModel(responseModel.recipeViewList().stream()
                 .map(this::toViewModel)
                 .toList()
         );
@@ -25,11 +27,11 @@ public class GetRecipeListPresenter implements IGetRecipeListOutPort {
         return viewModel;
     }
 
-    private GetRecipeListViewModel.RecipeList toViewModel(RecipeResponse recipeResponse) {
+    private GetRecipeListViewModel.RecipeList toViewModel(GetRecipeListQuery recipeQuery) {
         return new GetRecipeListViewModel.RecipeList(
-                recipeResponse.name(),
-                recipeResponse.duration(),
-                recipeResponse.difficulty()
+                recipeQuery.name(),
+                Duration.ofMinutes(recipeQuery.duration()),
+                recipeQuery.difficulty()
         );
     }
 }

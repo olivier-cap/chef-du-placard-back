@@ -1,4 +1,4 @@
-package io.github.oliviercap.chefduplacard.application.dto;
+package io.github.oliviercap.chefduplacard.application.htttpresponse;
 
 import io.github.oliviercap.chefduplacard.domain.stock.StockLine;
 

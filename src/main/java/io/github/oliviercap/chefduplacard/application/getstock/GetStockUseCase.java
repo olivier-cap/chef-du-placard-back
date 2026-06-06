@@ -1,12 +1,13 @@
 package io.github.oliviercap.chefduplacard.application.getstock;
 
-import io.github.oliviercap.chefduplacard.application.dto.StockResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.StockResponse;
 import io.github.oliviercap.chefduplacard.application.getstock.ports.IGetStockInputPort;
 import io.github.oliviercap.chefduplacard.application.getstock.ports.IGetStockOutputPort;
-import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
+import io.github.oliviercap.chefduplacard.application.ports.query.IGetStockViewQuery;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,12 +15,12 @@ import java.util.Optional;
  */
 public class GetStockUseCase implements IGetStockInputPort {
 
-    private final IStockRepository stockRepository;
+    private final IGetStockViewQuery getStockViewQuery;
     private final IGetStockOutputPort outputPort;
 
-    public GetStockUseCase(IStockRepository stockRepository,
+    public GetStockUseCase(IGetStockViewQuery getStockViewQuery,
                            IGetStockOutputPort outputPort) {
-        this.stockRepository = stockRepository;
+        this.getStockViewQuery = getStockViewQuery;
         this.outputPort = outputPort;
     }
 
@@ -30,14 +31,12 @@ public class GetStockUseCase implements IGetStockInputPort {
             throw new DomainException("stock name must not be null");
         }
 
-        Stock stock = getStock(requestModel.stockName());
         outputPort.displayStock(
-                new GetStockResponseModel(StockResponse.from(stock))
+                new GetStockResponseModel(getStock(requestModel.stockName()))
         );
     }
 
-    private Stock getStock(String stockName) {
-        Optional<Stock> stockOptional = stockRepository.findByName(stockName);
-        return stockOptional.orElseThrow();
+    private List<GetStockQuery> getStock(String stockName) {
+        return getStockViewQuery.getStockQuery(stockName);
     }
 }
