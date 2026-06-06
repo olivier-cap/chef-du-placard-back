@@ -1,22 +1,21 @@
 package io.github.oliviercap.chefduplacard.application.getmenu;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu.MenuRepository;
-import io.github.oliviercap.chefduplacard.application.dto.MenuResponse;
 import io.github.oliviercap.chefduplacard.application.getmenu.ports.IGetMenuInputPort;
 import io.github.oliviercap.chefduplacard.application.getmenu.ports.IGetMenuOutputPort;
+import io.github.oliviercap.chefduplacard.application.ports.query.IMenuViewQuery;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
-import io.github.oliviercap.chefduplacard.domain.menu.Menu;
 
+import java.util.List;
 import java.util.Objects;
 
 public class GetMenuUseCase implements IGetMenuInputPort {
 
-    private final MenuRepository menuRepository;
+    private final IMenuViewQuery menuViewQuery;
     private final IGetMenuOutputPort outputPort;
 
-    public GetMenuUseCase(MenuRepository menuRepository,
+    public GetMenuUseCase(IMenuViewQuery menuViewQuery,
                           IGetMenuOutputPort outputPort) {
-        this.menuRepository = menuRepository;
+        this.menuViewQuery = menuViewQuery;
         this.outputPort = outputPort;
     }
 
@@ -25,14 +24,22 @@ public class GetMenuUseCase implements IGetMenuInputPort {
     public void execute(GetMenuRequestModel requestModel) {
         Objects.requireNonNull(requestModel, "requestModel must not be null");
 
-        Menu menu = getMenu(requestModel.menuName());
-        outputPort.displayMenu(new GetMenuResponseModel(MenuResponse.from(menu)));
+        outputPort.displayMenu(new GetMenuResponseModel(
+                getMenu(requestModel.menuName())
+        ));
     }
 
-    private Menu getMenu(String menuName) {
+    private List<GetMenuQuery> getMenu(String menuName) {
         if(menuName.isBlank()) {
             throw new DomainException("menuName must not be blank");
         }
-        return menuRepository.findByName(menuName).orElseThrow(() -> new DomainException("menu not found " + menuName));
+
+        List<GetMenuQuery> getMenuQueryList =menuViewQuery.getViewMenu(menuName);
+
+        if (getMenuQueryList.isEmpty()) {
+            throw new DomainException("menu not found " + menuName);
+        }
+
+        return getMenuQueryList;
     }
 }

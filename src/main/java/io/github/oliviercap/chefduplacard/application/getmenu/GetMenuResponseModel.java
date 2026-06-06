@@ -1,6 +1,8 @@
 package io.github.oliviercap.chefduplacard.application.getmenu;
 
-import io.github.oliviercap.chefduplacard.application.dto.MenuResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.MenuResponse;
 
-public record GetMenuResponseModel(MenuResponse menuResponse) {
+import java.util.List;
+
+public record GetMenuResponseModel(List<GetMenuQuery> getMenuQuery) {
 }
