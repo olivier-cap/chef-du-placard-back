@@ -1,11 +1,12 @@
 package io.github.oliviercap.chefduplacard.adapters.web.getmenu.presenters;
 
 import io.github.oliviercap.chefduplacard.adapters.web.getmenu.GetMenuViewModel;
-import io.github.oliviercap.chefduplacard.application.dto.MenuLineResponse;
-import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
+import io.github.oliviercap.chefduplacard.application.getmenu.GetMenuQuery;
 import io.github.oliviercap.chefduplacard.application.getmenu.GetMenuResponseModel;
 import io.github.oliviercap.chefduplacard.application.getmenu.ports.IGetMenuOutputPort;
 import org.springframework.stereotype.Component;
+
+import java.time.Duration;
 
 @Component
 public class GetMenuPresenter implements IGetMenuOutputPort {
@@ -15,8 +16,8 @@ public class GetMenuPresenter implements IGetMenuOutputPort {
     @Override
     public void displayMenu(GetMenuResponseModel responseModel) {
         viewModel = new GetMenuViewModel(
-                responseModel.menuResponse().menuName(),
-                responseModel.menuResponse().menuLineResponseList().stream()
+                responseModel.getMenuQuery().getFirst().menuName(),
+                responseModel.getMenuQuery().stream()
                         .map(this::toMenuLineViewModel)
                         .toList()
         );
@@ -27,19 +28,23 @@ public class GetMenuPresenter implements IGetMenuOutputPort {
         return viewModel;
     }
 
-    private GetMenuViewModel.MenuLineViewModel toMenuLineViewModel(MenuLineResponse menuLineResponse) {
+    private GetMenuViewModel.MenuLineViewModel toMenuLineViewModel(GetMenuQuery getMenuQuery) {
         return new GetMenuViewModel.MenuLineViewModel(
-                menuLineResponse.nbPerson(),
-                toRecipeViewModel(menuLineResponse.recipeResponse())
-        );
+                getMenuQuery.nbPerson(),
+                toRecipeViewModel(
+                        getMenuQuery.name(),
+                        getMenuQuery.instructions(),
+                        getMenuQuery.duration(),
+                        getMenuQuery.difficulty()
+                ));
     }
 
-    private GetMenuViewModel.RecipeViewModel toRecipeViewModel(RecipeResponse recipeResponse) {
+    private GetMenuViewModel.RecipeViewModel toRecipeViewModel(String name, String instructions, Integer duration, String difficulty) {
         return new GetMenuViewModel.RecipeViewModel(
-                recipeResponse.name(),
-                recipeResponse.instructions(),
-                recipeResponse.duration(),
-                recipeResponse.difficulty()
+                name,
+                instructions,
+                Duration.ofMinutes(duration),
+                difficulty
         );
     }
 }
