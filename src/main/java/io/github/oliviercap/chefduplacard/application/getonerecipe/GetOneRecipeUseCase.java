@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.getonerecipe;
 
-import io.github.oliviercap.chefduplacard.application.dto.RecipeResponse;
+import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
 import io.github.oliviercap.chefduplacard.application.getonerecipe.ports.IGetOneRecipeInputPort;
 import io.github.oliviercap.chefduplacard.application.getonerecipe.ports.IGetOneRecipeOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
