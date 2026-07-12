@@ -34,7 +34,22 @@ public class UnitRepository implements IUnitRepository {
     }
 
     @Override
+    public Optional<UnitJpa> findUnitJpaById(Long id) {
+        return unitJpaRepository.findById(id);
+    }
+
+    @Override
     public List<UnitJpa> findAllJpa() {
         return unitJpaRepository.findAll();
+    }
+
+    @Override
+    public Optional<UnitJpa> findJpaByName(String name) {
+        return unitJpaRepository.findUnitJpaByName(name);
+    }
+
+    @Override
+    public UnitJpa getReferenceById(Long id) {
+        return this.getReferenceById(id);
     }
 }

@@ -12,4 +12,7 @@ public interface IAlimentRepository {
     List<AlimentJpa> findAllJpa();
     void save(Aliment newAliment);
     void modify(Aliment aliment, String newAlimentName, String newAlimentDescription);
+    Optional<AlimentJpa>  findByName(String name);
+    AlimentJpa getReferenceById(Long id);
+    Optional<AlimentJpa> findAlimentJpaById(Long id);
 }

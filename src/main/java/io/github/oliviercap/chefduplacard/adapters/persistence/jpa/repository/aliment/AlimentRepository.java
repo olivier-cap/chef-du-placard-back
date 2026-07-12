@@ -75,5 +75,20 @@ public class AlimentRepository implements IAlimentRepository {
         }
     }
 
+    @Override
+    public Optional<AlimentJpa> findByName(String name) {
+        return alimentJpaRepository.findByName(name);
+    }
+
+    @Override
+    public AlimentJpa getReferenceById(Long id) {
+        return alimentJpaRepository.getReferenceById(id);
+    }
+
+    @Override
+    public Optional<AlimentJpa> findAlimentJpaById(Long id) {
+        return alimentJpaRepository.findById(id);
+    }
+
 
 }
