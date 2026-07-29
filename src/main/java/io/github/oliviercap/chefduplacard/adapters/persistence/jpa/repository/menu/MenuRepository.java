@@ -32,6 +32,7 @@ public class MenuRepository implements IMenuRepository {
     }
 
     @Transactional
+    @Override
     public Optional<Menu> findByName(String menuName) {
 
         //Première requête, UN SEUL fetch d'une liste: liste des recettes du menu

@@ -11,6 +11,7 @@ import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeR
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IUnitRepository;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
@@ -76,6 +77,7 @@ public class RecipeRepository implements IRecipeRepository {
     //sauvegarde d'une nouvelle recette dans la base
     //réalisé à partir des données correspondant à la recette + liste d'ingrédients (aliment+quantité+unité)
     //Attention : les aliments et les unités doivent déjà être présents en base
+    @Transactional
     @Override
     public void saveNew(
             String nameRecipe,

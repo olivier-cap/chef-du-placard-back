@@ -24,7 +24,7 @@ public class CookableMenusController {
         this.presenter = presenter;
     }
 
-    @GetMapping("/cookableMenus")
+    @GetMapping("/api/cookableMenus")
     public CookableMenusViewModel cookableMenus(
             @RequestParam int nbPeople,
             @RequestParam int nbMeal,
