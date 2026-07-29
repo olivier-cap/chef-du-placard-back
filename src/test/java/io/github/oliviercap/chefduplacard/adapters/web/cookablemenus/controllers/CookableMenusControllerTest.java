@@ -60,7 +60,7 @@ public class CookableMenusControllerTest {
                 .thenReturn(viewModel);
 
         // WHEN / THEN
-        mockMvc.perform(get("/cookableMenus")
+        mockMvc.perform(get("/api/cookableMenus")
                         .param("nbPeople", "1")
                         .param("nbMeal", "1")
                         .param("stockName", "stockname")
