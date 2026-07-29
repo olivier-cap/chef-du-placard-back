@@ -19,7 +19,7 @@ public class GetAlimentController {
         this.outputPort = outputPort;
     }
 
-    @GetMapping("/getAliments")
+    @GetMapping("/api/getAliments")
     GetAlimentsViewModel getAliment(
 
     ){
