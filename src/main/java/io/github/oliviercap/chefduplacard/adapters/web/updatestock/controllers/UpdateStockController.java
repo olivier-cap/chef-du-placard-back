@@ -21,7 +21,7 @@ public class UpdateStockController {
     }
 
 
-    @GetMapping("/updateStock")
+    @GetMapping("/api/updateStock")
     public UpdateStockViewModel updateStock(
             @RequestParam String recipeName,
             @RequestParam int nbPeople,
