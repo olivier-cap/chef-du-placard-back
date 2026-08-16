@@ -10,7 +10,7 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.me
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.SaveNewMenuViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.UpdateStockRequest;
+import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.controllers.SaveNewMenuRequest;
 import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.presenters.SaveNewMenuPresenter;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import jakarta.transaction.Transactional;
@@ -109,15 +109,15 @@ class SaveNewMenuUseCaseIntegrationTest {
         recipeJpaRepository.save(applePie);
         recipeJpaRepository.save(bananaCake);
 
-        UpdateStockRequest requestContent =
-                new UpdateStockRequest(
+        SaveNewMenuRequest requestContent =
+                new SaveNewMenuRequest(
                         "integration-saved-menu-weekend",
                         List.of(
-                                new UpdateStockRequest.MenuLine(
+                                new SaveNewMenuRequest.MenuLine(
                                         BigDecimal.valueOf(2),
                                         "integration-save-menu-apple-pie"
                                 ),
-                                new UpdateStockRequest.MenuLine(
+                                new SaveNewMenuRequest.MenuLine(
                                         BigDecimal.valueOf(4),
                                         "integration-save-menu-banana-cake"
                                 )
@@ -177,8 +177,8 @@ class SaveNewMenuUseCaseIntegrationTest {
 
         // ===== GIVEN =====
 
-        UpdateStockRequest requestContent =
-                new UpdateStockRequest(
+        SaveNewMenuRequest requestContent =
+                new SaveNewMenuRequest(
                         " ",
                         List.of()
                 );
@@ -198,11 +198,11 @@ class SaveNewMenuUseCaseIntegrationTest {
 
         // ===== GIVEN =====
 
-        UpdateStockRequest requestContent =
-                new UpdateStockRequest(
+        SaveNewMenuRequest requestContent =
+                new SaveNewMenuRequest(
                         "integration-menu-with-unknown-recipe",
                         List.of(
-                                new UpdateStockRequest.MenuLine(
+                                new SaveNewMenuRequest.MenuLine(
                                         BigDecimal.valueOf(2),
                                         "integration-unknown-recipe"
                                 )
