@@ -20,7 +20,7 @@ public class GetOneRecipeController {
         this.outputPort = outputPort;
     }
 
-    @GetMapping("/getOneRecipe")
+    @GetMapping("/api/getOneRecipe")
     public GetOneRecipeViewModel getOneRecipe(
             @RequestParam String recipeName
     ) {
