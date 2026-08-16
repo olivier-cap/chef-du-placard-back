@@ -21,7 +21,7 @@ public class UpdateStockManuallyControler {
         this.outputPort = outputPort;
     }
 
-    @PostMapping("/updateStockManually")
+    @PostMapping("/api/updateStockManually")
     public UpdateStockManuallyViewModel updateStockManuallyViewModel(
         @RequestParam String stockName,
         @RequestParam List<UpdateStockManuallyRequestModel.UpdateStockAliment> updateStockAlimentList
