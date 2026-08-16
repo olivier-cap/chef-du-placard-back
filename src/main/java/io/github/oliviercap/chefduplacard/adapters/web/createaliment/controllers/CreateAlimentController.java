@@ -21,7 +21,7 @@ public class CreateAlimentController {
     }
 
 
-    @PostMapping("/createAliment")
+    @PostMapping("/api/createAliment")
     public CreateAlimentViewModel createAliment(
             @RequestParam String alimentName,
             @RequestParam String alimentDescription,
