@@ -24,37 +24,49 @@ public class ModifyAlimentUseCase implements IModifyAlimentInputPort {
 
     @Override
     public void execute(ModifyAlimentRequestModel requestModel) {
-        String message = modifyAliment(requestModel.alimentName(), requestModel.newAlimentName(), requestModel.newAlimentDescription());
+        String message = modifyAliment(requestModel.alimentId(), requestModel.newAlimentName(), requestModel.newAlimentDescription());
         outputPort.displayResponse(new ModifyAlimentResponseModel(message));
     }
 
-    private String modifyAliment(String alimentName, String newAlimentName, String newAlimentDescription) {
-        if(alimentName.isBlank()) {
-            throw new DomainException("Aliment name must not be blank");
+    private String modifyAliment(
+            Long alimentId,
+            String newAlimentName,
+            String newAlimentDescription
+    ) {
+        if (alimentId == null) {
+            throw new DomainException("Aliment id must not be null");
         }
 
-        //Assure que l'aliment existe déjà
-        Aliment aliment = alimentRepository.findAlimentByName(alimentName).orElseThrow(
-                () -> new DomainException("Aliment " + alimentName + " does not exist")
+        Aliment aliment = alimentRepository.findAlimentById(alimentId)
+                .orElseThrow(() -> new DomainException(
+                        "Aliment " + alimentId + " does not exist"
+                ));
+
+        Aliment modifiedAliment = new Aliment(
+                aliment.getId(),
+                newAlimentName,
+                newAlimentDescription,
+                aliment.isActive()
         );
 
-        //Assure que l'éventuel nouveau nom n'est pas déjà pris.
-        if(!aliment.getName().equals(newAlimentName) && alimentRepository.findAlimentByName(newAlimentName).isPresent()) {
+        boolean nameHasChanged =
+                !aliment.getName().equals(modifiedAliment.getName());
+
+        if (nameHasChanged
+                && alimentRepository.existsByName(modifiedAliment.getName())) {
             throw new DomainException("new aliment name already exists");
         }
 
-        //pas de modification de la valeur de isactive dans ce usecase
-        Aliment modifiedAliment = new Aliment(newAlimentName, newAlimentDescription, aliment.isActive());
-        if(modifiedAliment.check()) {
-            //Modification
-            try{
-                alimentRepository.modify(aliment, newAlimentName, newAlimentDescription);
-            } catch (Exception e) {
-                throw new DomainException("Impossible to modify aliment " + aliment.getName());
-            }
-        }
-        else{
-            throw new DomainException("Invalid new aliment data");
+        try {
+            alimentRepository.modify(
+                    aliment,
+                    modifiedAliment.getName(),
+                    modifiedAliment.getDescription()
+            );
+        } catch (Exception e) {
+            throw new DomainException(
+                    "Impossible to modify aliment " + aliment.getName()
+            );
         }
 
         return "Modification of aliment done";

@@ -19,21 +19,53 @@ public final class Aliment {
     with a different identifier.
     */
 
+    private final AlimentId id;
     private final String identifier;
     private final String name;
     private final String description;
     private final boolean active;
 
-    public Aliment(String name, String description, boolean active) {
-        if (name == null || name.isBlank()) {
-            throw new DomainException("Aliment name must not be null or blank");
+    public Aliment(
+            AlimentId id,
+            String name,
+            String description,
+            boolean active
+    ) {
+        if (id == null) {
+            throw new DomainException("Aliment id must not be null");
         }
 
+        validateName(name);
+
+        this.id = id;
         this.name = name;
         this.description = description;
         this.active = active;
         this.identifier = computeIdentifier(name, description);
     }
+
+    public Aliment(
+            String name,
+            String description,
+            boolean active
+    ) {
+        validateName(name);
+
+        this.id = null;
+        this.name = name;
+        this.description = description;
+        this.active = active;
+        this.identifier = computeIdentifier(name, description);
+    }
+
+    private static void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new DomainException(
+                    "Aliment name must not be null or blank"
+            );
+        }
+    }
+
 
     private static String computeIdentifier(String name, String description) {
         String normalizedName = normalizeRequired(name);
@@ -91,32 +123,18 @@ public final class Aliment {
         return active;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Aliment aliment)) {
-            return false;
-        }
-        return Objects.equals(identifier, aliment.identifier);
+    public AlimentId getId() {
+        return id;
     }
 
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(identifier);
-    }
-
-    /*
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Aliment aliment)) return false;
-        return Objects.equals(name, aliment.name) && Objects.equals(description, aliment.description);
+        return Objects.equals(id, aliment.id) && Objects.equals(identifier, aliment.identifier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description);
+        return Objects.hash(id, identifier);
     }
-    */
-
 }

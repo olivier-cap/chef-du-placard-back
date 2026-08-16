@@ -55,6 +55,18 @@ public class StockLineJpa {
         this.quantity = quantity;
     }
 
+    public StockLineJpa(
+            Long id,
+            AlimentJpa alimentJpa,
+            UnitJpa unitJpa,
+            BigDecimal quantity
+    ) {
+        this.id = id;
+        this.alimentJpa = alimentJpa;
+        this.unitJpa = unitJpa;
+        this.quantity = quantity;
+    }
+
     /** Getters and Setters **/
 
     public Long getId() {

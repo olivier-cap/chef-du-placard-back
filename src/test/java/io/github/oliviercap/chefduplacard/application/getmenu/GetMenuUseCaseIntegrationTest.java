@@ -50,29 +50,29 @@ class GetMenuUseCaseIntegrationTest {
 
     @Test
     void should_get_menu_with_real_persistence_pipeline() {
-
-        // ===== GIVEN =====
-
-        AlimentJpa apple = new AlimentJpa(
-                "integration-menu-apple",
-                "fruit",
-                true
+        // Given
+        AlimentJpa apple = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-menu-apple",
+                        "fruit",
+                        true
+                )
         );
 
-        AlimentJpa banana = new AlimentJpa(
-                "integration-menu-banana",
-                "fruit",
-                true
+        AlimentJpa banana = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-menu-banana",
+                        "fruit",
+                        true
+                )
         );
 
-        UnitJpa gram = new UnitJpa(
-                "gramme",
-                "g"
+        UnitJpa gram = unitJpaRepository.save(
+                new UnitJpa(
+                        "gramme",
+                        "g"
+                )
         );
-
-        alimentJpaRepository.save(apple);
-        alimentJpaRepository.save(banana);
-        unitJpaRepository.save(gram);
 
         RecipeJpa applePie = new RecipeJpa(
                 "integration-menu-apple-pie",
@@ -106,118 +106,96 @@ class GetMenuUseCaseIntegrationTest {
                 )
         );
 
-        recipeJpaRepository.save(applePie);
-        recipeJpaRepository.save(bananaCake);
+        RecipeJpa savedApplePie = recipeJpaRepository.save(applePie);
+        RecipeJpa savedBananaCake = recipeJpaRepository.save(bananaCake);
 
         MenuJpa menu = new MenuJpa();
         menu.setName("integration-menu-weekend");
 
         menu.addMenuLine(
                 new MenuLineJpa(
-                        applePie,
+                        savedApplePie,
                         BigDecimal.valueOf(2)
                 )
         );
 
         menu.addMenuLine(
                 new MenuLineJpa(
-                        bananaCake,
+                        savedBananaCake,
                         BigDecimal.valueOf(4)
                 )
         );
 
-        menuJpaRepository.save(menu);
-
-        // ===== WHEN =====
+        MenuJpa savedMenu = menuJpaRepository.save(menu);
 
         GetMenuRequestModel request =
-                new GetMenuRequestModel("integration-menu-weekend");
+                new GetMenuRequestModel(savedMenu.getId());
 
+        // When
         useCase.execute(request);
 
         GetMenuViewModel result = presenter.getViewModel();
 
-        // ===== THEN : menu =====
-
-        assertThat(result)
-                .isNotNull();
-
+        // Then: menu
+        assertThat(result).isNotNull();
         assertThat(result.menuName())
                 .isEqualTo("integration-menu-weekend");
+        assertThat(result.menuLineViewModels()).hasSize(2);
 
-        assertThat(result.menuLineViewModels())
-                .hasSize(2);
-
-        // ===== THEN : ligne apple pie =====
-
+        // Then: apple pie line
         assertThat(result.menuLineViewModels())
                 .anySatisfy(menuLine -> {
                     assertThat(menuLine.nbPerson())
                             .isEqualByComparingTo(BigDecimal.valueOf(2));
-
                     assertThat(menuLine.recipeViewModel().name())
                             .isEqualTo("integration-menu-apple-pie");
-
                     assertThat(menuLine.recipeViewModel().instructions())
                             .isEqualTo("Cut apples and bake.");
-
                     assertThat(menuLine.recipeViewModel().duration())
                             .isEqualTo(Duration.ofMinutes(30));
-
                     assertThat(menuLine.recipeViewModel().difficulty())
                             .isEqualTo("easy");
                 });
 
-        // ===== THEN : ligne banana cake =====
-
+        // Then: banana cake line
         assertThat(result.menuLineViewModels())
                 .anySatisfy(menuLine -> {
                     assertThat(menuLine.nbPerson())
                             .isEqualByComparingTo(BigDecimal.valueOf(4));
-
                     assertThat(menuLine.recipeViewModel().name())
                             .isEqualTo("integration-menu-banana-cake");
-
                     assertThat(menuLine.recipeViewModel().instructions())
                             .isEqualTo("Mix bananas and bake.");
-
                     assertThat(menuLine.recipeViewModel().duration())
                             .isEqualTo(Duration.ofMinutes(45));
-
                     assertThat(menuLine.recipeViewModel().difficulty())
                             .isEqualTo("medium");
                 });
     }
 
     @Test
-    void should_throw_domain_exception_when_menu_name_is_blank() {
-
-        // ===== GIVEN =====
-
+    void should_throw_domain_exception_when_menu_id_is_null() {
+        // Given
         GetMenuRequestModel request =
-                new GetMenuRequestModel(" ");
+                new GetMenuRequestModel(null);
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage("menuName must not be blank");
+                .hasMessage("menuId must not be blank");
     }
 
     @Test
     void should_throw_domain_exception_when_menu_does_not_exist() {
-
-        // ===== GIVEN =====
-
-        String unknownMenuName = "integration-unknown-menu";
+        // Given
+        Long unknownMenuId = 999999L;
 
         GetMenuRequestModel request =
-                new GetMenuRequestModel(unknownMenuName);
+                new GetMenuRequestModel(unknownMenuId);
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage("menu not found " + unknownMenuName);
+                .hasMessage("menu not found " + unknownMenuId);
     }
 }

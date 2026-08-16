@@ -10,11 +10,35 @@ import java.util.Objects;
  * An Ingredient is an aliment associated with its quantity per person in a recipe.
  */
 public final class Ingredient {
+    private IngredientId id;
     private BigDecimal quantity;
     private final Aliment aliment;
     private final Unit unit;
 
+    public Ingredient(IngredientId id, BigDecimal quantity, Aliment aliment, Unit unit) {
+        if (id == null) {
+            throw new DomainException("id must not be null");
+        }
+        if (quantity == null) {
+            throw new DomainException("Quantity per person must not be null");
+        }
+        if (quantity.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainException("Quantity must be greater than or equal to 0");
+        }
+        if(aliment == null) {
+            throw new DomainException("Ingredient must have an aliment, aliment cannot be null");
+        }
+        if(unit == null) {
+            throw new DomainException("Ingredient must have a unit, unit cannot be null");
+        }
+        this.id = id;
+        this.quantity = quantity;
+        this.aliment = aliment;
+        this.unit = unit;
+    }
+
     public Ingredient(BigDecimal quantity, Aliment aliment, Unit unit) {
+
         if (quantity == null) {
             throw new DomainException("Quantity per person must not be null");
         }
@@ -68,6 +92,10 @@ public final class Ingredient {
         return unit;
     }
 
+    public IngredientId getId() {
+        return id;
+    }
+
     /**
      * Definir ou modifier la quantite d'un aliment
      * @param quantity
@@ -83,11 +111,11 @@ public final class Ingredient {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Ingredient that)) return false;
-        return Objects.equals(quantity, that.quantity) && Objects.equals(aliment, that.aliment) && Objects.equals(unit, that.unit);
+        return Objects.equals(id, that.id) && Objects.equals(quantity, that.quantity) && Objects.equals(aliment, that.aliment) && Objects.equals(unit, that.unit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(quantity, aliment, unit);
+        return Objects.hash(id, quantity, aliment, unit);
     }
 }

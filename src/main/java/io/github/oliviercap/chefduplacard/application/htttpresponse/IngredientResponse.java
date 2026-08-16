@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public record IngredientResponse(
+        Long id,
         BigDecimal quantityPerPerson,
         AlimentResponse alimentResponse,
         UnitResponse unitResponse
@@ -16,6 +17,7 @@ public record IngredientResponse(
         Objects.requireNonNull(ingredient.getUnit(), "unit must not be null");
 
         return new IngredientResponse(
+                ingredient.getId().id(),
                 ingredient.getQuantity(),
                 AlimentResponse.from(ingredient.getAliment()),
                 UnitResponse.from(ingredient.getUnit())

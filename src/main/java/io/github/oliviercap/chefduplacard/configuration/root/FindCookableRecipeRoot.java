@@ -20,10 +20,6 @@ public class FindCookableRecipeRoot {
     /**
      * Classe responsable de l'inversion de dépendance.
      * Injection des classes externes dans le usecase findCookableRecipes
-     * @param recipeRepository
-     * @param stockRepository
-     * @param outputPort
-     * @return
      */
     @Bean
     public FindCookableRecipesUseCase findCookableRecipesUseCase(

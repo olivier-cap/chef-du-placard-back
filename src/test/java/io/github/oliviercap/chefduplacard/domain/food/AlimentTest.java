@@ -11,8 +11,8 @@ public class AlimentTest {
 
     @Test
     void should_compute_same_identifier_for_same_name_and_description() {
-        Aliment aliment1 = new Aliment("apple", "fruit", true);
-        Aliment aliment2 = new Aliment("apple", "fruit", false);
+        Aliment aliment1 = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Aliment aliment2 = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", false);
 
         assertThat(aliment1.getIdentifier())
                 .isEqualTo(aliment2.getIdentifier());
@@ -20,8 +20,8 @@ public class AlimentTest {
 
     @Test
     void should_compute_same_identifier_with_normalized_values() {
-        Aliment aliment1 = new Aliment(" Apple ", " Fruit ", true);
-        Aliment aliment2 = new Aliment("apple", "fruit", true);
+        Aliment aliment1 = new Aliment(new AlimentId(Long.valueOf(1)), " Apple ", " Fruit ", true);
+        Aliment aliment2 = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
 
         assertThat(aliment1.getIdentifier())
                 .isEqualTo(aliment2.getIdentifier());
@@ -29,8 +29,8 @@ public class AlimentTest {
 
     @Test
     void should_compute_different_identifier_for_different_description() {
-        Aliment aliment1 = new Aliment("apple", "fruit", true);
-        Aliment aliment2 = new Aliment("apple", "red fruit", true);
+        Aliment aliment1 = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Aliment aliment2 = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "red fruit", true);
 
         assertThat(aliment1.getIdentifier())
                 .isNotEqualTo(aliment2.getIdentifier());
@@ -38,7 +38,7 @@ public class AlimentTest {
 
     @Test
     void should_reject_blank_name() {
-        assertThatThrownBy(() -> new Aliment(" ", "fruit", true))
+        assertThatThrownBy(() -> new Aliment(new AlimentId(Long.valueOf(1))," ", "fruit", true))
                 .isInstanceOf(DomainException.class);
     }
 

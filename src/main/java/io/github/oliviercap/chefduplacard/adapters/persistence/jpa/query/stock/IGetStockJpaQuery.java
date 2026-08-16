@@ -12,15 +12,15 @@ public interface IGetStockJpaQuery extends JpaRepository<StockJpa, Long> {
 
     @Query("""
             select new io.github.oliviercap.chefduplacard.application.getstock.GetStockQuery(
+                        s.id,
                         sl.quantity,
                         a.name,
-                        u.symbol
-                        )
+                        u.symbol)
             from StockJpa s
                 left join s.stockLineJpa sl
                     left join sl.alimentJpa a
                     left join sl.unitJpa u
-            where s.name = :stockName
+            where s.id = :stockId
             """)
-    List<GetStockQuery> getMenuView(@Param("stockName") String stockName);
+    List<GetStockQuery> getMenuView(@Param("stockId") Long stockId);
 }

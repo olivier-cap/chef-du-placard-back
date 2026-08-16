@@ -8,8 +8,6 @@ import io.github.oliviercap.chefduplacard.application.ports.persistence.IMenuRep
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.menu.Menu;
-import io.github.oliviercap.chefduplacard.domain.menu.MenuLine;
-import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
@@ -33,10 +31,10 @@ public class MenuRepository implements IMenuRepository {
 
     @Transactional
     @Override
-    public Optional<Menu> findByName(String menuName) {
+    public Optional<Menu> findById(Long menuId) {
 
         //Première requête, UN SEUL fetch d'une liste: liste des recettes du menu
-        Optional<MenuJpa> menuJpaOptional = menuJpaRepository.findMenuDetailsByName(menuName);
+        Optional<MenuJpa> menuJpaOptional = menuJpaRepository.findMenuDetailsById(menuId);
 
         //Deuxième requête: chargement fetch de la 2e liste : liste des ingrédients de la recette
         //hibernate ne gère pas le fecth de 2 listes (qu'il voit comme deux "bags") en même temps
@@ -67,44 +65,44 @@ public class MenuRepository implements IMenuRepository {
 
     @Override
     @Transactional
-    public void save(Menu menu) {
-        Objects.requireNonNull(menu, "menu must not be null");
+    public void save(SaveNewMenuDTO menuDTO) {
+        Objects.requireNonNull(menuDTO, "menu must not be null");
 
         //Récupération de l'actuel portant ce nom s'il existe
-        Optional<MenuJpa> menuJpa = menuJpaRepository.findMenuDetailsByName(menu.getName());
-        if(menuJpa.isPresent()) {
-            throw new DomainException("Menu already exists, use ModifyMenuUseCase");
-        }
+        //Optional<MenuJpa> menuJpa = menuJpaRepository.findMenuDetailsById(menuDTO.menuId());
+        //if(menuJpa.isPresent()) {
+        //    throw new DomainException("Menu already exists, use ModifyMenuUseCase");
+        //}
 
         //Récupération des recettes du menu dans la base pour ne pas recréer les éléments existants
-        Map<String, RecipeJpa> recipeJpaList = new HashMap<>();
-        for(MenuLine menuLine : menu.getMenuLines()) {
-            Optional<RecipeJpa> recipeJpa = recipeRepository.findJpaByName(menuLine.getRecipe().getName());
+        Map<Long, RecipeJpa> recipeJpaList = new HashMap<>();
+        for(SaveNewMenuDTO.saveNewMenuLine menuLine : menuDTO.menuLines()) {
+            Optional<RecipeJpa> recipeJpa = recipeRepository.findJpaById(menuLine.recipeId());
             if(recipeJpa.isEmpty()) {
-                throw new DomainException("Recipe " + menuLine.getRecipe().getName() +" not found in base");
+                throw new DomainException("Recipe " + menuLine.recipeId() +" not found in base");
             }
             else {
-                recipeJpaList.put(recipeJpa.get().getName(), recipeJpa.get());
+                recipeJpaList.put(recipeJpa.get().getId(), recipeJpa.get());
             }
         }
 
         //Fabrication des lignes du menu
         List<MenuLineJpa> menuLineJpaList = new ArrayList<>();
-        for(MenuLine menuLine : menu.getMenuLines()) {
-            if(menuLine.getNbPerson() == null || menuLine.getNbPerson().compareTo(BigDecimal.ZERO) < 0) {
+        for(SaveNewMenuDTO.saveNewMenuLine menuLine : menuDTO.menuLines()) {
+            if(menuLine.nbPerson() == null || menuLine.nbPerson().compareTo(BigDecimal.ZERO) < 0) {
                 throw new DomainException("nbPerson must not be null or <= 0");
             }
             menuLineJpaList.add(
                     new MenuLineJpa(
-                            recipeJpaList.get(menuLine.getRecipe().getName()),
-                            menuLine.getNbPerson()
+                            recipeJpaList.get(menuLine.recipeId()),
+                            menuLine.nbPerson()
                     )
             );
         }
 
         //Fabrication du nouveau menu
         MenuJpa newMenuJpa = new MenuJpa();
-        newMenuJpa.setName(menu.getName());
+        newMenuJpa.setName(menuDTO.menuName());
 
         for (MenuLineJpa menuLineJpa : menuLineJpaList) {
             newMenuJpa.addMenuLine(menuLineJpa);

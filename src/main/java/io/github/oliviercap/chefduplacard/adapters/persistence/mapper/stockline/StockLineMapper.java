@@ -4,6 +4,7 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Sto
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.UnitMapper;
 import io.github.oliviercap.chefduplacard.domain.stock.StockLine;
+import io.github.oliviercap.chefduplacard.domain.stock.StockLineId;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -25,6 +26,7 @@ public class StockLineMapper{
         Objects.requireNonNull(stockLineJpa.getUnitJpa(), "unitJPA must not be null");
 
         return new StockLine(
+                new StockLineId(stockLineJpa.getId()),
                 stockLineJpa.getQuantity(),
                 alimentMapper.toDomain(stockLineJpa.getAlimentJpa()),
                 unitMapper.toDomain(stockLineJpa.getUnitJpa())

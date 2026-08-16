@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
@@ -44,9 +45,7 @@ class CreateNewRecipeUseCaseIntegrationTest {
 
     @Test
     void should_create_new_recipe_with_real_persistence_pipeline() {
-
-        // ===== GIVEN =====
-
+        // Given
         AlimentJpa apple = alimentJpaRepository.save(
                 new AlimentJpa(
                         "integration-create-recipe-apple",
@@ -65,14 +64,16 @@ class CreateNewRecipeUseCaseIntegrationTest {
 
         UnitJpa gram = unitJpaRepository.save(
                 new UnitJpa(
-                        "gramme",
-                        "g"
+                        "gramme-create-recipe",
+                        "g-create-recipe"
                 )
         );
 
+        String recipeName = "integration-create-recipe-apple-pie";
+
         CreateNewRecipeRequestModel request =
                 new CreateNewRecipeRequestModel(
-                        "integration-create-recipe-apple-pie",
+                        recipeName,
                         "Cut the apples, add flour and bake.",
                         Duration.ofMinutes(45),
                         "easy",
@@ -90,52 +91,33 @@ class CreateNewRecipeUseCaseIntegrationTest {
                         )
                 );
 
-        // ===== WHEN =====
-
+        // When
         useCase.execute(request);
 
         CreateNewRecipeViewModel result = presenter.getViewModel();
 
-        // ===== THEN : presenter =====
+        // Then: presenter
+        assertThat(result).isNotNull();
+        assertThat(result.saved()).isTrue();
 
-        assertThat(result)
-                .isNotNull();
+        // Then: real persistence
+        RecipeJpa savedRecipe = findRecipeByName(recipeName);
 
-        assertThat(result.saved())
-                .isTrue();
-
-        // ===== THEN : persistence réelle =====
-
-        RecipeJpa savedRecipe = recipeJpaRepository
-                .findCompleteByName("integration-create-recipe-apple-pie")
-                .orElseThrow();
-
-        assertThat(savedRecipe.getName())
-                .isEqualTo("integration-create-recipe-apple-pie");
-
+        assertThat(savedRecipe.getName()).isEqualTo(recipeName);
         assertThat(savedRecipe.getInstructions())
                 .isEqualTo("Cut the apples, add flour and bake.");
-
-        assertThat(savedRecipe.getDurationMinutes())
-                .isEqualTo(45);
-
-        assertThat(savedRecipe.getDifficulty())
-                .isEqualTo("easy");
-
-        assertThat(savedRecipe.getIngredients())
-                .hasSize(2);
+        assertThat(savedRecipe.getDurationMinutes()).isEqualTo(45);
+        assertThat(savedRecipe.getDifficulty()).isEqualTo("easy");
+        assertThat(savedRecipe.getIngredients()).hasSize(2);
 
         assertThat(savedRecipe.getIngredients())
                 .anySatisfy(ingredient -> {
                     assertThat(ingredient.getAlimentJpa().getId())
                             .isEqualTo(apple.getId());
-
                     assertThat(ingredient.getAlimentJpa().getName())
                             .isEqualTo("integration-create-recipe-apple");
-
                     assertThat(ingredient.getUnitJpa().getId())
                             .isEqualTo(gram.getId());
-
                     assertThat(ingredient.getQuantityPerPerson())
                             .isEqualByComparingTo(BigDecimal.valueOf(200));
                 });
@@ -144,13 +126,10 @@ class CreateNewRecipeUseCaseIntegrationTest {
                 .anySatisfy(ingredient -> {
                     assertThat(ingredient.getAlimentJpa().getId())
                             .isEqualTo(flour.getId());
-
                     assertThat(ingredient.getAlimentJpa().getName())
                             .isEqualTo("integration-create-recipe-flour");
-
                     assertThat(ingredient.getUnitJpa().getId())
                             .isEqualTo(gram.getId());
-
                     assertThat(ingredient.getQuantityPerPerson())
                             .isEqualByComparingTo(BigDecimal.valueOf(150));
                 });
@@ -158,125 +137,100 @@ class CreateNewRecipeUseCaseIntegrationTest {
 
     @Test
     void should_create_new_recipe_without_ingredients() {
-
-        // ===== GIVEN =====
+        // Given
+        String recipeName =
+                "integration-create-recipe-without-ingredients";
 
         CreateNewRecipeRequestModel request =
                 new CreateNewRecipeRequestModel(
-                        "integration-create-recipe-without-ingredients",
+                        recipeName,
                         "No preparation required.",
                         Duration.ofMinutes(5),
                         "easy",
                         List.of()
                 );
 
-        // ===== WHEN =====
-
+        // When
         useCase.execute(request);
 
         CreateNewRecipeViewModel result = presenter.getViewModel();
 
-        // ===== THEN : presenter =====
+        // Then: presenter
+        assertThat(result).isNotNull();
+        assertThat(result.saved()).isTrue();
 
-        assertThat(result)
-                .isNotNull();
+        // Then: real persistence
+        RecipeJpa savedRecipe = findRecipeByName(recipeName);
 
-        assertThat(result.saved())
-                .isTrue();
-
-        // ===== THEN : persistence réelle =====
-
-        RecipeJpa savedRecipe = recipeJpaRepository
-                .findCompleteByName(
-                        "integration-create-recipe-without-ingredients"
-                )
-                .orElseThrow();
-
-        assertThat(savedRecipe.getName())
-                .isEqualTo("integration-create-recipe-without-ingredients");
-
-        assertThat(savedRecipe.getDurationMinutes())
-                .isEqualTo(5);
-
-        assertThat(savedRecipe.getIngredients())
-                .isEmpty();
+        assertThat(savedRecipe.getName()).isEqualTo(recipeName);
+        assertThat(savedRecipe.getInstructions())
+                .isEqualTo("No preparation required.");
+        assertThat(savedRecipe.getDurationMinutes()).isEqualTo(5);
+        assertThat(savedRecipe.getDifficulty()).isEqualTo("easy");
+        assertThat(savedRecipe.getIngredients()).isEmpty();
     }
 
     @Test
     void should_throw_domain_exception_when_recipe_name_already_exists() {
+        // Given
+        String recipeName = "integration-create-recipe-existing";
 
-        // ===== GIVEN =====
-
-        RecipeJpa existingRecipe = new RecipeJpa(
-                "integration-create-recipe-existing",
-                "Existing recipe instructions.",
-                30,
-                "easy"
+        recipeJpaRepository.save(
+                new RecipeJpa(
+                        recipeName,
+                        "Existing recipe instructions.",
+                        30,
+                        "easy"
+                )
         );
-
-        recipeJpaRepository.save(existingRecipe);
 
         CreateNewRecipeRequestModel request =
                 new CreateNewRecipeRequestModel(
-                        "integration-create-recipe-existing",
+                        recipeName,
                         "New instructions.",
                         Duration.ofMinutes(45),
                         "medium",
                         List.of()
                 );
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage(
-                        "impossible to save recipe " +
-                                "integration-create-recipe-existing"
-                )
-                .hasCauseInstanceOf(DomainException.class)
-                .cause()
-                .hasMessage(
-                        "Recipe with name " +
-                                "integration-create-recipe-existingalready exists"
-                );
-
-        assertThat(recipeJpaRepository.findAll())
-                .filteredOn(recipe ->
-                        recipe.getName().equals(
-                                "integration-create-recipe-existing"
-                        )
-                )
-                .hasSize(1);
+                .hasMessage("impossible to save recipe " + recipeName)
+                .hasCauseInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void should_throw_domain_exception_when_duration_is_null() {
-
-        // ===== GIVEN =====
+        // Given
+        String recipeName =
+                "integration-create-recipe-null-duration";
 
         CreateNewRecipeRequestModel request =
                 new CreateNewRecipeRequestModel(
-                        "integration-create-recipe-null-duration",
+                        recipeName,
                         "Recipe with invalid duration.",
                         null,
                         "easy",
                         List.of()
                 );
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage(
-                        "impossible to save recipe " +
-                                "integration-create-recipe-null-duration"
-                )
+                .hasMessage("impossible to save recipe " + recipeName)
                 .hasCauseInstanceOf(NullPointerException.class);
 
-        assertThat(
-                recipeJpaRepository.findCompleteByName(
-                        "integration-create-recipe-null-duration"
-                )
-        ).isEmpty();
+        assertThat(recipeJpaRepository.findAll())
+                .noneSatisfy(recipe ->
+                        assertThat(recipe.getName()).isEqualTo(recipeName)
+                );
+    }
+
+    private RecipeJpa findRecipeByName(String recipeName) {
+        return recipeJpaRepository.findAllComplete().stream()
+                .filter(recipe -> recipe.getName().equals(recipeName))
+                .findFirst()
+                .orElseThrow();
     }
 }

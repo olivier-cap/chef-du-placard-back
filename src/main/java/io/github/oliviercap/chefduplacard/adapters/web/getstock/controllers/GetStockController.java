@@ -22,9 +22,9 @@ public class GetStockController {
 
     @GetMapping("/api/getStock")
     GetStockViewModel getStock(
-            @RequestParam String stockName
+            @RequestParam Long stockId
     ) {
-        inputPort.execute(new GetStockRequestModel(stockName));
+        inputPort.execute(new GetStockRequestModel(stockId));
 
         return outputPort.getViewModel();
     }

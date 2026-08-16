@@ -25,19 +25,19 @@ public class GetMenuUseCase implements IGetMenuInputPort {
         Objects.requireNonNull(requestModel, "requestModel must not be null");
 
         outputPort.displayMenu(new GetMenuResponseModel(
-                getMenu(requestModel.menuName())
+                getMenu(requestModel.menuId())
         ));
     }
 
-    private List<GetMenuQuery> getMenu(String menuName) {
-        if(menuName.isBlank()) {
-            throw new DomainException("menuName must not be blank");
+    private List<GetMenuQuery> getMenu(Long menuId) {
+        if(menuId == null) {
+            throw new DomainException("menuId must not be blank");
         }
 
-        List<GetMenuQuery> getMenuQueryList =menuViewQuery.getViewMenu(menuName);
+        List<GetMenuQuery> getMenuQueryList =menuViewQuery.getViewMenu(menuId);
 
         if (getMenuQueryList.isEmpty()) {
-            throw new DomainException("menu not found " + menuName);
+            throw new DomainException("menu not found " + menuId);
         }
 
         return getMenuQueryList;

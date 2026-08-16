@@ -23,12 +23,12 @@ public class UpdateStockManuallyControler {
 
     @PostMapping("/api/updateStockManually")
     public UpdateStockManuallyViewModel updateStockManuallyViewModel(
-        @RequestParam String stockName,
+        @RequestParam Long stockId,
         @RequestParam List<UpdateStockManuallyRequestModel.UpdateStockAliment> updateStockAlimentList
     ) {
         inputPort.execute(
                 new UpdateStockManuallyRequestModel(
-                        stockName,
+                        stockId,
                         updateStockAlimentList
                 )
         );

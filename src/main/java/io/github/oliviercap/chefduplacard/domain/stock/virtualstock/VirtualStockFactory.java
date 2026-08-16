@@ -12,7 +12,7 @@ public class VirtualStockFactory {
     public VirtualStock createForMenuPreparation(Stock stock) {
         Objects.requireNonNull(stock, "stock must not be null");
 
-        Stock stockCopy = stock.copyForSimulation(stock.getName() + " - virtual");
+        Stock stockCopy = stock.copyForSimulation(stock.getId(), stock.getName() + " - virtual");
         return new VirtualStock(stockCopy);
     }
 }

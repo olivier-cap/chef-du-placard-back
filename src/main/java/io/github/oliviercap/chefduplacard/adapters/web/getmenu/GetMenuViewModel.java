@@ -5,14 +5,17 @@ import java.time.Duration;
 import java.util.List;
 
 public record GetMenuViewModel(
-    String menuName,
-    List<MenuLineViewModel> menuLineViewModels
+        Long menuId,
+        String menuName,
+        List<MenuLineViewModel> menuLineViewModels
 ) {
     public record MenuLineViewModel(
+            Long menuLineId,
             BigDecimal nbPerson,
             RecipeViewModel recipeViewModel
     ){}
     public record RecipeViewModel(
+            Long recipeId,
             String name,
             String instructions,
             Duration duration,

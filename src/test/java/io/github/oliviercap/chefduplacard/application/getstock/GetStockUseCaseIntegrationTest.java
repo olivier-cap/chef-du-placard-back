@@ -19,7 +19,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -43,57 +44,64 @@ class GetStockUseCaseIntegrationTest {
 
     @Test
     void should_get_stock_with_real_persistence_pipeline() {
+        // Given
+        AlimentJpa apple = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-get-stock-apple",
+                        "fruit",
+                        true
+                )
+        );
 
-        // ===== GIVEN =====
+        UnitJpa gram = unitJpaRepository.save(
+                new UnitJpa(
+                        "gramme",
+                        "g"
+                )
+        );
 
-        AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
-        UnitJpa gram = new UnitJpa("gramme", "g");
+        StockJpa stock = new StockJpa("integration-test-stock");
+        stock.addStockLine(
+                new StockLineJpa(
+                        apple,
+                        gram,
+                        BigDecimal.valueOf(20)
+                )
+        );
 
-        StockJpa stock = new StockJpa("test-stock");
-        stock.addStockLine(new StockLineJpa(apple, gram, BigDecimal.valueOf(20)));
+        StockJpa savedStock = stockJpaRepository.save(stock);
 
-        alimentJpaRepository.save(apple);
-        unitJpaRepository.save(gram);
-        stockJpaRepository.save(stock);
+        GetStockRequestModel request =
+                new GetStockRequestModel(savedStock.getId());
 
-        // ===== WHEN =====
-
-        GetStockRequestModel request = new GetStockRequestModel("test-stock");
-
+        // When
         useCase.execute(request);
 
         GetStockViewModel result = presenter.getViewModel();
 
-        // ===== THEN =====
-
+        // Then
         assertThat(result).isNotNull();
+        assertThat(result.stockLineViewModelList()).hasSize(1);
 
-        assertThat(result.stockLineViewModelList())
-                .hasSize(1);
-
-        StockLineViewModel line = result.stockLineViewModelList().getFirst();
+        StockLineViewModel line =
+                result.stockLineViewModelList().getFirst();
 
         assertThat(line.alimentName())
-                .isEqualTo("apple");
-
-        assertThat(line.unitSymbol())
-                .isEqualTo("g");
-
+                .isEqualTo("integration-get-stock-apple");
+        assertThat(line.unitSymbol()).isEqualTo("g");
         assertThat(line.quantity())
                 .isEqualByComparingTo(BigDecimal.valueOf(20));
     }
 
     @Test
-    void should_throw_domain_exception_when_stock_name_is_blank() {
+    void should_throw_domain_exception_when_stock_id_is_null() {
+        // Given
+        GetStockRequestModel request =
+                new GetStockRequestModel(null);
 
-        // ===== GIVEN =====
-
-        GetStockRequestModel request = new GetStockRequestModel("");
-
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage("stock name must not be null");
+                .hasMessage("stockid must not be null");
     }
 }

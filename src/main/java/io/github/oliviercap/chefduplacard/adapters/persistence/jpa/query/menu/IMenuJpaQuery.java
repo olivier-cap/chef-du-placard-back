@@ -12,6 +12,7 @@ public interface IMenuJpaQuery extends JpaRepository<MenuJpa, Long> {
 
     @Query("""
         select new io.github.oliviercap.chefduplacard.application.getmenu.GetMenuQuery(
+                m.id,
                 m.name,
                 ml.nbPerson,
                 r.name,
@@ -22,7 +23,7 @@ public interface IMenuJpaQuery extends JpaRepository<MenuJpa, Long> {
         from MenuJpa m
         left join m.menuLineJpaList ml
             left join ml.recipeJpa r
-        where m.name = :menuName
-            """)
-    List<GetMenuQuery> getViewMenu(@Param("menuName") String menuName);
+        where m.id = :menuId
+        """)
+    List<GetMenuQuery> getViewMenu(@Param("menuId") Long menuId);
 }

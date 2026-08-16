@@ -47,102 +47,148 @@ class UpdateStockIntegrationTest {
 
     @Test
     void should_update_stock_when_initial_stock_is_sufficient() {
-
-        // ===== GIVEN =====
-
-        AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
-        UnitJpa gram = new UnitJpa("gramme", "g");
-
-        StockJpa stock = new StockJpa("test-stock");
-        stock.addStockLine(new StockLineJpa(apple, gram, BigDecimal.valueOf(20)));
-
-        RecipeJpa recipe = new RecipeJpa("apple-recipe", "desc", 5, "1");
-        recipe.addIngredient(new IngredientJpa(recipe, apple, gram, BigDecimal.valueOf(10)));
-
-        alimentJpaRepository.save(apple);
-        unitJpaRepository.save(gram);
-        stockJpaRepository.save(stock);
-        recipeJpaRepository.save(recipe);
-
-        // ===== WHEN =====
-
-        UpdateStockRequestModel request = new UpdateStockRequestModel(
-                "apple-recipe",
-                1,
-                "test-stock"
+        // Given
+        AlimentJpa apple = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-update-stock-sufficient-apple",
+                        "fruit",
+                        true
+                )
         );
 
+        UnitJpa gram = unitJpaRepository.save(
+                new UnitJpa(
+                        "gramme-sufficient",
+                        "g-sufficient"
+                )
+        );
+
+        StockJpa stock = new StockJpa(
+                "integration-update-stock-sufficient"
+        );
+        stock.addStockLine(
+                new StockLineJpa(
+                        apple,
+                        gram,
+                        BigDecimal.valueOf(20)
+                )
+        );
+
+        StockJpa savedStock = stockJpaRepository.save(stock);
+
+        RecipeJpa recipe = new RecipeJpa(
+                "integration-update-stock-sufficient-recipe",
+                "desc",
+                5,
+                "1"
+        );
+        recipe.addIngredient(
+                new IngredientJpa(
+                        recipe,
+                        apple,
+                        gram,
+                        BigDecimal.valueOf(10)
+                )
+        );
+
+        RecipeJpa savedRecipe = recipeJpaRepository.save(recipe);
+
+        UpdateStockRequestModel request = new UpdateStockRequestModel(
+                savedStock.getId(),
+                savedRecipe.getId(),
+                1
+        );
+
+        // When
         useCase.execute(request);
 
         UpdateStockViewModel result = presenter.getViewModel();
 
-        // ===== THEN : réponse du use case =====
-
-        assertThat(result.sufficientStock())
-                .isTrue();
-
+        // Then: use-case response
+        assertThat(result.sufficientStock()).isTrue();
         assertThat(result.responseMessage())
                 .isEqualTo("Stock Updated, sufficient initial stock");
 
-        // ===== THEN : vérification de la persistance réelle =====
-
-        StockJpa updatedStock = stockJpaRepository.findCompleteByName("test-stock")
+        // Then: real persistence
+        StockJpa updatedStock = stockJpaRepository
+                .findCompleteById(savedStock.getId())
                 .orElseThrow();
 
-        assertThat(updatedStock.getStockLineJpa())
-                .hasSize(1);
-
+        assertThat(updatedStock.getStockLineJpa()).hasSize(1);
         assertThat(updatedStock.getStockLineJpa().getFirst().getQuantity())
                 .isEqualByComparingTo(BigDecimal.valueOf(10));
     }
 
     @Test
     void should_correct_stock_to_zero_when_initial_stock_is_insufficient() {
-
-        // ===== GIVEN =====
-
-        AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
-        UnitJpa gram = new UnitJpa("gramme", "g");
-
-        StockJpa stock = new StockJpa("test-stock");
-        stock.addStockLine(new StockLineJpa(apple, gram, BigDecimal.valueOf(5)));
-
-        RecipeJpa recipe = new RecipeJpa("apple-recipe", "desc", 5, "1");
-        recipe.addIngredient(new IngredientJpa(recipe, apple, gram, BigDecimal.valueOf(10)));
-
-        alimentJpaRepository.save(apple);
-        unitJpaRepository.save(gram);
-        stockJpaRepository.save(stock);
-        recipeJpaRepository.save(recipe);
-
-        // ===== WHEN =====
-
-        UpdateStockRequestModel request = new UpdateStockRequestModel(
-                "apple-recipe",
-                1,
-                "test-stock"
+        // Given
+        AlimentJpa apple = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-update-stock-insufficient-apple",
+                        "fruit",
+                        true
+                )
         );
 
+        UnitJpa gram = unitJpaRepository.save(
+                new UnitJpa(
+                        "gramme-insufficient",
+                        "g-insufficient"
+                )
+        );
+
+        StockJpa stock = new StockJpa(
+                "integration-update-stock-insufficient"
+        );
+        stock.addStockLine(
+                new StockLineJpa(
+                        apple,
+                        gram,
+                        BigDecimal.valueOf(5)
+                )
+        );
+
+        StockJpa savedStock = stockJpaRepository.save(stock);
+
+        RecipeJpa recipe = new RecipeJpa(
+                "integration-update-stock-insufficient-recipe",
+                "desc",
+                5,
+                "1"
+        );
+        recipe.addIngredient(
+                new IngredientJpa(
+                        recipe,
+                        apple,
+                        gram,
+                        BigDecimal.valueOf(10)
+                )
+        );
+
+        RecipeJpa savedRecipe = recipeJpaRepository.save(recipe);
+
+        UpdateStockRequestModel request = new UpdateStockRequestModel(
+                savedStock.getId(),
+                savedRecipe.getId(),
+                1
+        );
+
+        // When
         useCase.execute(request);
 
         UpdateStockViewModel result = presenter.getViewModel();
 
-        // ===== THEN : réponse du use case =====
-
-        assertThat(result.sufficientStock())
-                .isFalse();
-
+        // Then: use-case response
+        assertThat(result.sufficientStock()).isFalse();
         assertThat(result.responseMessage())
                 .isEqualTo("Stock Corrected, insufficient initial stock");
 
-        // ===== THEN : vérification de la persistance réelle =====
-
-        StockJpa updatedStock = stockJpaRepository.findCompleteByName("test-stock")
+        // Then: real persistence
+        StockJpa updatedStock = stockJpaRepository
+                .findCompleteById(savedStock.getId())
                 .orElseThrow();
 
-        assertThat(updatedStock.getStockLineJpa())
-                .hasSize(1);
-
+        assertThat(updatedStock.getStockLineJpa()).hasSize(1);
         assertThat(updatedStock.getStockLineJpa().getFirst().getQuantity())
                 .isEqualByComparingTo(BigDecimal.ZERO);
     }

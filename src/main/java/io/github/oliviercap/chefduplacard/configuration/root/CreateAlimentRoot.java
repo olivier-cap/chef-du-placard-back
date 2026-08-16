@@ -1,7 +1,6 @@
 package io.github.oliviercap.chefduplacard.configuration.root;
 
 import io.github.oliviercap.chefduplacard.application.createaliment.CreateAlimentUseCase;
-import io.github.oliviercap.chefduplacard.application.createaliment.ports.ICreateAlimentInputPort;
 import io.github.oliviercap.chefduplacard.application.createaliment.ports.ICreateAlimentOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
 import org.springframework.context.annotation.Bean;

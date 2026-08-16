@@ -13,6 +13,7 @@ import java.util.Objects;
  * @param unit
  */
 public record StockLineResponse(
+        Long id,
         AlimentResponse aliment,
         UnitResponse unit,
         BigDecimal quantity
@@ -23,6 +24,7 @@ public record StockLineResponse(
         Objects.requireNonNull(stockLine.getUnit(), "unit must not be null");
 
         return new StockLineResponse(
+                stockLine.getId().id(),
                 AlimentResponse.from(stockLine.getAliment()),
                 UnitResponse.from(stockLine.getUnit()),
                 stockLine.getQuantity()

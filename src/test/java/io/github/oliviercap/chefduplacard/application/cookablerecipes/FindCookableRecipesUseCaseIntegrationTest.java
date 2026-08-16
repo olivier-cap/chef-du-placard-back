@@ -1,7 +1,11 @@
 package io.github.oliviercap.chefduplacard.application.cookablerecipes;
 
-
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.*;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.IngredientJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
@@ -19,13 +23,15 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Ce test ne vise pas à tester toute la logique métier.
-// Il valide que la chaîne Spring + JPA + mappers + use case est correctement câblée.
-
+/**
+ * Ce test ne vise pas a tester toute la logique metier.
+ * Il valide que la chaine Spring, JPA, mappers et cas d'usage
+ * est correctement cablee.
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class FindCookableRecipesUseCaseIntegrationTest {
+class FindCookableRecipesUseCaseIntegrationTest {
 
     @Autowired
     private FindCookableRecipesUseCase useCase;
@@ -35,44 +41,88 @@ public class FindCookableRecipesUseCaseIntegrationTest {
 
     @Autowired
     private IRecipeJpaRepository recipeJpaRepository;
+
     @Autowired
     private IStockJpaRepository stockJpaRepository;
+
     @Autowired
     private IAlimentJpaRepository alimentJpaRepository;
+
     @Autowired
     private IUnitJpaRepository unitJpaRepository;
 
     @Test
     void should_find_cookable_recipes_with_real_persistence_pipeline() {
-        // GIVEN
-        AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
-        UnitJpa unit = new UnitJpa("gramme", "g");
+        // Given: aliment and unit already present in database
+        AlimentJpa apple = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-cookable-recipes-apple",
+                        "fruit",
+                        true
+                )
+        );
 
-        StockJpa stock = new StockJpa("test");
-        StockLineJpa stockLine = new StockLineJpa(apple, unit, BigDecimal.valueOf(12));
-        stock.addStockLine(stockLine);
+        UnitJpa gram = unitJpaRepository.save(
+                new UnitJpa(
+                        "gramme-cookable-recipes",
+                        "g-cookable-recipes"
+                )
+        );
 
-        RecipeJpa recipeJpa = new RecipeJpa("r1", "a", 5, "1");
+        // Given: stock contains exactly the required quantity
+        StockJpa stock = new StockJpa(
+                "integration-cookable-recipes-stock"
+        );
 
-        IngredientJpa ingredient =
-                new IngredientJpa(recipeJpa, apple, unit, BigDecimal.valueOf(12));
+        stock.addStockLine(
+                new StockLineJpa(
+                        apple,
+                        gram,
+                        BigDecimal.valueOf(12)
+                )
+        );
 
-        recipeJpa.addIngredient(ingredient);
+        StockJpa savedStock = stockJpaRepository.save(stock);
 
-        alimentJpaRepository.save(apple);
-        unitJpaRepository.save(unit);
-        stockJpaRepository.save(stock);
-        recipeJpaRepository.save(recipeJpa);
+        // Given: one recipe requires 12 units for one person
+        RecipeJpa recipe = new RecipeJpa(
+                "integration-cookable-recipes-r1",
+                "Preparation instructions.",
+                5,
+                "easy"
+        );
 
-        // WHEN
-        useCase.execute(new FindCookableRecipesRequestModel(1, "test"));
+        recipe.addIngredient(
+                new IngredientJpa(
+                        recipe,
+                        apple,
+                        gram,
+                        BigDecimal.valueOf(12)
+                )
+        );
+
+        recipeJpaRepository.save(recipe);
+
+        FindCookableRecipesRequestModel request =
+                new FindCookableRecipesRequestModel(
+                        1,
+                        savedStock.getId()
+                );
+
+        // When
+        useCase.execute(request);
 
         FindCookableRecipesViewModel result = presenter.getViewModel();
 
-        // THEN
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.recipes()).hasSize(1);
+
         assertThat(result.recipes())
-                .extracting(FindCookableRecipesViewModel.RecipeViewModel::recipeName)
-                .containsExactly("r1");
+                .extracting(
+                        FindCookableRecipesViewModel.RecipeViewModel::recipeName
+                )
+                .containsExactly("integration-cookable-recipes-r1");
 
         assertThat(result.recipes().getFirst().duration())
                 .isEqualTo(Duration.ofMinutes(5));

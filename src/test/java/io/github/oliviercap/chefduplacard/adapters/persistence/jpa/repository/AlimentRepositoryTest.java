@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
-class AlimentRepositoryTest {
+class AlimentJpaRepositoryTest {
 
     @Autowired
     private IAlimentJpaRepository alimentJpaRepository;
@@ -20,12 +20,17 @@ class AlimentRepositoryTest {
     void save_and_load_aliment_entity() {
         AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
 
-        alimentJpaRepository.save(apple);
+        AlimentJpa savedApple = alimentJpaRepository.saveAndFlush(apple);
 
-        var result = alimentJpaRepository.findByName("apple");
+        assertThat(savedApple.getId()).isNotNull();
 
-        assertThat(result).isPresent();
-        assertThat(result.get().getName()).isEqualTo("apple");
-        assertThat(result.get()).isEqualTo(apple);
+        AlimentJpa loadedApple = alimentJpaRepository
+                .findById(savedApple.getId())
+                .orElseThrow();
+
+        assertThat(loadedApple.getId()).isEqualTo(savedApple.getId());
+        assertThat(loadedApple.getName()).isEqualTo("apple");
+        assertThat(loadedApple.getDescription()).isEqualTo("fruit");
+        assertThat(loadedApple.isActive()).isTrue();
     }
 }

@@ -10,9 +10,8 @@ import java.util.Optional;
 
 public interface IRecipeRepository {
     List<Recipe> findAll();
-    Optional<Recipe> findByName(String recipeName);
-    Optional<RecipeJpa> findJpaById(Long id);
-    Optional<RecipeJpa> findJpaByName(String recipeName);
+    Optional<Recipe> findById(Long recipeId);
+
     void saveNew(
             String nameRecipe,
             String instructionsRecipe,
@@ -21,6 +20,7 @@ public interface IRecipeRepository {
             List<IngredientsData> ingredients);
     RecipeJpa getReferenceJpaById(Long id);
 
-    boolean existsByName(String name);
+
+    Optional<RecipeJpa> findJpaById(Long id);
 
 }

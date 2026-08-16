@@ -1,8 +1,8 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.IngredientJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.AlimentRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.synchronizer.stock.IStockJpaSynchronizer;
@@ -11,7 +11,6 @@ import io.github.oliviercap.chefduplacard.application.ports.persistence.IAliment
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IUnitRepository;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
-import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -49,12 +48,11 @@ public class StockRepository implements IStockRepository {
      * Find a particular stock by its name.
      * Creates all the chain : all stocklines, aliments et units are created
      * And linked to the stock
-     * @param name name of the required stock
      * @return Stock
      */
     @Override
-    public Optional<Stock> findByName(String name) {
-        return stockJpaRepository.findCompleteByName(name)
+    public Optional<Stock> findById(Long id) {
+        return stockJpaRepository.findCompleteById(id)
                 .map(stockMapper::toDomain);
     }
 
@@ -70,21 +68,42 @@ public class StockRepository implements IStockRepository {
 
         //Recherche du stock dans la base. Permet à JPA de gérer le stock, le modifier.
         //Création d'un nouveau stock s'il n'existe pas en base
-        StockJpa stockJpa = stockJpaRepository.findCompleteByName(stock.getName())
+        StockJpa stockJpa = stockJpaRepository.findCompleteById(stock.getId().id())
                 .orElseGet(() -> new StockJpa(stock.getName()));
 
         List<AlimentJpa> existingAliments = alimentRepository.findAllJpa();
         List<UnitJpa> existingUnits = unitRepository.findAllJpa();
 
-        Map<String, AlimentJpa> alimentJpaMap = new HashMap<>();
-        Map<String, UnitJpa> unitJpaMap = new HashMap<>();
+        Map<Long, AlimentJpa> alimentJpaMap = new HashMap<>();
+        Map<Long, UnitJpa> unitJpaMap = new HashMap<>();
 
-        for(AlimentJpa aliment: existingAliments){ alimentJpaMap.put(aliment.getName(), aliment); }
-        for(UnitJpa unit : existingUnits) { unitJpaMap.put(unit.getName(), unit); }
+        for(AlimentJpa aliment: existingAliments){ alimentJpaMap.put(aliment.getId(), aliment); }
+        for(UnitJpa unit : existingUnits) { unitJpaMap.put(unit.getId(), unit); }
 
         stockJpaSynchronizer.synchronize(stockJpa, stock, alimentJpaMap, unitJpaMap);
 
         //redondant pour les stocks existant mais nécessaire pour les nouveaux stocks
         stockJpaRepository.save(stockJpa);
+    }
+
+    @Override
+    @Transactional
+    public Stock updateStock(UpdateStockDTO updateStockDTO) {
+
+        List<Long> stockLineIds = updateStockDTO.newQuantities().stream()
+                .map(UpdateStockDTO.NewQuantities::stockLineId).toList();
+
+        StockJpa stockJpa = stockJpaRepository.findStockForUpdate(updateStockDTO.stockId(), stockLineIds)
+                .orElseThrow(() -> new  DomainException("error finding stock"));
+
+        for(UpdateStockDTO.NewQuantities n : updateStockDTO.newQuantities()) {
+            for (StockLineJpa stockLineJpa : stockJpa.getStockLineJpa()) {
+                if (stockLineJpa.getId().equals(n.stockLineId())) {
+                    stockLineJpa.setQuantity(n.newQuantity());
+                }
+            }
+        }
+
+        return stockMapper.toDomain(stockJpa);
     }
 }

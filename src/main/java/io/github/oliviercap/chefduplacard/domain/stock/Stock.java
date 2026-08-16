@@ -13,14 +13,21 @@ import java.util.*;
  */
 public final class Stock {
     //Pour permettre recherches par aliment, stockage des données dans map.
+    private final StockId id;
     private final Map<Aliment, StockLine> stockMap = new HashMap<>();
     private final String name;
 
     /**
      * Constructeur par défaut
-     * @param stockLines
      */
-    public Stock(String name, List<StockLine> stockLines) {
+    public Stock(
+            StockId id,
+            String name,
+            List<StockLine> stockLines
+    ) {
+        if(id == null){
+            throw new DomainException("Stock id must not be null");
+        }
         if(name == null || name.isBlank()){
             throw new DomainException("stock name cannot be blank or null");
         }
@@ -42,6 +49,8 @@ public final class Stock {
 
             stockMap.put(stockLine.getAliment(), stockLine);
         }
+
+        this.id = id;
     }
 
     /**
@@ -92,13 +101,14 @@ public final class Stock {
       Copie les lignes de stock une à une, les quantités dans la copie du stock
       sont indépendantes du stock d'origine
      */
-    public Stock copyForSimulation(String nameCopy) {
+    public Stock copyForSimulation(StockId idCopy,String nameCopy) {
         Objects.requireNonNull(nameCopy, "nameCopy must not be null");
         if(nameCopy.isBlank()){
             throw new IllegalArgumentException("nameCopy must not be blank");
         }
 
         return new Stock(
+                idCopy,
                 nameCopy,
                 this.getStockMap().values().stream()
                         .map(StockLine::copyForSimulation)
@@ -116,7 +126,7 @@ public final class Stock {
             throw new DomainException("ingredients list must not be null");
         }
 
-        boolean sufficientStock = this.covers(ingredients).covered() ? true : false;
+        boolean sufficientStock = this.covers(ingredients).covered();
 
         //Changement : "consommation" TOUJOURS POSSIBLE
         //SI ingrédients en quantité insuffisante, Quantité fixée à 0. Dans ce cas, return false.
@@ -126,11 +136,9 @@ public final class Stock {
         for(Ingredient ingredient : aggregatedIngredients) {
             StockLine stockLine = this.stockMap.get(ingredient.getAliment());
             stockLine.subtractQuantity(
-                    new StockLine(
-                            ingredient.getQuantity(),
-                            ingredient.getAliment(),
-                            ingredient.getUnit()
-                    )
+                    ingredient.getAliment(),
+                    ingredient.getUnit(),
+                    ingredient.getQuantity()
             );
         }
 
@@ -171,6 +179,7 @@ public final class Stock {
                 aggregatedIngredients.put(
                         aliment,
                         new Ingredient(
+                                ingredient.getId(),
                                 ingredient.getQuantity(),
                                 ingredient.getAliment(),
                                 ingredient.getUnit()
@@ -191,14 +200,18 @@ public final class Stock {
         return name;
     }
 
+    public StockId getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Stock stock)) return false;
-        return Objects.equals(stockMap, stock.stockMap) && Objects.equals(name, stock.name);
+        return Objects.equals(id, stock.id) && Objects.equals(stockMap, stock.stockMap) && Objects.equals(name, stock.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stockMap, name);
+        return Objects.hash(id, stockMap, name);
     }
 }

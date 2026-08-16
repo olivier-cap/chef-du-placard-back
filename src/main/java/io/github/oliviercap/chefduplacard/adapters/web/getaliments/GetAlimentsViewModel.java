@@ -6,6 +6,7 @@ public record GetAlimentsViewModel(
     List<AlimentViewModel> alimentViewModelList
 ) {
     public record AlimentViewModel(
+            Long alimentId,
             String alimentName,
             String alimentDescription,
             boolean isActive

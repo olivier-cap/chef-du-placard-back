@@ -1,6 +1,5 @@
 package io.github.oliviercap.chefduplacard.configuration.root;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu.MenuRepository;
 import io.github.oliviercap.chefduplacard.application.getmenu.GetMenuUseCase;
 import io.github.oliviercap.chefduplacard.application.getmenu.ports.IGetMenuOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.query.IMenuViewQuery;

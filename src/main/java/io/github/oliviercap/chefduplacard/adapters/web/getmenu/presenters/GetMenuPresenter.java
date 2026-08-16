@@ -16,6 +16,7 @@ public class GetMenuPresenter implements IGetMenuOutputPort {
     @Override
     public void displayMenu(GetMenuResponseModel responseModel) {
         viewModel = new GetMenuViewModel(
+                responseModel.getMenuQuery().getFirst().menuId(),
                 responseModel.getMenuQuery().getFirst().menuName(),
                 responseModel.getMenuQuery().stream()
                         .map(this::toMenuLineViewModel)
@@ -30,8 +31,10 @@ public class GetMenuPresenter implements IGetMenuOutputPort {
 
     private GetMenuViewModel.MenuLineViewModel toMenuLineViewModel(GetMenuQuery getMenuQuery) {
         return new GetMenuViewModel.MenuLineViewModel(
+                getMenuQuery.menuId(),
                 getMenuQuery.nbPerson(),
                 toRecipeViewModel(
+                        getMenuQuery.menuId(),
                         getMenuQuery.name(),
                         getMenuQuery.instructions(),
                         getMenuQuery.duration(),
@@ -39,8 +42,9 @@ public class GetMenuPresenter implements IGetMenuOutputPort {
                 ));
     }
 
-    private GetMenuViewModel.RecipeViewModel toRecipeViewModel(String name, String instructions, Integer duration, String difficulty) {
+    private GetMenuViewModel.RecipeViewModel toRecipeViewModel(Long id, String name, String instructions, Integer duration, String difficulty) {
         return new GetMenuViewModel.RecipeViewModel(
+                id,
                 name,
                 instructions,
                 Duration.ofMinutes(duration),

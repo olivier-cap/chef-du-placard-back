@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record UpdateStockManuallyRequestModel(
-        String stockName,
+        Long stockId,
         List<UpdateStockAliment> updateStockAliments
 ) {
     public record UpdateStockAliment(
-            String alimentName,
+            Long stockLineId,
             BigDecimal newQuantity,
-            String unitName){}
+            Long unitId){}
 }

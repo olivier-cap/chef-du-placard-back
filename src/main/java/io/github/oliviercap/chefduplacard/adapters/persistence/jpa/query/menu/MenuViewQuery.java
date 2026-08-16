@@ -16,11 +16,11 @@ public class MenuViewQuery implements IMenuViewQuery {
         this.menuJpaQuery = menuJpaQuery;
     }
 
-    public List<GetMenuQuery> getViewMenu(String menuName){
-        if(menuName.isBlank()) {
-            throw new DomainException("menuName must not be blank");
+    public List<GetMenuQuery> getViewMenu(Long menuId){
+        if(menuId == null) {
+            throw new DomainException("menuID must not be null");
         }
 
-        return menuJpaQuery.getViewMenu(menuName);
+        return menuJpaQuery.getViewMenu(menuId);
     }
 }

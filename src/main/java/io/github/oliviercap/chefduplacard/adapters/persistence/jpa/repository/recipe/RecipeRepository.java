@@ -45,12 +45,10 @@ public class RecipeRepository implements IRecipeRepository {
 
     /**
      * Find a recipe in database by its name
-     * @param recipeName
-     * @return
      */
     @Override
-    public Optional<Recipe> findByName(String recipeName) {
-        return recipeJpaRepository.findCompleteByName(recipeName)
+    public Optional<Recipe> findById(Long recipeId) {
+        return recipeJpaRepository.findCompleteById(recipeId)
                 .map(recipeMapper::toDomain);
     }
 
@@ -60,22 +58,12 @@ public class RecipeRepository implements IRecipeRepository {
     }
 
     @Override
-    public Optional<RecipeJpa> findJpaByName(String recipeName) {
-        return recipeJpaRepository.findCompleteByName(recipeName);
-    }
-
-    @Override
     public RecipeJpa getReferenceJpaById(Long id) {
         return recipeJpaRepository.getReferenceById(id);
     }
 
-    @Override
-    public boolean existsByName(String name) {
-        return recipeJpaRepository.existsByName(name);
-    }
-
     //sauvegarde d'une nouvelle recette dans la base
-    //réalisé à partir des données correspondant à la recette + liste d'ingrédients (aliment+quantité+unité)
+    //réalisée à partir des données correspondant à la recette + liste d'ingrédients (aliment+quantité+unité)
     //Attention : les aliments et les unités doivent déjà être présents en base
     @Transactional
     @Override
@@ -88,13 +76,6 @@ public class RecipeRepository implements IRecipeRepository {
     {
         //On ne reçoit pas un recipe !
         //Objects.requireNonNull(recipe, "recipe must not be null");
-
-        //Verification qu'une recette du même nom n'existe pas déjà
-        //Impossible de vérifier par Id : par définition, une nouvelle recette n'a pas d'ID
-        //NE PAS UTILISER un findByName : cela reviendrait à construire tout le Recipe, alors qu'il n'existe peut-être pas
-        if(existsByName(nameRecipe)) {
-            throw new DomainException("Recipe with name " + nameRecipe + "already exists");
-        }
 
         /* ---- IMPORTANT ---- */
         //Récupération des objets Aliment et Unit exitants pour les rendre Managed par JPA.
@@ -116,8 +97,8 @@ public class RecipeRepository implements IRecipeRepository {
         //Préférer récupération des units par id...
         Map<Long,UnitJpa> unitJpaList = new HashMap<>();
         for(IngredientsData ingredientsData :ingredients) {
-            UnitJpa unitJpa = unitRepository.findUnitJpaById(ingredientsData.unitID()).orElseThrow(
-                    () -> new DomainException("unit not found, id:" + ingredientsData.unitID())
+            UnitJpa unitJpa = unitRepository.findUnitJpaById(ingredientsData.unitId()).orElseThrow(
+                    () -> new DomainException("unit not found, id:" + ingredientsData.unitId())
             );
             unitJpaList.put(unitJpa.getId(), unitJpa);
         }
@@ -138,7 +119,7 @@ public class RecipeRepository implements IRecipeRepository {
                     new IngredientJpa(
                             recipeJpa,
                             alimentJpaList.get(ingredientsData.alimentId()),
-                            unitJpaList.get(ingredientsData.unitID()),
+                            unitJpaList.get(ingredientsData.unitId()),
                             ingredientsData.quantity()
                     )
             );
@@ -147,6 +128,4 @@ public class RecipeRepository implements IRecipeRepository {
         //Sauvegarde de recipejpa en base - aliments et units sont managed, pas de doublon
         recipeJpaRepository.save(recipeJpa);
     }
-
-
 }

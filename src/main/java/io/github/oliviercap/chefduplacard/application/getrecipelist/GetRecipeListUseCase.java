@@ -1,11 +1,8 @@
 package io.github.oliviercap.chefduplacard.application.getrecipelist;
 
-import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
 import io.github.oliviercap.chefduplacard.application.getrecipelist.ports.IGetRecipeListInputPort;
 import io.github.oliviercap.chefduplacard.application.getrecipelist.ports.IGetRecipeListOutPort;
-import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.query.IGetRecipeListViewQuery;
-import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 
 import java.util.List;
 
@@ -26,21 +23,10 @@ public class GetRecipeListUseCase implements IGetRecipeListInputPort {
 
     @Override
     public void execute(GetRecipeListRequestModel requestModel) {
-        //List<RecipeResponse> recipeResponses = getRecipeList();
-        //outPort.displayRecipeList(new GetRecipeListResponseModel(recipeResponses));
         outPort.displayRecipeList(new GetRecipeListResponseModel(getRecipeList()));
     }
 
-    //private List<RecipeResponse> getRecipeList() {
     private List<GetRecipeListQuery> getRecipeList() {
         return getRecipeListViewQuery.getRecipeListQuery();
-        /*
-        List<Recipe> recipeList = recipeRepository.findAll();
-
-        return recipeList.stream()
-                .map(RecipeResponse::from)
-                .toList();
-
- */
     }
 }

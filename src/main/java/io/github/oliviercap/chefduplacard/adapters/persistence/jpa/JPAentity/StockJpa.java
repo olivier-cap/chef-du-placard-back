@@ -35,9 +35,30 @@ public class StockJpa {
     protected StockJpa() {
     }
 
-    public StockJpa(String name, List<StockLineJpa> stockLineJpa) {
+    public StockJpa(
+            String name,
+            List<StockLineJpa> stockLineJpa
+    ) {
         this.name = name;
-        this.stockLineJpa = stockLineJpa;
+        this.stockLineJpa = new ArrayList<>();
+
+        if (stockLineJpa != null) {
+            stockLineJpa.forEach(this::addStockLine);
+        }
+    }
+
+    public StockJpa(
+            Long id,
+            String name,
+            List<StockLineJpa> stockLineJpa
+    ) {
+        this.id = id;
+        this.name = name;
+        this.stockLineJpa = new ArrayList<>();
+
+        if (stockLineJpa != null) {
+            stockLineJpa.forEach(this::addStockLine);
+        }
     }
 
     public StockJpa(String name) {

@@ -29,6 +29,7 @@ public class GetRecipeListPresenter implements IGetRecipeListOutPort {
 
     private GetRecipeListViewModel.RecipeList toViewModel(GetRecipeListQuery recipeQuery) {
         return new GetRecipeListViewModel.RecipeList(
+                recipeQuery.id(),
                 recipeQuery.name(),
                 Duration.ofMinutes(recipeQuery.duration()),
                 recipeQuery.difficulty()

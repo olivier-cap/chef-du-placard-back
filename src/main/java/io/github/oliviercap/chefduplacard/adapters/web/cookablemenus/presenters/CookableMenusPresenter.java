@@ -31,6 +31,7 @@ public class CookableMenusPresenter implements ICookableMenusOutputPort {
 
     private CookableMenusViewModel.RecipeViewModel toRecipeViewModel(RecipeResponse recipeResponse) {
         return new CookableMenusViewModel.RecipeViewModel(
+                recipeResponse.id(),
                 recipeResponse.name(),
                 recipeResponse.instructions(),
                 recipeResponse.duration(),
@@ -43,6 +44,7 @@ public class CookableMenusPresenter implements ICookableMenusOutputPort {
 
     private CookableMenusViewModel.IngredientViewModel toIngredientViewModel(IngredientResponse ingredientResponse) {
         return new CookableMenusViewModel.IngredientViewModel(
+                ingredientResponse.id(),
                 ingredientResponse.quantityPerPerson(),
                 ingredientResponse.alimentResponse().name(),
                 ingredientResponse.unitResponse().symbol()

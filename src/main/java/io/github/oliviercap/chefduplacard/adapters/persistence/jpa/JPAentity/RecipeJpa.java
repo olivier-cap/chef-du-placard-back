@@ -48,6 +48,21 @@ public class RecipeJpa {
         this.difficulty = difficulty;
     }
 
+    public RecipeJpa(
+            Long id,
+            String name,
+            String instructions,
+            int durationMinutes,
+            String difficulty
+    ) {
+        this.id = id;
+        this.name = name;
+        this.instructions = instructions;
+        this.durationMinutes = durationMinutes;
+        this.difficulty = difficulty;
+    }
+
+
     public void addIngredient(IngredientJpa ingredientJpa) {
         this.ingredients.add(ingredientJpa);
         ingredientJpa.setRecipeJpa(this);

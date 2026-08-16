@@ -26,6 +26,7 @@ public class GetAlimentsPresenter implements IGetAlimentsOutputPort {
 
     private GetAlimentsViewModel.AlimentViewModel toAlimentViewModel(AlimentResponse alimentResponse) {
         return new GetAlimentsViewModel.AlimentViewModel(
+                alimentResponse.id(),
                 alimentResponse.name(),
                 alimentResponse.description(),
                 alimentResponse.active()

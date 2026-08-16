@@ -31,20 +31,20 @@ public class UpdateStockUseCase implements IUpdateStockInputPort {
 
     @Override
     public void execute(UpdateStockRequestModel requestModel) {
-        UpdateStockResponseModel response = updateStockByRecipe(requestModel.recipeName(), requestModel.nbPeople(), requestModel.stockName());
+        UpdateStockResponseModel response = updateStockByRecipe(requestModel.stockId(), requestModel.recipeId(), requestModel.nbPeople());
         outputPort.updateStockResponse(response);
     }
 
     //Necessite ecriture du stock dans base de données
     //Necessite verification/transaction de cette action: soit stock maj, soit non :)
     //envoie true si stock effectivement maj
-    private UpdateStockResponseModel updateStockByRecipe(String recipeName, int nbPeople, String stockName) {
+    private UpdateStockResponseModel updateStockByRecipe(Long stockId, Long recipeId, int nbPeople) {
         String responseMessage;
         boolean sufficientStock;
 
-        Recipe recipe = recipeRepository.findByName(recipeName).orElseThrow(() -> new DomainException("RecipeNotFound"));
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new DomainException("RecipeNotFound"));
 
-        Stock stock = stockRepository.findByName(stockName).orElseThrow(() -> new DomainException("Stock not found"));
+        Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new DomainException("Stock not found"));
 
         //Calcul de la quantité d'ingrédients nécessaires pour nbPeople
         List<Ingredient> requiredIngredients = recipe.computeRequiredIngredients(nbPeople);

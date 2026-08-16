@@ -1,14 +1,11 @@
 package io.github.oliviercap.chefduplacard.application.getstock;
 
-import io.github.oliviercap.chefduplacard.application.htttpresponse.StockResponse;
 import io.github.oliviercap.chefduplacard.application.getstock.ports.IGetStockInputPort;
 import io.github.oliviercap.chefduplacard.application.getstock.ports.IGetStockOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.query.IGetStockViewQuery;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
-import io.github.oliviercap.chefduplacard.domain.stock.Stock;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Access to the stock
@@ -27,16 +24,16 @@ public class GetStockUseCase implements IGetStockInputPort {
 
     @Override
     public void execute(GetStockRequestModel requestModel) {
-        if(requestModel.stockName().isBlank()) {
-            throw new DomainException("stock name must not be null");
+        if(requestModel.stockId() == null) {
+            throw new DomainException("stockid must not be null");
         }
 
         outputPort.displayStock(
-                new GetStockResponseModel(getStock(requestModel.stockName()))
+                new GetStockResponseModel(getStock(requestModel.stockId()))
         );
     }
 
-    private List<GetStockQuery> getStock(String stockName) {
-        return getStockViewQuery.getStockQuery(stockName);
+    private List<GetStockQuery> getStock(Long stockId) {
+        return getStockViewQuery.getStockQuery(stockId);
     }
 }

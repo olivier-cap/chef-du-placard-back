@@ -4,5 +4,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-public record CookableMenusRequest(int nbPeople, int nbMeal, String stockName) {
+public record CookableMenusRequest(int nbPeople, int nbMeal, Long stockId) {
 }

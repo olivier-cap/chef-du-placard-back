@@ -11,18 +11,26 @@ import java.util.Objects;
  * A Unit represents a unit and its symbol used to quantify an aliment.
  */
 public class Unit {
+    private final UnitId id;
     private String name;
     private String symbol;
 
-    public Unit(String name, String symbol) {
-        if(name.isBlank() || name == null) {
+    public Unit(UnitId id,
+                String name,
+                String symbol
+    ) {
+        if(id == null) {
+            throw new DomainException("Unit id must not be null");
+        }
+        if(name == null || name.isBlank()) {
             throw new DomainException("unit name must not be empty, blank or null");
         }
-        if(symbol.isBlank() || symbol == null) {
+        if(symbol == null || symbol.isBlank()) {
             throw new DomainException("unit symbol must not bet empty, blank or null");
         }
         this.name = name;
         this.symbol = symbol;
+        this.id = id;
     }
 
     /**
@@ -50,14 +58,18 @@ public class Unit {
         this.symbol = symbol;
     }
 
+    public UnitId getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Unit unit)) return false;
-        return Objects.equals(name, unit.name) && Objects.equals(symbol, unit.symbol);
+        return Objects.equals(id, unit.id) && Objects.equals(name, unit.name) && Objects.equals(symbol, unit.symbol);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, symbol);
+        return Objects.hash(id, name, symbol);
     }
 }

@@ -11,6 +11,7 @@ public interface IGetRecipeListJpaQuery extends JpaRepository<RecipeJpa, Long> {
 
     @Query("""
         select new io.github.oliviercap.chefduplacard.application.getrecipelist.GetRecipeListQuery(
+                r.id,
                 r.name,
                 r.durationMinutes,
                 r.difficulty

@@ -8,41 +8,111 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.Al
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.ingredient.IngredientMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe.RecipeMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.UnitMapper;
-import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
-import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RecipeMapperTest {
+class RecipeMapperTest {
 
     @Test
-    void creates_stock_domain_from_jpa(){
-        AlimentJpa alimentJpa = new AlimentJpa("name","description", true);
-        UnitJpa unitJpa = new UnitJpa("name","symbol");
-        RecipeJpa recipeJpa = new RecipeJpa("name", "instr", 1, "1");
-        IngredientJpa ingredientJpa = new IngredientJpa(recipeJpa, alimentJpa, unitJpa, BigDecimal.valueOf(1));
+    void creates_recipe_domain_from_jpa() {
+        AlimentJpa alimentJpa = new AlimentJpa(
+                1L,
+                "aliment name",
+                "aliment description",
+                true
+        );
+
+        UnitJpa unitJpa = new UnitJpa(
+                2L,
+                "unit name",
+                "symbol"
+        );
+
+        RecipeJpa recipeJpa = new RecipeJpa(
+                4L,
+                "recipe name",
+                "recipe instructions",
+                30,
+                "easy"
+        );
+
+        IngredientJpa ingredientJpa = new IngredientJpa(
+                3L,
+                recipeJpa,
+                alimentJpa,
+                unitJpa,
+                BigDecimal.ONE
+        );
 
         recipeJpa.addIngredient(ingredientJpa);
 
-        Aliment aliment = new Aliment("name", "description",true);
-        Unit unit = new Unit("name","symbol");
-        Ingredient ingredient = new Ingredient(BigDecimal.valueOf(1), aliment, unit);
-        Recipe recipeExpected = new Recipe("name", "instr", Duration.ofMinutes(1), "1", List.of(ingredient));
-
         AlimentMapper alimentMapper = new AlimentMapper();
         UnitMapper unitMapper = new UnitMapper();
-        IngredientMapper ingredientMapper = new IngredientMapper(alimentMapper, unitMapper);
-        RecipeMapper recipeMapper = new RecipeMapper(ingredientMapper);
 
-        Recipe recipe = recipeMapper.toDomain(recipeJpa);
+        IngredientMapper ingredientMapper = new IngredientMapper(
+                alimentMapper,
+                unitMapper
+        );
 
-        assertThat(recipe).isEqualTo(recipeExpected);
+        RecipeMapper recipeMapper = new RecipeMapper(
+                ingredientMapper
+        );
+
+        Recipe result = recipeMapper.toDomain(recipeJpa);
+
+        assertThat(result.getId().id())
+                .isEqualTo(4L);
+
+        assertThat(result.getName())
+                .isEqualTo("recipe name");
+
+        assertThat(result.getInstructions())
+                .isEqualTo("recipe instructions");
+
+        assertThat(result.getDuration())
+                .isEqualTo(Duration.ofMinutes(30));
+
+        assertThat(result.getDifficulty())
+                .isEqualTo("easy");
+
+        assertThat(result.getIngredients())
+                .hasSize(1);
+
+        Ingredient mappedIngredient = result
+                .getIngredients()
+                .getFirst();
+
+        assertThat(mappedIngredient.getId().id())
+                .isEqualTo(3L);
+
+        assertThat(mappedIngredient.getQuantity())
+                .isEqualByComparingTo(BigDecimal.ONE);
+
+        assertThat(mappedIngredient.getAliment().getId().id())
+                .isEqualTo(1L);
+
+        assertThat(mappedIngredient.getAliment().getName())
+                .isEqualTo("aliment name");
+
+        assertThat(mappedIngredient.getAliment().getDescription())
+                .isEqualTo("aliment description");
+
+        assertThat(mappedIngredient.getAliment().isActive())
+                .isTrue();
+
+        assertThat(mappedIngredient.getUnit().getId().id())
+                .isEqualTo(2L);
+
+        assertThat(mappedIngredient.getUnit().getName())
+                .isEqualTo("unit name");
+
+        assertThat(mappedIngredient.getUnit().getSymbol())
+                .isEqualTo("symbol");
     }
 }

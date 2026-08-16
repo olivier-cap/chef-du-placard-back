@@ -27,7 +27,7 @@ public class CookableMenusController {
         @RequestBody CookableMenusRequest request
     ) {
         CookableMenusRequestModel requestModel =
-                new CookableMenusRequestModel(request.stockName(), request.nbMeal(), request.nbPeople(), List.of());
+                new CookableMenusRequestModel(request.stockId(), request.nbMeal(), request.nbPeople(), List.of());
 
         inputPort.execute(requestModel);
 

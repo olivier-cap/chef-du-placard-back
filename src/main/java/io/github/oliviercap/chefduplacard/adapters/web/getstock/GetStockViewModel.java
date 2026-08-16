@@ -7,6 +7,7 @@ public record GetStockViewModel(
         List<StockLineViewModel> stockLineViewModelList
 ) {
     public record StockLineViewModel(
+            Long id,
             BigDecimal quantity,
             String alimentName,
             String unitSymbol

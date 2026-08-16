@@ -44,22 +44,21 @@ class GetOneRecipeUseCaseIntegrationTest {
 
     @Test
     void should_get_one_recipe_with_real_persistence_pipeline() {
-
-        // ===== GIVEN =====
-
-        AlimentJpa apple = new AlimentJpa(
-                "integration-one-recipe-apple",
-                "fruit",
-                true
+        // Given
+        AlimentJpa apple = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-one-recipe-apple",
+                        "fruit",
+                        true
+                )
         );
 
-        UnitJpa gram = new UnitJpa(
-                "gramme",
-                "g"
+        UnitJpa gram = unitJpaRepository.save(
+                new UnitJpa(
+                        "gramme",
+                        "g"
+                )
         );
-
-        alimentJpaRepository.save(apple);
-        unitJpaRepository.save(gram);
 
         RecipeJpa recipe = new RecipeJpa(
                 "integration-one-recipe-apple-pie",
@@ -77,90 +76,67 @@ class GetOneRecipeUseCaseIntegrationTest {
                 )
         );
 
-        recipeJpaRepository.save(recipe);
-
-        // ===== WHEN =====
+        RecipeJpa savedRecipe = recipeJpaRepository.save(recipe);
 
         GetOneRecipeRequestModel request =
-                new GetOneRecipeRequestModel("integration-one-recipe-apple-pie");
+                new GetOneRecipeRequestModel(savedRecipe.getId());
 
+        // When
         useCase.execute(request);
 
         GetOneRecipeViewModel result = presenter.getViewModel();
 
-        // ===== THEN : recette =====
-
-        assertThat(result)
-                .isNotNull();
-
+        // Then: recipe
+        assertThat(result).isNotNull();
         assertThat(result.name())
                 .isEqualTo("integration-one-recipe-apple-pie");
-
         assertThat(result.instructions())
                 .isEqualTo("Cut apples and bake.");
-
         assertThat(result.duration())
                 .isEqualTo(Duration.ofMinutes(30));
-
         assertThat(result.difficulty())
                 .isEqualTo("easy");
 
-        // ===== THEN : ingrédients =====
-
-        assertThat(result.ingredients())
-                .hasSize(1);
+        // Then: ingredients
+        assertThat(result.ingredients()).hasSize(1);
 
         GetOneRecipeViewModel.IngredientViewModel ingredient =
-                result.ingredients().get(0);
+                result.ingredients().getFirst();
 
         assertThat(ingredient.quantity())
                 .isEqualByComparingTo(BigDecimal.valueOf(100));
-
         assertThat(ingredient.aliment().name())
                 .isEqualTo("integration-one-recipe-apple");
-
         assertThat(ingredient.aliment().description())
                 .isEqualTo("fruit");
-
-        assertThat(ingredient.aliment().isActive())
-                .isTrue();
-
-        assertThat(ingredient.unit().name())
-                .isEqualTo("gramme");
-
-        assertThat(ingredient.unit().symbol())
-                .isEqualTo("g");
+        assertThat(ingredient.aliment().isActive()).isTrue();
+        assertThat(ingredient.unit().name()).isEqualTo("gramme");
+        assertThat(ingredient.unit().symbol()).isEqualTo("g");
     }
 
     @Test
-    void should_throw_domain_exception_when_recipe_name_is_blank() {
-
-        // ===== GIVEN =====
-
+    void should_throw_domain_exception_when_recipe_id_is_null() {
+        // Given
         GetOneRecipeRequestModel request =
-                new GetOneRecipeRequestModel(" ");
+                new GetOneRecipeRequestModel(null);
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage("recipeName must not be blank");
+                .hasMessage("recipeId must not be null");
     }
 
     @Test
     void should_throw_domain_exception_when_recipe_does_not_exist() {
-
-        // ===== GIVEN =====
-
-        String unknownRecipeName = "integration-unknown-recipe";
+        // Given
+        Long unknownRecipeId = 999999L;
 
         GetOneRecipeRequestModel request =
-                new GetOneRecipeRequestModel(unknownRecipeName);
+                new GetOneRecipeRequestModel(unknownRecipeId);
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage("recipe not found " + unknownRecipeName);
+                .hasMessage("recipe not found " + unknownRecipeId);
     }
 }

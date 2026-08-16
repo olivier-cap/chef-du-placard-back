@@ -9,6 +9,6 @@ public record SaveNewMenuRequest(
 ) {
     public record MenuLine(
             BigDecimal nbPerson,
-            String recipeName
+            Long recipeId
     ) {}
 }

@@ -21,9 +21,9 @@ public class GetMenuController {
 
     @GetMapping("/api/getmenu")
     public GetMenuViewModel getMenu(
-            @RequestParam String menuName
+            @RequestParam Long menuId
     ) {
-        inputPort.execute(new GetMenuRequestModel(menuName));
+        inputPort.execute(new GetMenuRequestModel(menuId));
 
         return outputPort.getViewModel();
     }

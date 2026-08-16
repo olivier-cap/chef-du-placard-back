@@ -20,17 +20,17 @@ public class GetOneRecipeUseCase implements IGetOneRecipeInputPort {
 
     @Override
     public void execute(GetOneRecipeRequestModel requestModel) {
-        RecipeResponse recipeResponse = getOneRecipe(requestModel.recipeName());
+        RecipeResponse recipeResponse = getOneRecipe(requestModel.recipeId());
         outputPort.diplayOneRecipe(new GetOneRecipeResponseModel(recipeResponse));
     }
 
-    private RecipeResponse getOneRecipe(String recipeName) {
-        if (recipeName.isBlank()) {
-            throw new DomainException("recipeName must not be blank");
+    private RecipeResponse getOneRecipe(Long recipeId) {
+        if (recipeId == null) {
+            throw new DomainException("recipeId must not be null");
         }
 
-        Recipe recipe = recipeRepository.findByName(recipeName)
-                .orElseThrow(()-> new DomainException("recipe not found " + recipeName));
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(()-> new DomainException("recipe not found " + recipeId));
 
         return RecipeResponse.from(recipe);
     }

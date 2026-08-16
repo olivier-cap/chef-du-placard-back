@@ -7,6 +7,7 @@
     import java.util.Objects;
 
     public record RecipeResponse(
+            Long id,
             String name,
             String instructions,
             Duration duration,
@@ -17,6 +18,7 @@
             Objects.requireNonNull(recipe, "recipe must not be null");
 
             return new RecipeResponse(
+                    recipe.getId().id(),
                     recipe.getName(),
                     recipe.getInstructions(),
                     recipe.getDuration(),

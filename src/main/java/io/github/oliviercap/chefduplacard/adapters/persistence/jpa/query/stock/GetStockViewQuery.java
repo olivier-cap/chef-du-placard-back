@@ -16,7 +16,7 @@ public class GetStockViewQuery implements IGetStockViewQuery {
     }
 
     @Override
-    public List<GetStockQuery> getStockQuery(String stockName) {
-        return getStockJpaQuery.getMenuView(stockName);
+    public List<GetStockQuery> getStockQuery(Long stockId) {
+        return getStockJpaQuery.getMenuView(stockId);
     }
 }

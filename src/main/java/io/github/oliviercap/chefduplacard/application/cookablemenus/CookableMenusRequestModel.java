@@ -5,7 +5,7 @@ import io.github.oliviercap.chefduplacard.domain.recipefilters.RecipeFilter;
 import java.util.List;
 
 public record CookableMenusRequestModel(
-        String stockName,
+        Long stockId,
         int nbMealToPrepare,
         int nbPeople,
         List<RecipeFilter> recipeFilters

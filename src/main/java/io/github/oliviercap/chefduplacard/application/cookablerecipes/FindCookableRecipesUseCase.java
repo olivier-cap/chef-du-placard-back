@@ -5,6 +5,7 @@ import io.github.oliviercap.chefduplacard.application.cookablerecipes.ports.IFin
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
+import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import io.github.oliviercap.chefduplacard.domain.stock.CoveredIngredients;
@@ -36,7 +37,7 @@ public class FindCookableRecipesUseCase implements IFindCookableRecipesInputPort
     public void execute(FindCookableRecipesRequestModel findCookableRecipesRequestModel) {
 
         int nbPeople = findCookableRecipesRequestModel.npPeople();
-        List<Recipe> cookableRecipes = findCookableRecipes(nbPeople);
+        List<Recipe> cookableRecipes = findCookableRecipes(nbPeople, findCookableRecipesRequestModel.stockId());
 
         outputPort.displayCookableRecipes(
                 new FindCookableRecipesResponseModel(
@@ -52,15 +53,15 @@ public class FindCookableRecipesUseCase implements IFindCookableRecipesInputPort
      * @param nbPeople nombre de personnes prise en compte pour la recette
      * @return liste de recettes que le stock permet de faire avec nbPeople. Pas forcément possible de réaliser toutes ces recettes.
      */
-    private List<Recipe> findCookableRecipes(int nbPeople) {
-
-        String stockName = "test";
+    private List<Recipe> findCookableRecipes(int nbPeople, Long stockId) {
 
         List<Recipe> coveredRecipes = new ArrayList<>();
 
         List<Recipe> existingRecipes = recipeRepository.findAll();
-        Optional<Stock> stockOptional = stockRepository.findByName(stockName);
-        Stock stock = stockOptional.orElseThrow();
+        Stock stock = stockRepository.findById(stockId)
+                .orElseThrow(() -> new DomainException(
+                        "Stock " + stockId + " not found"
+                ));
 
         for(Recipe recipe : existingRecipes) {
             List<Ingredient> requiredIngredients = recipe.computeRequiredIngredients(nbPeople);

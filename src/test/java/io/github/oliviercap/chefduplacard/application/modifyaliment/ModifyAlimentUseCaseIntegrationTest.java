@@ -30,227 +30,214 @@ class ModifyAlimentUseCaseIntegrationTest {
 
     @Test
     void should_modify_existing_aliment_name_and_description_with_real_persistence_pipeline() {
-
-        // ===== GIVEN =====
-
+        // Given
         String oldAlimentName = "integration-modify-old-apple";
         String newAlimentName = "integration-modify-new-apple";
 
-        AlimentJpa existing = new AlimentJpa(
-                oldAlimentName,
-                "old description",
-                true
+        AlimentJpa savedAliment = alimentJpaRepository.save(
+                new AlimentJpa(
+                        oldAlimentName,
+                        "old description",
+                        true
+                )
         );
 
-        alimentJpaRepository.save(existing);
+        Long alimentId = savedAliment.getId();
 
         ModifyAlimentRequestModel request =
                 new ModifyAlimentRequestModel(
-                        oldAlimentName,
+                        alimentId,
                         newAlimentName,
                         "new description"
                 );
 
-        // ===== WHEN =====
-
+        // When
         useCase.execute(request);
 
         ModifyAlimentViewModel result = presenter.getViewModel();
 
-        // ===== THEN : presenter =====
-
-        assertThat(result)
-                .isNotNull();
-
+        // Then: presenter
+        assertThat(result).isNotNull();
         assertThat(result.message())
                 .isEqualTo("Modification of aliment done");
 
-        // ===== THEN : persistence réelle =====
-
-        assertThat(alimentJpaRepository.findByName(oldAlimentName))
-                .isEmpty();
-
-        AlimentJpa modified = alimentJpaRepository.findByName(newAlimentName)
+        // Then: real persistence
+        AlimentJpa modified = alimentJpaRepository.findById(alimentId)
                 .orElseThrow();
 
-        assertThat(modified.getName())
-                .isEqualTo(newAlimentName);
-
-        assertThat(modified.getDescription())
-                .isEqualTo("new description");
-
-        assertThat(modified.isActive())
-                .isTrue();
+        assertThat(modified.getId()).isEqualTo(alimentId);
+        assertThat(modified.getName()).isEqualTo(newAlimentName);
+        assertThat(modified.getDescription()).isEqualTo("new description");
+        assertThat(modified.isActive()).isTrue();
     }
 
     @Test
     void should_modify_existing_aliment_description_without_changing_name() {
-
-        // ===== GIVEN =====
-
+        // Given
         String alimentName = "integration-modify-description-only-apple";
 
-        AlimentJpa existing = new AlimentJpa(
-                alimentName,
-                "old description",
-                true
+        AlimentJpa savedAliment = alimentJpaRepository.save(
+                new AlimentJpa(
+                        alimentName,
+                        "old description",
+                        true
+                )
         );
 
-        alimentJpaRepository.save(existing);
+        Long alimentId = savedAliment.getId();
 
         ModifyAlimentRequestModel request =
                 new ModifyAlimentRequestModel(
-                        alimentName,
+                        alimentId,
                         new String(alimentName),
                         "new description"
                 );
 
-        // ===== WHEN =====
-
+        // When
         useCase.execute(request);
 
         ModifyAlimentViewModel result = presenter.getViewModel();
 
-        // ===== THEN : presenter =====
-
-        assertThat(result)
-                .isNotNull();
-
+        // Then: presenter
+        assertThat(result).isNotNull();
         assertThat(result.message())
                 .isEqualTo("Modification of aliment done");
 
-        // ===== THEN : persistence réelle =====
-
-        AlimentJpa modified = alimentJpaRepository.findByName(alimentName)
+        // Then: real persistence
+        AlimentJpa modified = alimentJpaRepository.findById(alimentId)
                 .orElseThrow();
 
-        assertThat(modified.getName())
-                .isEqualTo(alimentName);
-
-        assertThat(modified.getDescription())
-                .isEqualTo("new description");
-
-        assertThat(modified.isActive())
-                .isTrue();
+        assertThat(modified.getId()).isEqualTo(alimentId);
+        assertThat(modified.getName()).isEqualTo(alimentName);
+        assertThat(modified.getDescription()).isEqualTo("new description");
+        assertThat(modified.isActive()).isTrue();
     }
 
     @Test
-    void should_throw_domain_exception_when_current_aliment_name_is_blank() {
-
-        // ===== GIVEN =====
-
+    void should_throw_domain_exception_when_aliment_id_is_null() {
+        // Given
         ModifyAlimentRequestModel request =
                 new ModifyAlimentRequestModel(
-                        " ",
+                        null,
                         "new-name",
                         "new description"
                 );
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage("Aliment name must not be blank");
+                .hasMessage("Aliment id must not be null");
     }
 
     @Test
     void should_throw_domain_exception_when_aliment_does_not_exist() {
-
-        // ===== GIVEN =====
-
-        String unknownAlimentName = "integration-unknown-aliment";
+        // Given
+        Long unknownAlimentId = 999999L;
 
         ModifyAlimentRequestModel request =
                 new ModifyAlimentRequestModel(
-                        unknownAlimentName,
+                        unknownAlimentId,
                         "new-name",
                         "new description"
                 );
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
-                .hasMessage("Aliment " + unknownAlimentName + " does not exist");
+                .hasMessage(
+                        "Aliment " + unknownAlimentId + " does not exist"
+                );
     }
 
     @Test
     void should_throw_domain_exception_when_new_aliment_name_already_exists() {
-
-        // ===== GIVEN =====
-
+        // Given
         String currentAlimentName = "integration-current-apple";
         String alreadyUsedAlimentName = "integration-existing-banana";
 
-        AlimentJpa current = new AlimentJpa(
-                currentAlimentName,
-                "apple description",
-                true
+        AlimentJpa currentAliment = alimentJpaRepository.save(
+                new AlimentJpa(
+                        currentAlimentName,
+                        "apple description",
+                        true
+                )
         );
 
-        AlimentJpa alreadyExisting = new AlimentJpa(
-                alreadyUsedAlimentName,
-                "banana description",
-                true
+        AlimentJpa alreadyExistingAliment = alimentJpaRepository.save(
+                new AlimentJpa(
+                        alreadyUsedAlimentName,
+                        "banana description",
+                        true
+                )
         );
 
-        alimentJpaRepository.save(current);
-        alimentJpaRepository.save(alreadyExisting);
+        Long currentAlimentId = currentAliment.getId();
+        Long alreadyExistingAlimentId = alreadyExistingAliment.getId();
 
         ModifyAlimentRequestModel request =
                 new ModifyAlimentRequestModel(
-                        currentAlimentName,
+                        currentAlimentId,
                         alreadyUsedAlimentName,
                         "new description"
                 );
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("new aliment name already exists");
 
-        // ===== THEN : persistence inchangée =====
-
-        AlimentJpa unchangedCurrent = alimentJpaRepository.findByName(currentAlimentName)
+        // Then: persistence remains unchanged
+        AlimentJpa unchangedCurrent = alimentJpaRepository
+                .findById(currentAlimentId)
                 .orElseThrow();
 
-        AlimentJpa unchangedExisting = alimentJpaRepository.findByName(alreadyUsedAlimentName)
+        AlimentJpa unchangedExisting = alimentJpaRepository
+                .findById(alreadyExistingAlimentId)
                 .orElseThrow();
 
+        assertThat(unchangedCurrent.getName())
+                .isEqualTo(currentAlimentName);
         assertThat(unchangedCurrent.getDescription())
                 .isEqualTo("apple description");
 
+        assertThat(unchangedExisting.getName())
+                .isEqualTo(alreadyUsedAlimentName);
         assertThat(unchangedExisting.getDescription())
                 .isEqualTo("banana description");
     }
 
     @Test
     void should_throw_domain_exception_when_new_aliment_name_is_blank() {
-
-        // ===== GIVEN =====
-
+        // Given
         String alimentName = "integration-invalid-new-name-apple";
 
-        AlimentJpa existing = new AlimentJpa(
-                alimentName,
-                "old description",
-                true
+        AlimentJpa savedAliment = alimentJpaRepository.save(
+                new AlimentJpa(
+                        alimentName,
+                        "old description",
+                        true
+                )
         );
-
-        alimentJpaRepository.save(existing);
 
         ModifyAlimentRequestModel request =
                 new ModifyAlimentRequestModel(
-                        alimentName,
+                        savedAliment.getId(),
                         "",
                         "new description"
                 );
 
-        // ===== WHEN / THEN =====
-
+        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("Aliment name must not be null or blank");
+
+        // Then: persistence remains unchanged
+        AlimentJpa unchanged = alimentJpaRepository
+                .findById(savedAliment.getId())
+                .orElseThrow();
+
+        assertThat(unchanged.getName()).isEqualTo(alimentName);
+        assertThat(unchanged.getDescription())
+                .isEqualTo("old description");
     }
 }

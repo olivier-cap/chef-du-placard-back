@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FindCookableRecipesController.class)
-public class FindCookableRecipesControllerTest {
+class FindCookableRecipesControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,8 +35,7 @@ public class FindCookableRecipesControllerTest {
 
     @Test
     void should_return_cookable_recipes() throws Exception {
-
-        // GIVEN
+        // Given
         FindCookableRecipesViewModel.RecipeViewModel recipe =
                 new FindCookableRecipesViewModel.RecipeViewModel(
                         "r1",
@@ -47,31 +46,29 @@ public class FindCookableRecipesControllerTest {
                 );
 
         FindCookableRecipesViewModel viewModel =
-                new FindCookableRecipesViewModel(
-                        List.of(recipe)
-                );
+                new FindCookableRecipesViewModel(List.of(recipe));
 
         doNothing().when(inputPort)
                 .execute(any(FindCookableRecipesRequestModel.class));
 
-        when(presenter.getViewModel())
-                .thenReturn(viewModel);
+        when(presenter.getViewModel()).thenReturn(viewModel);
 
-        // WHEN / THEN
-        mockMvc.perform(get("/findCookableRecipes")
+        // When and then
+        mockMvc.perform(get("/api/findCookableRecipes")
                         .param("nbPeople", "1")
-                        .param("stock", "test"))
+                        .param("stockId", "42"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.recipes[0].recipeName").value("r1"))
-                .andExpect(jsonPath("$.recipes[0].recipeInstructions").value("instructions"))
+                .andExpect(jsonPath("$.recipes[0].recipeInstructions")
+                        .value("instructions"))
                 .andExpect(jsonPath("$.recipes[0].duration").value("PT5M"))
                 .andExpect(jsonPath("$.recipes[0].difficulty").value("easy"))
                 .andExpect(jsonPath("$.recipes[0].ingredients").isArray());
 
-        verify(inputPort)
-                .execute(any(FindCookableRecipesRequestModel.class));
+        verify(inputPort).execute(
+                new FindCookableRecipesRequestModel(1, 42L)
+        );
 
-        verify(presenter)
-                .getViewModel();
+        verify(presenter).getViewModel();
     }
 }

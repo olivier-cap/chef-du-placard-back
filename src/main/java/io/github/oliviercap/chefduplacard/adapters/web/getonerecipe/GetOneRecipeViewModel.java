@@ -5,6 +5,7 @@
     import java.util.List;
 
     public record GetOneRecipeViewModel(
+            Long id,
             String name,
             String instructions,
             Duration duration,
@@ -12,16 +13,19 @@
             List<IngredientViewModel>ingredients
     ) {
         public record IngredientViewModel(
+                Long id,
                 BigDecimal quantity,
                 AlimentViewModel aliment,
                 UnitViewModel unit
         ) {}
         public record AlimentViewModel(
+           Long id,
            String name,
            String description,
            boolean isActive
         ) {}
         public record UnitViewModel(
+                Long id,
                 String name,
                 String symbol
         ) {}

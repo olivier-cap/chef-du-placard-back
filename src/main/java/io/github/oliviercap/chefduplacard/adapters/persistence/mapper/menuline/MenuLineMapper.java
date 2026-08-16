@@ -3,6 +3,7 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.mapper.menuline;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.MenuLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe.RecipeMapper;
 import io.github.oliviercap.chefduplacard.domain.menu.MenuLine;
+import io.github.oliviercap.chefduplacard.domain.menu.MenuLineId;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -21,6 +22,7 @@ public class MenuLineMapper {
         Objects.requireNonNull(menuLineJpa.getRecipeJpa(), "recipeJpa must not be null");
 
         return new MenuLine(
+                new MenuLineId(menuLineJpa.getId()),
                 recipeMapper.toDomain(menuLineJpa.getRecipeJpa()),
                 menuLineJpa.getNbPerson()
         );

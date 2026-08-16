@@ -25,10 +25,10 @@ public class FindCookableRecipesController {
     @GetMapping("/api/findCookableRecipes")
     public FindCookableRecipesViewModel findCookableRecipes(
             @RequestParam int nbPeople,
-            @RequestParam String stock
+            @RequestParam Long stockId
     ) {
         FindCookableRecipesRequestModel requestModel =
-                new FindCookableRecipesRequestModel(nbPeople, stock);
+                new FindCookableRecipesRequestModel(nbPeople, stockId);
 
         inputPort.execute(requestModel);
 

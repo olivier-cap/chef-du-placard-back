@@ -2,6 +2,7 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
+import io.github.oliviercap.chefduplacard.domain.unit.UnitId;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -16,8 +17,9 @@ public class UnitMapper{
         Objects.requireNonNull(unitJpa, "unitjpa must not be null");
 
         return new Unit(
-          unitJpa.getName(),
-          unitJpa.getSymbol()
+                new UnitId(unitJpa.getId()),
+                unitJpa.getName(),
+                unitJpa.getSymbol()
         );
     }
 

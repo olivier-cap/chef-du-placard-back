@@ -22,12 +22,6 @@ public class UnitRepository implements IUnitRepository {
 
 
     @Override
-    public Optional<Unit> findUnitByName(String name) {
-        return unitJpaRepository.findUnitJpaByName(name)
-                .map(unitMapper::toDomain);
-    }
-
-    @Override
     public Optional<Unit> findUnitById(Long id) {
         return unitJpaRepository.findUnitJpaById(id).
                 map(unitMapper::toDomain);
@@ -44,12 +38,12 @@ public class UnitRepository implements IUnitRepository {
     }
 
     @Override
-    public Optional<UnitJpa> findJpaByName(String name) {
-        return unitJpaRepository.findUnitJpaByName(name);
+    public Optional<UnitJpa> findJpaById(Long id) {
+        return unitJpaRepository.findUnitJpaById(id);
     }
 
     @Override
     public UnitJpa getReferenceById(Long id) {
-        return this.getReferenceById(id);
+        return unitJpaRepository.getReferenceById(id);
     }
 }

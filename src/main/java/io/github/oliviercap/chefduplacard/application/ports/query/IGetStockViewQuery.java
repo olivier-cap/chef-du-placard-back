@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IGetStockViewQuery {
 
-    List<GetStockQuery> getStockQuery(String stockName);
+    List<GetStockQuery> getStockQuery(Long stockId);
 }

@@ -1,7 +1,6 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 
 import jakarta.persistence.*;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;

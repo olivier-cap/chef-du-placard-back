@@ -12,7 +12,8 @@ public class GetStockPresenter implements IGetStockOutputPort {
 
     @Override
     public void displayStock(GetStockResponseModel responseModel) {
-        viewModel = new GetStockViewModel(responseModel.getStockQueryList().stream()
+        viewModel = new GetStockViewModel(
+                responseModel.getStockQueryList().stream()
                 .map(this::toStockLineViewModel)
                 .toList()
         );
@@ -25,6 +26,7 @@ public class GetStockPresenter implements IGetStockOutputPort {
 
     private GetStockViewModel.StockLineViewModel toStockLineViewModel(GetStockQuery getStockQuery) {
         return new GetStockViewModel.StockLineViewModel(
+                getStockQuery.id(),
                 getStockQuery.quantity(),
                 getStockQuery.alimentName(),
                 getStockQuery.unitSymbol()

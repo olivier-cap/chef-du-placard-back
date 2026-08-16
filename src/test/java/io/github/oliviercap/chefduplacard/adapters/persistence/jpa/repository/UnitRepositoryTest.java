@@ -22,7 +22,7 @@ public class UnitRepositoryTest {
 
         unitJpaRepository.save(unitJpa);
 
-        var result = unitJpaRepository.findUnitJpaByName("name");
+        var result = unitJpaRepository.findUnitJpaById(unitJpa.getId());
 
 
         assertThat(result.orElseThrow()).isEqualTo(unitJpa);

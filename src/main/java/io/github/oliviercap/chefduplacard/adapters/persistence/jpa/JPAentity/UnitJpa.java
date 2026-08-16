@@ -27,6 +27,15 @@ public class UnitJpa {
         this.symbol = symbol;
     }
 
+    public UnitJpa(
+            Long id,
+            String name,
+            String symbol
+    ) {
+        this.id = id;
+        this.name = name;
+        this.symbol = symbol;
+    }
     public String getName() {
         return name;
     }

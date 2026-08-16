@@ -23,14 +23,14 @@ public class UpdateStockController {
 
     @GetMapping("/api/updateStock")
     public UpdateStockViewModel updateStock(
-            @RequestParam String recipeName,
+            @RequestParam Long recipeId,
             @RequestParam int nbPeople,
-            @RequestParam String stockName
+            @RequestParam Long stockId
     ) {
         inputPort.execute(new UpdateStockRequestModel(
-                recipeName,
-                nbPeople,
-                stockName
+                stockId,
+                recipeId,
+                nbPeople
         ));
 
         return outputPort.getViewModel();

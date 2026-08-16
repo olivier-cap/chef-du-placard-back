@@ -1,17 +1,13 @@
 package io.github.oliviercap.chefduplacard.application.savenewmenu;
 
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu.SaveNewMenuDTO;
 import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.controllers.SaveNewMenuRequest;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IMenuRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.savenewmenu.port.ISaveNewMenuInputPort;
 import io.github.oliviercap.chefduplacard.application.savenewmenu.port.ISaveNewMenuOutputPort;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
-import io.github.oliviercap.chefduplacard.domain.menu.Menu;
-import io.github.oliviercap.chefduplacard.domain.menu.MenuLine;
-import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
@@ -39,21 +35,26 @@ public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
     private boolean saveNewMenu(SaveNewMenuRequest newMenuRecord) {
         Objects.requireNonNull(newMenuRecord, "menu must not be null");
 
-        //reconstruction d'un menu à partir des données
-        Menu menu;
-        List<MenuLine> menuLineList = new ArrayList<>();
-        for (SaveNewMenuRequest.MenuLine menuLine : newMenuRecord.menuLines()) {
-            //getRecipe
-            Recipe recipe = recipeRepository.findByName(menuLine.recipeName())
-                    .orElseThrow(() -> new DomainException("Recipe " + menuLine.recipeName() + " not found"));
-
-            menuLineList.add(new MenuLine(recipe, menuLine.nbPerson()));
+        if (newMenuRecord.menuName() == null
+                || newMenuRecord.menuName().isBlank()) {
+            throw new DomainException("menu name must not be blank");
         }
 
-        menu = new Menu(newMenuRecord.menuName(), menuLineList);
+        //reconstruction d'un menuDTO à partir des données
+
+        SaveNewMenuDTO menuDTO = new SaveNewMenuDTO(
+                newMenuRecord.menuName(),
+                newMenuRecord.menuLines().stream()
+                        .map(
+                                ml -> new SaveNewMenuDTO.saveNewMenuLine(
+                                        ml.recipeId(),
+                                        ml.nbPerson()
+                                )
+                        ).toList()
+        );
 
         try{
-            menuRepository.save(menu);
+            menuRepository.save(menuDTO);
         } catch (Exception e) {
             throw new DomainException("save of menu didn't work", e);
         }

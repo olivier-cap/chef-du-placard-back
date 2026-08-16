@@ -9,8 +9,8 @@ import java.util.Map;
 
 public interface IStockJpaSynchronizer {
 
-    public void synchronize(StockJpa stockJpa,
+    void synchronize(StockJpa stockJpa,
                             Stock newStock,
-                            Map<String, AlimentJpa> existingAliment,
-                            Map<String, UnitJpa> existingUnit);
+                            Map<Long, AlimentJpa> existingAliment,
+                            Map<Long, UnitJpa> existingUnit);
 }

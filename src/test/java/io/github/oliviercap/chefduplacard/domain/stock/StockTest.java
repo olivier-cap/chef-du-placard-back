@@ -2,8 +2,11 @@ package io.github.oliviercap.chefduplacard.domain.stock;
 
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
+import io.github.oliviercap.chefduplacard.domain.food.AlimentId;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
+import io.github.oliviercap.chefduplacard.domain.food.IngredientId;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
+import io.github.oliviercap.chefduplacard.domain.unit.UnitId;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -19,17 +22,17 @@ public class StockTest {
     void stock_check_listOfIngredients_is_covered_with_same_unity() {
 
         //Given
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Unit unit = new Unit("gramme", "g");
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)),"apple", "fruit", true);
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)),"gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockSufficient = BigDecimal.valueOf(25);
 
-        Ingredient ingredient = new Ingredient(quantity, apple, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), quantity, apple, unit);
 
         //sufficient quantity
         //When
-        StockLine stockLineSufficient = new StockLine(quantityStockSufficient, apple, unit);
-        Stock stock1 = new Stock("test1", List.of(stockLineSufficient));
+        StockLine stockLineSufficient = new StockLine(new StockLineId(Long.valueOf(1)), quantityStockSufficient, apple, unit);
+        Stock stock1 = new Stock(new StockId(Long.valueOf(1)), "test1", List.of(stockLineSufficient));
 
         //Then
         CoveredIngredients covered = new CoveredIngredients(true, List.of());
@@ -42,18 +45,18 @@ public class StockTest {
     void stock_check_listOfIngredients_is_uncovered_with_same_unity() {
 
         //Given
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Unit unit = new Unit("gramme", "g");
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)), "gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockInsufficient = BigDecimal.valueOf(2);
 
 
-        Ingredient ingredient = new Ingredient(quantity, apple, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), quantity, apple, unit);
 
         //Insufficient quantity
         //When
-        StockLine stockLineInsufficient = new StockLine(quantityStockInsufficient, apple, unit);
-        Stock stock2 = new Stock("test2", List.of(stockLineInsufficient));
+        StockLine stockLineInsufficient = new StockLine(new StockLineId(Long.valueOf(1)), quantityStockInsufficient, apple, unit);
+        Stock stock2 = new Stock(new StockId(Long.valueOf(1)), "test2", List.of(stockLineInsufficient));
 
         //Then
         CoveredIngredients uncovered = new CoveredIngredients(false, List.of(ingredient));
@@ -64,22 +67,22 @@ public class StockTest {
     void name_null_or_blank_generate_error() {
 
         //Given
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Unit unit = new Unit("gramme", "g");
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)), "gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockInsufficient = BigDecimal.valueOf(2);
 
 
-        Ingredient ingredient = new Ingredient(quantity, apple, unit);
-        StockLine stockLine = new StockLine(quantityStockInsufficient, apple, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), quantity, apple, unit);
+        StockLine stockLine = new StockLine(new StockLineId(Long.valueOf(1)), quantityStockInsufficient, apple, unit);
 
         //then
         assertThatThrownBy(() ->
-                new Stock("", List.of(stockLine))
+                new Stock(new StockId(Long.valueOf(1)), "", List.of(stockLine))
         ).isInstanceOf(DomainException.class);
 
         assertThatThrownBy(() ->
-                new Stock(null, List.of(stockLine))
+                new Stock(new StockId(Long.valueOf(1)), null, List.of(stockLine))
         ).isInstanceOf(DomainException.class);
     }
 
@@ -87,7 +90,7 @@ public class StockTest {
     void listStockLines_null_generate_error() {
         //then
         assertThatThrownBy(() ->
-                new Stock("name", null)
+                new Stock(new StockId(Long.valueOf(1)), "name", null)
         ).isInstanceOf(DomainException.class);
 
     }
@@ -96,14 +99,14 @@ public class StockTest {
     void one_stockLine_null_generate_error() {
 
         //Given
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Unit unit = new Unit("gramme", "g");
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)), "gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockInsufficient = BigDecimal.valueOf(2);
 
 
-        Ingredient ingredient = new Ingredient(quantity, apple, unit);
-        StockLine stockLine = new StockLine(quantityStockInsufficient, apple, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), quantity, apple, unit);
+        StockLine stockLine = new StockLine(new StockLineId(Long.valueOf(1)), quantityStockInsufficient, apple, unit);
         List<StockLine> list = new ArrayList<>();
         list.add(stockLine);
 
@@ -112,7 +115,7 @@ public class StockTest {
 
         //then
         assertThatThrownBy(() ->
-                new Stock("name", list)
+                new Stock(new StockId(Long.valueOf(1)), "name", list)
         ).isInstanceOf(DomainException.class);
 
     }
@@ -121,40 +124,40 @@ public class StockTest {
     void duplicate_aliment_generate_error() {
 
         //Given
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Unit unit = new Unit("gramme", "g");
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)), "gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockInsufficient = BigDecimal.valueOf(2);
 
 
-        Ingredient ingredient = new Ingredient(quantity, apple, unit);
-        StockLine stockLine = new StockLine(quantityStockInsufficient, apple, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), quantity, apple, unit);
+        StockLine stockLine = new StockLine(new StockLineId(Long.valueOf(1)),quantityStockInsufficient, apple, unit);
 
         //then
         assertThatThrownBy(() ->
-                new Stock("name", List.of(stockLine, stockLine))
+                new Stock(new StockId(Long.valueOf(1)), "name", List.of(stockLine, stockLine))
         ).isInstanceOf(DomainException.class);
     }
 
     @Test
     void aliment_not_in_stocklines() {
         //Given
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Aliment grapefruit = new Aliment("grapefruit", "grapefruit", true);
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)),"apple", "fruit", true);
+        Aliment grapefruit = new Aliment(new AlimentId(Long.valueOf(1)), "grapefruit", "grapefruit", true);
 
-        Unit unit = new Unit("gramme", "g");
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)), "gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockSufficient = BigDecimal.valueOf(25);
 
-        Ingredient ingredient = new Ingredient(quantity, apple, unit);
-        Ingredient grapefruitIngredient = new Ingredient(BigDecimal.valueOf(1), grapefruit, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), quantity, apple, unit);
+        Ingredient grapefruitIngredient = new Ingredient(new IngredientId(Long.valueOf(1)), BigDecimal.valueOf(1), grapefruit, unit);
 
 
         //sufficient quantity
         //When
-        StockLine stockLineapple = new StockLine(quantityStockSufficient, apple, unit);
+        StockLine stockLineapple = new StockLine(new StockLineId(Long.valueOf(1)), quantityStockSufficient, apple, unit);
 
-        Stock stock1 = new Stock("test1", List.of(stockLineapple));
+        Stock stock1 = new Stock(new StockId(Long.valueOf(1)), "test1", List.of(stockLineapple));
 
         //Then
         CoveredIngredients covered = new CoveredIngredients(false, List.of(grapefruitIngredient));
@@ -164,23 +167,23 @@ public class StockTest {
     @Test
     void aliment_stock_zero() {
         //Given
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Aliment grapefruit = new Aliment("grapefruit", "grapefruit", true);
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Aliment grapefruit = new Aliment(new AlimentId(Long.valueOf(1)), "grapefruit", "grapefruit", true);
 
-        Unit unit = new Unit("gramme", "g");
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)), "gramme", "g");
         BigDecimal quantity = BigDecimal.valueOf(12);
         BigDecimal quantityStockSufficient = BigDecimal.valueOf(25);
 
-        Ingredient ingredient = new Ingredient(quantity, apple, unit);
-        Ingredient grapefruitIngredient = new Ingredient(BigDecimal.valueOf(10), grapefruit, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), quantity, apple, unit);
+        Ingredient grapefruitIngredient = new Ingredient(new IngredientId(Long.valueOf(1)), BigDecimal.valueOf(10), grapefruit, unit);
 
 
         //sufficient quantity
         //When
-        StockLine stockLineapple = new StockLine(quantityStockSufficient, apple, unit);
-        StockLine stockLinegrapefruit = new StockLine(BigDecimal.valueOf(0), grapefruit, unit);
+        StockLine stockLineapple = new StockLine(new StockLineId(Long.valueOf(1)), quantityStockSufficient, apple, unit);
+        StockLine stockLinegrapefruit = new StockLine(new StockLineId(Long.valueOf(1)), BigDecimal.valueOf(0), grapefruit, unit);
 
-        Stock stock1 = new Stock("test1", List.of(stockLineapple, stockLinegrapefruit));
+        Stock stock1 = new Stock(new StockId(Long.valueOf(1)), "test1", List.of(stockLineapple, stockLinegrapefruit));
 
         //Then
         CoveredIngredients covered = new CoveredIngredients(false, List.of(grapefruitIngredient));
@@ -190,13 +193,13 @@ public class StockTest {
     @Test
     void can_consume_aliment_in_stock() {
         //Given
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Unit unit = new Unit("gramme", "g");
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)), "gramme", "g");
 
-        Ingredient ingredient = new Ingredient(BigDecimal.valueOf(5), apple, unit);
-        StockLine stockLine = new StockLine(BigDecimal.valueOf(10), apple, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), BigDecimal.valueOf(5), apple, unit);
+        StockLine stockLine = new StockLine(new StockLineId(Long.valueOf(1)), BigDecimal.valueOf(10), apple, unit);
 
-        Stock stock1 = new Stock("test1", List.of(stockLine));
+        Stock stock1 = new Stock(new StockId(Long.valueOf(1)),"test1", List.of(stockLine));
 
         assertThat(stock1.consume(List.of(ingredient))).isTrue();
         assertThat(stock1.getStockMap().get(apple).getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(5));
@@ -204,15 +207,15 @@ public class StockTest {
 
     @Test
     void can_aggregate_aliment_quantities_when_consume() {
-        Aliment apple = new Aliment("apple", "fruit", true);
-        Unit unit = new Unit("gramme", "g");
+        Aliment apple = new Aliment(new AlimentId(Long.valueOf(1)), "apple", "fruit", true);
+        Unit unit = new Unit(new UnitId(Long.valueOf(1)), "gramme", "g");
 
-        Ingredient ingredient = new Ingredient(BigDecimal.valueOf(5), apple, unit);
-        Ingredient ingredient2 = new Ingredient(BigDecimal.valueOf(5), apple, unit);
+        Ingredient ingredient = new Ingredient(new IngredientId(Long.valueOf(1)), BigDecimal.valueOf(5), apple, unit);
+        Ingredient ingredient2 = new Ingredient(new IngredientId(Long.valueOf(1)), BigDecimal.valueOf(5), apple, unit);
 
-        StockLine stockLine = new StockLine(BigDecimal.valueOf(10), apple, unit);
+        StockLine stockLine = new StockLine(new StockLineId(Long.valueOf(1)), BigDecimal.valueOf(10), apple, unit);
 
-        Stock stock1 = new Stock("test1", List.of(stockLine));
+        Stock stock1 = new Stock(new StockId(Long.valueOf(1)),"test1", List.of(stockLine));
 
         assertThat(stock1.consume(List.of(ingredient, ingredient2))).isTrue();
         assertThat(stock1.getStockMap().get(apple).getQuantity()).isEqualByComparingTo(BigDecimal.valueOf(0));

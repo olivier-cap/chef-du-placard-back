@@ -21,12 +21,14 @@ public class FindCookableRecipesPresenterTest {
 
         // GIVEN
         IngredientResponse ingredient = new IngredientResponse(
+                Long.valueOf(1),
                 BigDecimal.valueOf(3),
-                new AlimentResponse("apple", "fruit", true),
-                new UnitResponse("gramme", "g")
+                new AlimentResponse(Long.valueOf(1),"apple", "fruit", true),
+                new UnitResponse(Long.valueOf(1),"gramme", "g")
         );
 
         RecipeResponse recipeResponse = new RecipeResponse(
+                Long.valueOf(1),
                 "r1",
                 "instructions",
                 Duration.ofMinutes(5),

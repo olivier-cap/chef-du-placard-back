@@ -31,8 +31,8 @@ public class AlimentRepository implements IAlimentRepository {
     }
 
     @Override
-    public Optional<Aliment> findAlimentByName(String name) {
-        return alimentJpaRepository.findByName(name)
+    public Optional<Aliment> findAlimentById(Long id) {
+        return alimentJpaRepository.findById(id)
                 .map(alimentMapper::toDomain);
     }
 
@@ -52,32 +52,40 @@ public class AlimentRepository implements IAlimentRepository {
         alimentJpaRepository.save(alimentMapper.toEntity(newAliment));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
-    public void modify(Aliment aliment, String newAlimentName, String newAlimentDescription) {
+    public void modify(
+            Aliment aliment,
+            String newAlimentName,
+            String newAlimentDescription
+    ) {
         Objects.requireNonNull(aliment);
 
-        if(!aliment.check()) {
+        if (!aliment.check()) {
             throw new DomainException("Incorrect aliment data");
         }
 
-        AlimentJpa alimentJpa = alimentJpaRepository.findByName(aliment.getName())
-                .orElseThrow(() -> new DomainException("Aliment not found " + aliment.getName()));
+        AlimentJpa alimentJpa = alimentJpaRepository
+                .findById(aliment.getId().id())
+                .orElseThrow(() -> new DomainException(
+                        "Aliment not found " + aliment.getName()
+                ));
 
-        //Changement du nom
-        if(!alimentJpa.getName().equals(newAlimentName)) {
+        if (!Objects.equals(alimentJpa.getName(), newAlimentName)) {
             alimentJpa.setName(newAlimentName);
         }
 
-        //Changement de la description
-        if(!alimentJpa.getDescription().equals(newAlimentDescription)) {
+        if (!Objects.equals(
+                alimentJpa.getDescription(),
+                newAlimentDescription
+        )) {
             alimentJpa.setDescription(newAlimentDescription);
         }
     }
 
     @Override
-    public Optional<AlimentJpa> findByName(String name) {
-        return alimentJpaRepository.findByName(name);
+    public Optional<AlimentJpa> findJpaById(Long id) {
+        return alimentJpaRepository.findById(id);
     }
 
     @Override
@@ -88,6 +96,11 @@ public class AlimentRepository implements IAlimentRepository {
     @Override
     public Optional<AlimentJpa> findAlimentJpaById(Long id) {
         return alimentJpaRepository.findById(id);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return alimentJpaRepository.existsByName(name);
     }
 
 

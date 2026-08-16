@@ -46,7 +46,7 @@
             Objects.requireNonNull(cookableMenusRequestModel, "cookableMenusRequestModel must not be null");
 
             List<Recipe> menu = findCookableMenus(
-                    cookableMenusRequestModel.stockName(),
+                    cookableMenusRequestModel.stockId(),
                     cookableMenusRequestModel.nbMealToPrepare(),
                     cookableMenusRequestModel.nbPeople(),
                     cookableMenusRequestModel.recipeFilters()
@@ -75,15 +75,15 @@
         /**
          * Recherche des recettes réalisables pour nbPeople personnes, en fonction des filtres choisis.
          * Recherche au mieux nbMealToPrepare recettes
-         * @param stockName
+         * @param stockId
          * @param nbMealToPrepare
          * @param nbPeople
          * @return
          */
-        private List<Recipe> findCookableMenus(String stockName, int nbMealToPrepare, int nbPeople, List<RecipeFilter> recipeFilters) {
+        private List<Recipe> findCookableMenus(Long stockId, int nbMealToPrepare, int nbPeople, List<RecipeFilter> recipeFilters) {
             List<Recipe> menusRecipes = new ArrayList<>(); //liste des recettes du menu
 
-            Stock stock = stockRepository.findByName(stockName).orElseThrow(() -> new DomainException("Stock not found"));
+            Stock stock = stockRepository.findById(stockId).orElseThrow(() -> new DomainException("Stock not found"));
             VirtualStockFactory virtualStockFactory = new VirtualStockFactory();
             VirtualStock virtualStock = virtualStockFactory.createForMenuPreparation(stock);//Utilisation du virtualstock exclusivement ici
 

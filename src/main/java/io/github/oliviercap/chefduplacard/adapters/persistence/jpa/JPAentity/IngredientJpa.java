@@ -48,6 +48,19 @@ public class IngredientJpa {
         this.quantityPerPerson = quantityPerPerson;
     }
 
+    public IngredientJpa(
+            Long id,
+            RecipeJpa recipeJpa,
+            AlimentJpa alimentJpa,
+            UnitJpa unitJpa,
+            BigDecimal quantityPerPerson
+    ) {
+        this.id = id;
+        this.recipeJpa = recipeJpa;
+        this.alimentJpa = alimentJpa;
+        this.unitJpa = unitJpa;
+        this.quantityPerPerson = quantityPerPerson;
+    }
     public Long getId() {
         return id;
     }

@@ -16,6 +16,7 @@ public class GetOneRecipePresenter implements IGetOneRecipeOutputPort {
     @Override
     public void diplayOneRecipe(GetOneRecipeResponseModel responseModel) {
         viewModel = new GetOneRecipeViewModel(
+                responseModel.recipeResponse().id(),
                 responseModel.recipeResponse().name(),
                 responseModel.recipeResponse().instructions(),
                 responseModel.recipeResponse().duration(),
@@ -33,6 +34,7 @@ public class GetOneRecipePresenter implements IGetOneRecipeOutputPort {
 
     private GetOneRecipeViewModel.IngredientViewModel toIngredientViewModel(IngredientResponse ingredientResponse) {
         return new GetOneRecipeViewModel.IngredientViewModel(
+                ingredientResponse.id(),
                 ingredientResponse.quantityPerPerson(),
                 toAlimentViewModel(ingredientResponse.alimentResponse()),
                 toUnitViewModel(ingredientResponse.unitResponse())
@@ -41,6 +43,7 @@ public class GetOneRecipePresenter implements IGetOneRecipeOutputPort {
 
     private GetOneRecipeViewModel.AlimentViewModel toAlimentViewModel(AlimentResponse alimentResponse) {
         return new GetOneRecipeViewModel.AlimentViewModel(
+                alimentResponse.id(),
                 alimentResponse.name(),
                 alimentResponse.description(),
                 alimentResponse.active()
@@ -49,6 +52,7 @@ public class GetOneRecipePresenter implements IGetOneRecipeOutputPort {
 
     private GetOneRecipeViewModel.UnitViewModel toUnitViewModel(UnitResponse unitResponse) {
         return new GetOneRecipeViewModel.UnitViewModel(
+                unitResponse.id(),
                 unitResponse.name(),
                 unitResponse.symbol()
         );

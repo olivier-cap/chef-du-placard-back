@@ -14,6 +14,7 @@ import java.util.Objects;
  * Recipe contient les propriétés de la recette.
  */
 public final class Recipe {
+    private final RecipeId id;
     private final String name;
     private final String instructions;
     private final Duration duration;
@@ -21,7 +22,10 @@ public final class Recipe {
     private final List<Ingredient> ingredients;
 
 
-    public Recipe(String name, String instructions, Duration duration, String difficulty, List<Ingredient> ingredients) {
+    public Recipe(RecipeId id, String name, String instructions, Duration duration, String difficulty, List<Ingredient> ingredients) {
+        if(id == null){
+            throw new DomainException("recipe id cannot be null");
+        }
         if(name == null || name.isBlank()){
             throw new DomainException("recipe name cannot be blank or null");
         }
@@ -31,6 +35,7 @@ public final class Recipe {
         if(instructions == null || instructions.isBlank()) {
             throw new DomainException("a recipe must have a description");
         }
+        this.id = id;
         this.name = name;
         this.instructions = instructions;
         this.duration = duration == null ? Duration.ZERO : duration;
@@ -41,7 +46,6 @@ public final class Recipe {
 
     /**
      * Calculate quantity of ingredients for npPeople for this recipe.
-     * @param nbPeople
      * @return a list of Ingredients with the required quantity
      */
     public List<Ingredient> computeRequiredIngredients(int nbPeople) {
@@ -57,7 +61,13 @@ public final class Recipe {
             //Calculation of ingredient for n person
             requiredQuantity = ingredient.getQuantity().multiply(BigDecimal.valueOf(nbPeople));
 
-            requiredIngredients.add(new Ingredient(requiredQuantity, ingredient.getAliment(), ingredient.getUnit()));
+            requiredIngredients.add(
+                    new Ingredient(
+                            ingredient.getId(),
+                            requiredQuantity,
+                            ingredient.getAliment(),
+                            ingredient.getUnit())
+            );
         }
 
         return List.copyOf(requiredIngredients);
@@ -85,14 +95,18 @@ public final class Recipe {
         return ingredients;
     }
 
+    public RecipeId getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Recipe recipe)) return false;
-        return Objects.equals(name, recipe.name) && Objects.equals(instructions, recipe.instructions) && Objects.equals(duration, recipe.duration) && Objects.equals(difficulty, recipe.difficulty) && Objects.equals(ingredients, recipe.ingredients);
+        return Objects.equals(id, recipe.id) && Objects.equals(name, recipe.name) && Objects.equals(instructions, recipe.instructions) && Objects.equals(duration, recipe.duration) && Objects.equals(difficulty, recipe.difficulty) && Objects.equals(ingredients, recipe.ingredients);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, instructions, duration, difficulty, ingredients);
+        return Objects.hash(id, name, instructions, duration, difficulty, ingredients);
     }
 }

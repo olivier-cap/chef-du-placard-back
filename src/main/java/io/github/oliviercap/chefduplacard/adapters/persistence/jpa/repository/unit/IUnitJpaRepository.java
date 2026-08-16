@@ -7,6 +7,5 @@ import java.util.Optional;
 
 
 public interface IUnitJpaRepository extends JpaRepository<UnitJpa, Long> {
-    Optional<UnitJpa> findUnitJpaByName(String name);
     Optional<UnitJpa> findUnitJpaById(Long id);
 }

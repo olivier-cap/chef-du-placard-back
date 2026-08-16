@@ -22,9 +22,9 @@ public class GetOneRecipeController {
 
     @GetMapping("/api/getOneRecipe")
     public GetOneRecipeViewModel getOneRecipe(
-            @RequestParam String recipeName
+            @RequestParam Long recipeId
     ) {
-        inputPort.execute(new GetOneRecipeRequestModel(recipeName));
+        inputPort.execute(new GetOneRecipeRequestModel(recipeId));
 
         return outputPort.getViewModel();
     }

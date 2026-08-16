@@ -16,11 +16,11 @@ public class ModifyAlimentController {
 
     @PostMapping("/api/modfiyAliment")
     public ModifyAlimentViewModel modifyAliment(
-        @RequestParam String alimentName,
+        @RequestParam Long alimentId,
         @RequestParam String newAlimentName,
         @RequestParam String alimentDescription
     ){
-        inputPort.execute(new ModifyAlimentRequestModel(alimentName, newAlimentName, alimentDescription));
+        inputPort.execute(new ModifyAlimentRequestModel(alimentId, newAlimentName, alimentDescription));
 
         return outputPort.getViewModel();
     }

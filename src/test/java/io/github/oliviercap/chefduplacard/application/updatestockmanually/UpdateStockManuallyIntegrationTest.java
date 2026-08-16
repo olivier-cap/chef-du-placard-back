@@ -2,6 +2,7 @@ package io.github.oliviercap.chefduplacard.application.updatestockmanually;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
@@ -41,70 +42,104 @@ class UpdateStockManuallyIntegrationTest {
 
     @Test
     void should_replace_stock_with_user_defined_values() {
+        // Given: aliments and unit already existing in database
+        AlimentJpa apple = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-manual-stock-apple",
+                        "fruit",
+                        true
+                )
+        );
 
-        // ===== GIVEN =====
+        AlimentJpa banana = alimentJpaRepository.save(
+                new AlimentJpa(
+                        "integration-manual-stock-banana",
+                        "fruit",
+                        true
+                )
+        );
 
-        AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
-        AlimentJpa banana = new AlimentJpa("banana", "fruit", true);
+        UnitJpa gram = unitJpaRepository.save(
+                new UnitJpa(
+                        "gramme-manual-stock",
+                        "g-manual-stock"
+                )
+        );
 
-        UnitJpa gram = new UnitJpa("gramme", "g");
+        // Given: stock and stock lines already existing in database
+        StockJpa stock = new StockJpa("integration-manual-stock");
 
-        alimentJpaRepository.save(apple);
-        alimentJpaRepository.save(banana);
-        unitJpaRepository.save(gram);
+        StockLineJpa appleLine = new StockLineJpa(
+                apple,
+                gram,
+                BigDecimal.ONE
+        );
+
+        StockLineJpa bananaLine = new StockLineJpa(
+                banana,
+                gram,
+                BigDecimal.ONE
+        );
+
+        stock.addStockLine(appleLine);
+        stock.addStockLine(bananaLine);
+
+        StockJpa savedStock = stockJpaRepository.save(stock);
 
         UpdateStockManuallyRequestModel request =
                 new UpdateStockManuallyRequestModel(
-                        "test-stock",
+                        savedStock.getId(),
                         List.of(
                                 new UpdateStockManuallyRequestModel.UpdateStockAliment(
-                                        "apple",
+                                        appleLine.getId(),
                                         BigDecimal.valueOf(10),
-                                        "gramme"
+                                        gram.getId()
                                 ),
                                 new UpdateStockManuallyRequestModel.UpdateStockAliment(
-                                        "banana",
+                                        bananaLine.getId(),
                                         BigDecimal.valueOf(5),
-                                        "gramme"
-
+                                        gram.getId()
                                 )
                         )
                 );
 
-        // ===== WHEN =====
-
+        // When
         useCase.execute(request);
 
         UpdateStockManuallyViewModel result = presenter.getViewModel();
 
-        // ===== THEN : presenter =====
-
+        // Then: presenter
         assertThat(result.stockSaved()).isTrue();
-        assertThat(result.responseMessage())
-                .isEqualTo("Stock saved");
+        assertThat(result.responseMessage()).isEqualTo("Stock saved");
 
-        // ===== THEN : persistence réelle =====
-
-        StockJpa savedStock = stockJpaRepository.findCompleteByName("test-stock")
+        // Then: real persistence
+        StockJpa updatedStock = stockJpaRepository
+                .findCompleteById(savedStock.getId())
                 .orElseThrow();
 
-        assertThat(savedStock.getStockLineJpa())
-                .hasSize(2);
+        assertThat(updatedStock.getStockLineJpa()).hasSize(2);
 
-        assertThat(savedStock.getStockLineJpa())
+        assertThat(updatedStock.getStockLineJpa())
                 .extracting(line -> line.getAlimentJpa().getName())
-                .containsExactlyInAnyOrder("apple", "banana");
+                .containsExactlyInAnyOrder(
+                        "integration-manual-stock-apple",
+                        "integration-manual-stock-banana"
+                );
 
-        assertThat(savedStock.getStockLineJpa())
-                .filteredOn(line -> line.getAlimentJpa().getName().equals("apple"))
-                .first()
-                .extracting(line -> line.getQuantity())
+        assertThat(updatedStock.getStockLineJpa())
+                .filteredOn(line -> line.getAlimentJpa()
+                        .getName()
+                        .equals("integration-manual-stock-apple"))
+                .singleElement()
+                .extracting(StockLineJpa::getQuantity)
                 .isEqualTo(BigDecimal.valueOf(10));
 
-        assertThat(savedStock.getStockLineJpa())
-                .filteredOn(line -> line.getAlimentJpa().getName().equals("banana"))
-                .first()
-                .extracting(line -> line.getQuantity())
+        assertThat(updatedStock.getStockLineJpa())
+                .filteredOn(line -> line.getAlimentJpa()
+                        .getName()
+                        .equals("integration-manual-stock-banana"))
+                .singleElement()
+                .extracting(StockLineJpa::getQuantity)
                 .isEqualTo(BigDecimal.valueOf(5));
     }
 }

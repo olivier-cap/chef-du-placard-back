@@ -7,6 +7,7 @@ import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICooka
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -14,14 +15,15 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CookableMenusController.class)
-public class CookableMenusControllerTest {
+class CookableMenusControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,13 +34,12 @@ public class CookableMenusControllerTest {
     @MockitoBean
     private CookableMenusPresenter presenter;
 
-
     @Test
     void should_return_cookable_menu() throws Exception {
-
-        // GIVEN
+        // Given
         CookableMenusViewModel.RecipeViewModel recipe =
                 new CookableMenusViewModel.RecipeViewModel(
+                        1L,
                         "r1",
                         "instructions",
                         Duration.ofMinutes(5),
@@ -56,26 +57,35 @@ public class CookableMenusControllerTest {
         doNothing().when(inputPort)
                 .execute(any(CookableMenusRequestModel.class));
 
-        when(presenter.getViewModel())
-                .thenReturn(viewModel);
+        when(presenter.getViewModel()).thenReturn(viewModel);
 
-        // WHEN / THEN
-        mockMvc.perform(get("/api/cookableMenus")
-                        .param("nbPeople", "1")
-                        .param("nbMeal", "1")
-                        .param("stockName", "stockname")
-                )
+        // When and then
+        mockMvc.perform(post("/api/cookableMenus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "nbPeople": 1,
+                                  "nbMeal": 1,
+                                  "stockId": 42
+                                }
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.recipes[0].recipeName").value("r1"))
-                .andExpect(jsonPath("$.recipes[0].recipeInstructions").value("instructions"))
+                .andExpect(jsonPath("$.recipes[0].recipeInstructions")
+                        .value("instructions"))
                 .andExpect(jsonPath("$.recipes[0].duration").value("PT5M"))
                 .andExpect(jsonPath("$.recipes[0].difficulty").value("easy"))
                 .andExpect(jsonPath("$.recipes[0].ingredients").isArray());
 
-        verify(inputPort)
-                .execute(any(CookableMenusRequestModel.class));
+        verify(inputPort).execute(
+                new CookableMenusRequestModel(
+                        42L,
+                        1,
+                        1,
+                        List.of()
+                )
+        );
 
-        verify(presenter)
-                .getViewModel();
+        verify(presenter).getViewModel();
     }
 }
