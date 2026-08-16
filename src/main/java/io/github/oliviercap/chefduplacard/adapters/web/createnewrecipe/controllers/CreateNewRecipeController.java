@@ -27,7 +27,7 @@ public class CreateNewRecipeController {
         this.outputPort = outputPort;
     }
 
-    @PostMapping("/createNewRecipe")
+    @PostMapping("/api/createNewRecipe")
     public CreateNewRecipeViewModel createNewRecipe(
             @RequestParam  String name,
             @RequestParam String instructions,
