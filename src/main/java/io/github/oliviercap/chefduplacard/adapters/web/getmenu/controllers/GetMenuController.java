@@ -4,6 +4,7 @@ import io.github.oliviercap.chefduplacard.adapters.web.getmenu.GetMenuViewModel;
 import io.github.oliviercap.chefduplacard.application.getmenu.GetMenuRequestModel;
 import io.github.oliviercap.chefduplacard.application.getmenu.ports.IGetMenuInputPort;
 import io.github.oliviercap.chefduplacard.application.getmenu.ports.IGetMenuOutputPort;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ public class GetMenuController {
         this.outputPort = outputPort;
     }
 
+    @GetMapping("/api/getmenu")
     public GetMenuViewModel getMenu(
             @RequestParam String menuName
     ) {
