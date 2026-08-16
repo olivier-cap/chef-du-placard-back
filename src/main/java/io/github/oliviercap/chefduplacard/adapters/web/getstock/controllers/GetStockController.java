@@ -20,7 +20,7 @@ public class GetStockController {
         this.outputPort = outputPort;
     }
 
-    @GetMapping("/getStock")
+    @GetMapping("/api/getStock")
     GetStockViewModel getStock(
             @RequestParam String stockName
     ) {
