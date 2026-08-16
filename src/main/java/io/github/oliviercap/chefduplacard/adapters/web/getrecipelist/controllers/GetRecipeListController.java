@@ -19,7 +19,7 @@ public class GetRecipeListController {
         this.outPort = outPort;
     }
 
-    @GetMapping("/getRecipeList")
+    @GetMapping("/api/getRecipeList")
     GetRecipeListViewModel getRecipeList() {
         inputPort.execute(new GetRecipeListRequestModel());
 

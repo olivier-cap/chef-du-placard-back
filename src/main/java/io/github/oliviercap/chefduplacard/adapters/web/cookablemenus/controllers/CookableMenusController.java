@@ -4,9 +4,7 @@ import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.CookableMen
 import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.presenters.CookableMenusPresenter;
 import io.github.oliviercap.chefduplacard.application.cookablemenus.CookableMenusRequestModel;
 import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusInputPort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,15 +22,12 @@ public class CookableMenusController {
         this.presenter = presenter;
     }
 
-    @GetMapping("/api/cookableMenus")
+    @PostMapping("/api/cookableMenus")
     public CookableMenusViewModel cookableMenus(
-            @RequestParam int nbPeople,
-            @RequestParam int nbMeal,
-            @RequestParam String stockName,
-            @RequestParam(required = false) List<String> filtersName
+        @RequestBody CookableMenusRequest request
     ) {
         CookableMenusRequestModel requestModel =
-                new CookableMenusRequestModel(stockName, nbMeal, nbPeople, List.of());
+                new CookableMenusRequestModel(request.stockName(), request.nbMeal(), request.nbPeople(), List.of());
 
         inputPort.execute(requestModel);
 

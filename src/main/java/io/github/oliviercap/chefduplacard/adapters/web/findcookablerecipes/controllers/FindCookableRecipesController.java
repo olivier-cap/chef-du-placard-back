@@ -22,7 +22,7 @@ public class FindCookableRecipesController {
         this.presenter = presenter;
     }
 
-    @GetMapping("/findCookableRecipes")
+    @GetMapping("/api/findCookableRecipes")
     public FindCookableRecipesViewModel findCookableRecipes(
             @RequestParam int nbPeople,
             @RequestParam String stock

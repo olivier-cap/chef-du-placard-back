@@ -14,7 +14,7 @@ public class ModifyAlimentController {
     IModifyAlimentInputPort inputPort;
     IModifyAlimentOutputPort outputPort;
 
-    @PostMapping("/modfiyAliment")
+    @PostMapping("/api/modfiyAliment")
     public ModifyAlimentViewModel modifyAliment(
         @RequestParam String alimentName,
         @RequestParam String newAlimentName,
