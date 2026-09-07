@@ -3,9 +3,11 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.m
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.MenuJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.MenuLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UserJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.menu.MenuMapper;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IMenuRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IUserRepository;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.menu.Menu;
 import jakarta.transaction.Transactional;
@@ -21,12 +23,14 @@ public class MenuRepository implements IMenuRepository {
     private final IMenuJpaRepository menuJpaRepository;
     private final IRecipeRepository recipeRepository;
     private final MenuMapper menuMapper;
+    private final IUserRepository userRepository;
 
     public MenuRepository(IMenuJpaRepository menuJpaRepository, IRecipeRepository recipeRepository,
-                          MenuMapper menuMapper) {
+                          MenuMapper menuMapper, IUserRepository userRepository) {
         this.menuJpaRepository = menuJpaRepository;
         this.recipeRepository = recipeRepository;
         this.menuMapper = menuMapper;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -76,7 +80,7 @@ public class MenuRepository implements IMenuRepository {
 
         //Récupération des recettes du menu dans la base pour ne pas recréer les éléments existants
         Map<Long, RecipeJpa> recipeJpaList = new HashMap<>();
-        for(SaveNewMenuDTO.saveNewMenuLine menuLine : menuDTO.menuLines()) {
+        for(SaveNewMenuDTO.SaveNewMenuLine menuLine : menuDTO.menuLines()) {
             Optional<RecipeJpa> recipeJpa = recipeRepository.findJpaById(menuLine.recipeId());
             if(recipeJpa.isEmpty()) {
                 throw new DomainException("Recipe " + menuLine.recipeId() +" not found in base");
@@ -88,21 +92,35 @@ public class MenuRepository implements IMenuRepository {
 
         //Fabrication des lignes du menu
         List<MenuLineJpa> menuLineJpaList = new ArrayList<>();
-        for(SaveNewMenuDTO.saveNewMenuLine menuLine : menuDTO.menuLines()) {
-            if(menuLine.nbPerson() == null || menuLine.nbPerson().compareTo(BigDecimal.ZERO) < 0) {
-                throw new DomainException("nbPerson must not be null or <= 0");
+
+        for (SaveNewMenuDTO.SaveNewMenuLine menuLine: menuDTO.menuLines()) {
+            if (menuLine.nbPerson() == null
+                    || menuLine.nbPerson()
+                    .compareTo(BigDecimal.ZERO) <= 0) {
+                throw new DomainException(
+                        "nbPerson must be greater than 0"
+                );
             }
-            menuLineJpaList.add(
-                    new MenuLineJpa(
-                            recipeJpaList.get(menuLine.recipeId()),
-                            menuLine.nbPerson()
-                    )
+            RecipeJpa recipeJpa =
+                    recipeJpaList.get(menuLine.recipeId());
+            MenuLineJpa menuLineJpa = new MenuLineJpa(
+                    recipeJpa,
+                    menuLine.nbPerson()
             );
+            menuLineJpa.setRecipeTypeJpa(
+                    recipeJpa.getRecipeTypeJpa()
+            );
+            menuLineJpaList.add(menuLineJpa);
         }
+
+        UserJpa userJpa = userRepository.findUserJpa(
+                menuDTO.userId()
+        );
 
         //Fabrication du nouveau menu
         MenuJpa newMenuJpa = new MenuJpa();
         newMenuJpa.setName(menuDTO.menuName());
+        newMenuJpa.setUserJpa(userJpa);
 
         for (MenuLineJpa menuLineJpa : menuLineJpaList) {
             newMenuJpa.addMenuLine(menuLineJpa);

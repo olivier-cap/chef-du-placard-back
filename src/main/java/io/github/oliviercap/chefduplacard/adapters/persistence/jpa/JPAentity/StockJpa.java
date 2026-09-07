@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * JPA entity.
@@ -12,7 +13,11 @@ import java.util.List;
  */
 @Entity
 @Table(
-        name = "stock"
+        name = "stock",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_stock_user",
+                columnNames = {"user_id"}
+        )
 )
 public class StockJpa {
 
@@ -20,8 +25,12 @@ public class StockJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom", nullable = false ,length = 100)
+    @Column(name = "name")
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserJpa userJpa;
 
     @OneToMany(
             fetch = FetchType.LAZY,
@@ -61,8 +70,19 @@ public class StockJpa {
         }
     }
 
-    public StockJpa(String name) {
+    public StockJpa(String name, UserJpa userJpa, List<StockLineJpa> stockLineJpa) {
         this.name = name;
+        this.userJpa = userJpa;
+        this.stockLineJpa = stockLineJpa;
+    }
+
+    public StockJpa(String name, UserJpa userJpa) {
+        this.name = name;
+        this.userJpa = userJpa;
+    }
+
+    public void setUserJpa(UserJpa userJpa) {
+        this.userJpa = userJpa;
     }
 
 
@@ -93,4 +113,18 @@ public class StockJpa {
         return stockLineJpa;
     }
 
+    public UserJpa getUserJpa() {
+        return userJpa;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof StockJpa stockJpa)) return false;
+        return Objects.equals(id, stockJpa.id) && Objects.equals(name, stockJpa.name) && Objects.equals(userJpa, stockJpa.userJpa) && Objects.equals(stockLineJpa, stockJpa.stockLineJpa);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, userJpa, stockLineJpa);
+    }
 }

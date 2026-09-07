@@ -2,6 +2,7 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.ingredient.IngredientMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe_type.RecipeTypeMapper;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import io.github.oliviercap.chefduplacard.domain.recipe.RecipeId;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,12 @@ import java.util.Objects;
 public class RecipeMapper {
 
     private final IngredientMapper ingredientMapper;
+    private final RecipeTypeMapper recipeTypeMapper;
 
-    public RecipeMapper(IngredientMapper ingredientMapper) {
+    public RecipeMapper(IngredientMapper ingredientMapper, RecipeTypeMapper recipeTypeMapper) {
 
         this.ingredientMapper = ingredientMapper;
+        this.recipeTypeMapper = recipeTypeMapper;
     }
 
 
@@ -31,7 +34,8 @@ public class RecipeMapper {
                 recipeJpa.getDifficulty(),
                 recipeJpa.getIngredients().stream()
                         .map(ingredientMapper::toDomain)
-                        .toList()
+                        .toList(),
+                recipeTypeMapper.toDomain(recipeJpa.getRecipeTypeJpa())
         );
     }
 }

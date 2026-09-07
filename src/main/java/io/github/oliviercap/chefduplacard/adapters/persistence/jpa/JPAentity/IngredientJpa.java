@@ -3,13 +3,14 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table(
         name = "ingredient",
         uniqueConstraints = @UniqueConstraint(
-                name = "uk_ingredient_recette_aliment",
-                columnNames = {"recette_id", "aliment_id"}
+                name = "uk_ingredient_recipe_aliment",
+                columnNames = {"recipe_id", "aliment_id"}
         )
 )
 public class IngredientJpa {
@@ -19,7 +20,7 @@ public class IngredientJpa {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "recette_id", nullable = false)
+    @JoinColumn(name = "recipe_id", nullable = false)
     private RecipeJpa recipeJpa;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -27,10 +28,10 @@ public class IngredientJpa {
     private AlimentJpa alimentJpa;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "unite_id", nullable = false)
+    @JoinColumn(name = "unit_id", nullable = false)
     private UnitJpa unitJpa;
 
-    @Column(name = "quantite_par_personne", nullable = false, precision = 10, scale = 2)
+    @Column(name = "quantity_per_person", nullable = false, precision = 10, scale = 2)
     private BigDecimal quantityPerPerson;
 
     protected IngredientJpa() {
@@ -96,4 +97,5 @@ public class IngredientJpa {
     public void setQuantityPerPerson(BigDecimal quantityPerPerson) {
         this.quantityPerPerson = quantityPerPerson;
     }
+
 }

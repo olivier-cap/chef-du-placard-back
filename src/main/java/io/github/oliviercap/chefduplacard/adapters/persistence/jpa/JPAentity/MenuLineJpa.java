@@ -3,6 +3,7 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(
@@ -19,11 +20,18 @@ public class MenuLineJpa {
     private MenuJpa menuJpa;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "recette_id", nullable = false)
+    @JoinColumn(name = "recipe_id", nullable = false)
     private RecipeJpa recipeJpa;
 
-    @Column(name = "nombre_personnes", nullable = false, precision = 10, scale = 2)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "recipe_type_id", nullable = false)
+    private RecipeTypeJpa recipeTypeJpa;
+
+    @Column(name = "np_people", nullable = false, precision = 10, scale = 2)
     private BigDecimal nbPerson;
+
+    @Column(name = "date")
+    private LocalDate date;
 
     public MenuLineJpa() {
     }
@@ -40,6 +48,14 @@ public class MenuLineJpa {
                        BigDecimal nbPerson) {
         this.recipeJpa = recipeJpa;
         this.nbPerson = nbPerson;
+    }
+
+    public MenuLineJpa(MenuJpa menuJpa, RecipeJpa recipeJpa, RecipeTypeJpa recipeTypeJpa, BigDecimal nbPerson, LocalDate date) {
+        this.menuJpa = menuJpa;
+        this.recipeJpa = recipeJpa;
+        this.recipeTypeJpa = recipeTypeJpa;
+        this.nbPerson = nbPerson;
+        this.date = date;
     }
 
     public Long getId() {
@@ -68,5 +84,21 @@ public class MenuLineJpa {
 
     public void setNbPerson(BigDecimal quantityPerPerson) {
         this.nbPerson = quantityPerPerson;
+    }
+
+    public RecipeTypeJpa getRecipeTypeJpa() {
+        return recipeTypeJpa;
+    }
+
+    public void setRecipeTypeJpa(RecipeTypeJpa recipeTypeJpa) {
+        this.recipeTypeJpa = recipeTypeJpa;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

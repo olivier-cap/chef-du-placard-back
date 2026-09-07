@@ -2,10 +2,11 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(
-        name = "unite",
-        uniqueConstraints = @UniqueConstraint(columnNames = "code")
+        name = "unit"
 )
 public class UnitJpa {
 
@@ -13,10 +14,10 @@ public class UnitJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "code",nullable = false, length = 20)
+    @Column(name = "code",nullable = false, length = 250)
     private String symbol;
 
     protected UnitJpa() {

@@ -2,13 +2,14 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(
-        name = "recette",
-        uniqueConstraints = @UniqueConstraint(columnNames = "nom")
+        name = "recipe",
+        uniqueConstraints = @UniqueConstraint(columnNames = "name")
 )
 public class RecipeJpa {
 
@@ -16,16 +17,16 @@ public class RecipeJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom", nullable = false, length = 200)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "instructions", nullable = false)
     private String instructions;
 
-    @Column(name = "duree_minutes")
+    @Column(name = "duration_minutes")
     private Integer durationMinutes;
 
-    @Column(name = "difficulte", length = 50)
+    @Column(name = "difficulty")
     private String difficulty;
 
 
@@ -35,11 +36,15 @@ public class RecipeJpa {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<IngredientJpa> ingredients = new ArrayList<>();
+    private Set<IngredientJpa> ingredients = new HashSet<>();
 
-    protected RecipeJpa() {
 
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_type_id")
+    private RecipeTypeJpa recipeTypeJpa;
+
+
+    protected RecipeJpa() {}
 
     public RecipeJpa(String name, String instructions, int duration_minutes, String difficulty) {
         this.name = name;
@@ -109,8 +114,16 @@ public class RecipeJpa {
         this.difficulty = difficulty;
     }
 
-    public List<IngredientJpa> getIngredients() {
-        return ingredients;
+    public Set<IngredientJpa> getIngredients() {
+        return Set.copyOf(ingredients);
+    }
+
+    public RecipeTypeJpa getRecipeTypeJpa() {
+        return recipeTypeJpa;
+    }
+
+    void setRecipeTypeJpa(RecipeTypeJpa recipeTypeJpa) {
+        this.recipeTypeJpa = recipeTypeJpa;
     }
 
 }
