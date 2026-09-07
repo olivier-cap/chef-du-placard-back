@@ -28,35 +28,46 @@ public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
     public void execute(SaveNewMenuRequestModel requestModel) {
         Objects.requireNonNull(requestModel, "requestModel must not be null");
 
-        boolean saved = saveNewMenu(requestModel.newMenuRecord()) ? true : false;
+        boolean saved = saveNewMenu(requestModel.newMenuRecord(), requestModel.userId()) ? true : false;
         outputPort.saved(new SaveNewMenuResponseModel(saved));
     }
 
-    private boolean saveNewMenu(SaveNewMenuRequest newMenuRecord) {
-        Objects.requireNonNull(newMenuRecord, "menu must not be null");
+    private boolean saveNewMenu(
+            SaveNewMenuRequest newMenuRecord,
+            Long userId
+    ) {
+        Objects.requireNonNull(
+                newMenuRecord,
+                "menu must not be null"
+        );
+
+        if (userId == null) {
+            throw new DomainException("userId must not be null");
+        }
 
         if (newMenuRecord.menuName() == null
                 || newMenuRecord.menuName().isBlank()) {
             throw new DomainException("menu name must not be blank");
         }
 
-        //reconstruction d'un menuDTO à partir des données
-
         SaveNewMenuDTO menuDTO = new SaveNewMenuDTO(
                 newMenuRecord.menuName(),
                 newMenuRecord.menuLines().stream()
-                        .map(
-                                ml -> new SaveNewMenuDTO.saveNewMenuLine(
-                                        ml.recipeId(),
-                                        ml.nbPerson()
-                                )
-                        ).toList()
+                        .map(ml -> new SaveNewMenuDTO.SaveNewMenuLine(
+                                ml.recipeId(),
+                                ml.nbPerson()
+                        ))
+                        .toList(),
+                userId
         );
 
-        try{
+        try {
             menuRepository.save(menuDTO);
         } catch (Exception e) {
-            throw new DomainException("save of menu didn't work", e);
+            throw new DomainException(
+                    "save of menu didn't work",
+                    e
+            );
         }
 
         return true;
