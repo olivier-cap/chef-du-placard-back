@@ -24,7 +24,8 @@ public class MenuLineMapper {
         return new MenuLine(
                 new MenuLineId(menuLineJpa.getId()),
                 recipeMapper.toDomain(menuLineJpa.getRecipeJpa()),
-                menuLineJpa.getNbPerson()
+                menuLineJpa.getNbPerson(),
+                menuLineJpa.getDate()
         );
     }
 
