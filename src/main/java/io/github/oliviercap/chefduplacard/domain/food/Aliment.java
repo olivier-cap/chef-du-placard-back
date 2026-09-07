@@ -1,13 +1,12 @@
 package io.github.oliviercap.chefduplacard.domain.food;
 
+import io.github.oliviercap.chefduplacard.domain.aliment_type.AlimentType;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HexFormat;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 public final class Aliment {
     /*
@@ -20,10 +19,32 @@ public final class Aliment {
     */
 
     private final AlimentId id;
-    private final String identifier;
-    private final String name;
-    private final String description;
-    private final boolean active;
+    private String identifier;
+    private String name;
+    private String description;
+    private boolean active;
+    private Set<AlimentType> types;
+
+    public Aliment(
+            AlimentId id,
+            String name,
+            String description,
+            boolean active,
+            Set<AlimentType> types
+    ) {
+        if (id == null) {
+            throw new DomainException("Aliment id must not be null");
+        }
+
+        validateName(name);
+
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.active = active;
+        this.identifier = computeIdentifier(name, description);
+        this.types = types;
+    }
 
     public Aliment(
             AlimentId id,
@@ -127,14 +148,18 @@ public final class Aliment {
         return id;
     }
 
+    public Set<AlimentType> getTypes() {
+        return Set.copyOf(types);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Aliment aliment)) return false;
-        return Objects.equals(id, aliment.id) && Objects.equals(identifier, aliment.identifier);
+        return active == aliment.active && Objects.equals(id, aliment.id) && Objects.equals(identifier, aliment.identifier) && Objects.equals(name, aliment.name) && Objects.equals(description, aliment.description) && Objects.equals(types, aliment.types);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, identifier);
+        return Objects.hash(id, identifier, name, description, active, types);
     }
 }

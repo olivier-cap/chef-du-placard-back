@@ -2,6 +2,7 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.mapper;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment_type.AlimentTypeMapper;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.AlimentId;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AlimentMapperTest {
+
+    private final AlimentMapper alimentMapper = new AlimentMapper(
+            new AlimentTypeMapper()
+    );
 
     @Test
     void creates_domain_aliment_from_jpa() {
@@ -18,8 +23,6 @@ class AlimentMapperTest {
                 "description",
                 true
         );
-
-        AlimentMapper alimentMapper = new AlimentMapper();
 
         Aliment result = alimentMapper.toDomain(alimentJpa);
 
@@ -37,8 +40,6 @@ class AlimentMapperTest {
                 "description",
                 true
         );
-
-        AlimentMapper alimentMapper = new AlimentMapper();
 
         AlimentJpa result = alimentMapper.toEntity(aliment);
 
