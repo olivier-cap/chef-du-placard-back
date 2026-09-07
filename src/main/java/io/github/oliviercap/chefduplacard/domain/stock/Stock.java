@@ -3,6 +3,7 @@ package io.github.oliviercap.chefduplacard.domain.stock;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
+import io.github.oliviercap.chefduplacard.domain.user.User;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -16,6 +17,7 @@ public final class Stock {
     private final StockId id;
     private final Map<Aliment, StockLine> stockMap = new HashMap<>();
     private final String name;
+    private User user;
 
     /**
      * Constructeur par défaut
@@ -23,7 +25,8 @@ public final class Stock {
     public Stock(
             StockId id,
             String name,
-            List<StockLine> stockLines
+            List<StockLine> stockLines,
+            User user
     ) {
         if(id == null){
             throw new DomainException("Stock id must not be null");
@@ -36,7 +39,13 @@ public final class Stock {
             throw new DomainException("stock lines cannot be null");
         }
 
+        if(user == null) {
+            throw new DomainException("user cannot be null");
+        }
+
         this.name = name;
+
+        this.user = user;
 
         for(StockLine stockLine : stockLines) {
             if(stockLine == null) {
@@ -112,7 +121,8 @@ public final class Stock {
                 nameCopy,
                 this.getStockMap().values().stream()
                         .map(StockLine::copyForSimulation)
-                        .toList()
+                        .toList(),
+                this.user
         );
     }
 
@@ -204,14 +214,22 @@ public final class Stock {
         return id;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Stock stock)) return false;
-        return Objects.equals(id, stock.id) && Objects.equals(stockMap, stock.stockMap) && Objects.equals(name, stock.name);
+        return Objects.equals(id, stock.id) && Objects.equals(stockMap, stock.stockMap) && Objects.equals(name, stock.name) && Objects.equals(user, stock.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, stockMap, name);
+        return Objects.hash(id, stockMap, name, user);
     }
 }

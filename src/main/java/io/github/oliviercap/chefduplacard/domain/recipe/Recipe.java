@@ -2,6 +2,7 @@ package io.github.oliviercap.chefduplacard.domain.recipe;
 
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
+import io.github.oliviercap.chefduplacard.domain.recipe_type.RecipeType;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -15,14 +16,23 @@ import java.util.Objects;
  */
 public final class Recipe {
     private final RecipeId id;
-    private final String name;
-    private final String instructions;
-    private final Duration duration;
-    private final String difficulty;
-    private final List<Ingredient> ingredients;
+    private String name;
+    private String instructions;
+    private Duration duration;
+    private String difficulty;
+    private List<Ingredient> ingredients;
+    private RecipeType type;
 
 
-    public Recipe(RecipeId id, String name, String instructions, Duration duration, String difficulty, List<Ingredient> ingredients) {
+    public Recipe(
+            RecipeId id,
+            String name,
+            String instructions,
+            Duration duration,
+            String difficulty,
+            List<Ingredient> ingredients,
+            RecipeType type
+    ) {
         if(id == null){
             throw new DomainException("recipe id cannot be null");
         }
@@ -41,6 +51,7 @@ public final class Recipe {
         this.duration = duration == null ? Duration.ZERO : duration;
         this.difficulty = difficulty == null ? "" : difficulty;
         this.ingredients = List.copyOf(ingredients);
+        this.type = type;
     }
 
 
@@ -92,21 +103,30 @@ public final class Recipe {
     }
 
     public List<Ingredient> getIngredients() {
-        return ingredients;
+        return List.copyOf(ingredients);
     }
 
     public RecipeId getId() {
         return id;
     }
 
+    public RecipeType getType() {
+        return type;
+    }
+
+    public void setType(RecipeType type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Recipe recipe)) return false;
-        return Objects.equals(id, recipe.id) && Objects.equals(name, recipe.name) && Objects.equals(instructions, recipe.instructions) && Objects.equals(duration, recipe.duration) && Objects.equals(difficulty, recipe.difficulty) && Objects.equals(ingredients, recipe.ingredients);
+        return Objects.equals(id, recipe.id) && Objects.equals(name, recipe.name) && Objects.equals(instructions, recipe.instructions) && Objects.equals(duration, recipe.duration) && Objects.equals(difficulty, recipe.difficulty) && Objects.equals(ingredients, recipe.ingredients) && Objects.equals(type, recipe.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, instructions, duration, difficulty, ingredients);
+        return Objects.hash(id, name, instructions, duration, difficulty, ingredients, type);
     }
 }
+
