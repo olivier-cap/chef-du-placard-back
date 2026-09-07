@@ -3,10 +3,13 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.mapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.IngredientJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeTypeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment_type.AlimentTypeMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.ingredient.IngredientMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe.RecipeMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe_type.RecipeTypeMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.UnitMapper;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
@@ -18,6 +21,20 @@ import java.time.Duration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RecipeMapperTest {
+
+    private final AlimentMapper alimentMapper = new AlimentMapper(
+            new AlimentTypeMapper()
+    );
+
+    private final IngredientMapper ingredientMapper = new IngredientMapper(
+            alimentMapper,
+            new UnitMapper()
+    );
+
+    private final RecipeMapper recipeMapper = new RecipeMapper(
+            ingredientMapper,
+            new RecipeTypeMapper()
+    );
 
     @Test
     void creates_recipe_domain_from_jpa() {
@@ -42,6 +59,12 @@ class RecipeMapperTest {
                 "easy"
         );
 
+        RecipeTypeJpa recipeTypeJpa = new RecipeTypeJpa(
+                5L,
+                "dessert"
+        );
+        recipeTypeJpa.addRecipe(recipeJpa);
+
         IngredientJpa ingredientJpa = new IngredientJpa(
                 3L,
                 recipeJpa,
@@ -49,20 +72,7 @@ class RecipeMapperTest {
                 unitJpa,
                 BigDecimal.ONE
         );
-
         recipeJpa.addIngredient(ingredientJpa);
-
-        AlimentMapper alimentMapper = new AlimentMapper();
-        UnitMapper unitMapper = new UnitMapper();
-
-        IngredientMapper ingredientMapper = new IngredientMapper(
-                alimentMapper,
-                unitMapper
-        );
-
-        RecipeMapper recipeMapper = new RecipeMapper(
-                ingredientMapper
-        );
 
         Recipe result = recipeMapper.toDomain(recipeJpa);
 
@@ -80,6 +90,7 @@ class RecipeMapperTest {
 
         assertThat(result.getDifficulty())
                 .isEqualTo("easy");
+
 
         assertThat(result.getIngredients())
                 .hasSize(1);

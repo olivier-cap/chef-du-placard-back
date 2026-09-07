@@ -4,7 +4,9 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Ali
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.IngredientJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.MenuJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeTypeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UserJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu.IMenuJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
@@ -13,6 +15,8 @@ import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.SaveNewMenuVi
 import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.controllers.SaveNewMenuRequest;
 import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.presenters.SaveNewMenuPresenter;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +52,11 @@ class SaveNewMenuUseCaseIntegrationTest {
     @Autowired
     private IUnitJpaRepository unitJpaRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Test
     void should_save_new_menu_with_real_persistence_pipeline() {
-        // Given: aliments and unit already present in database
         AlimentJpa apple = alimentJpaRepository.save(
                 new AlimentJpa(
                         "integration-save-menu-apple",
@@ -74,13 +80,18 @@ class SaveNewMenuUseCaseIntegrationTest {
                 )
         );
 
-        // Given: recipes already present in database
+        RecipeTypeJpa recipeType = new RecipeTypeJpa(
+                "integration-save-menu-dessert"
+        );
+        entityManager.persist(recipeType);
+
         RecipeJpa applePie = new RecipeJpa(
                 "integration-save-menu-apple-pie",
                 "Cut apples and bake.",
                 30,
                 "easy"
         );
+        recipeType.addRecipe(applePie);
 
         applePie.addIngredient(
                 new IngredientJpa(
@@ -97,6 +108,7 @@ class SaveNewMenuUseCaseIntegrationTest {
                 45,
                 "medium"
         );
+        recipeType.addRecipe(bananaCake);
 
         bananaCake.addIngredient(
                 new IngredientJpa(
@@ -107,10 +119,15 @@ class SaveNewMenuUseCaseIntegrationTest {
                 )
         );
 
-        RecipeJpa savedApplePie =
-                recipeJpaRepository.save(applePie);
-        RecipeJpa savedBananaCake =
-                recipeJpaRepository.save(bananaCake);
+        RecipeJpa savedApplePie = recipeJpaRepository.save(applePie);
+        RecipeJpa savedBananaCake = recipeJpaRepository.save(bananaCake);
+
+        UserJpa owner = new UserJpa(
+                "save-menu-user",
+                "save-menu@example.com",
+                false
+        );
+        entityManager.persist(owner);
 
         String menuName = "integration-saved-menu-weekend";
 
@@ -130,18 +147,18 @@ class SaveNewMenuUseCaseIntegrationTest {
                 );
 
         SaveNewMenuRequestModel request =
-                new SaveNewMenuRequestModel(requestContent);
+                new SaveNewMenuRequestModel(
+                        requestContent,
+                        owner.getId()
+                );
 
-        // When
         useCase.execute(request);
 
         SaveNewMenuViewModel result = presenter.getViewModel();
 
-        // Then: presenter
         assertThat(result).isNotNull();
         assertThat(result.saved()).isTrue();
 
-        // Then: real persistence
         MenuJpa createdMenu = menuJpaRepository.findAll().stream()
                 .filter(menu -> menu.getName().equals(menuName))
                 .findFirst()
@@ -152,6 +169,8 @@ class SaveNewMenuUseCaseIntegrationTest {
                 .orElseThrow();
 
         assertThat(savedMenu.getName()).isEqualTo(menuName);
+        assertThat(savedMenu.getUserJpa().getId())
+                .isEqualTo(owner.getId());
         assertThat(savedMenu.getMenuLineJpaList()).hasSize(2);
 
         assertThat(savedMenu.getMenuLineJpaList())
@@ -177,7 +196,6 @@ class SaveNewMenuUseCaseIntegrationTest {
 
     @Test
     void should_throw_domain_exception_when_menu_name_is_blank() {
-        // Given
         SaveNewMenuRequest requestContent =
                 new SaveNewMenuRequest(
                         " ",
@@ -185,9 +203,11 @@ class SaveNewMenuUseCaseIntegrationTest {
                 );
 
         SaveNewMenuRequestModel request =
-                new SaveNewMenuRequestModel(requestContent);
+                new SaveNewMenuRequestModel(
+                        requestContent,
+                        1L
+                );
 
-        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("menu name must not be blank");
@@ -197,7 +217,13 @@ class SaveNewMenuUseCaseIntegrationTest {
 
     @Test
     void should_throw_domain_exception_when_recipe_does_not_exist() {
-        // Given
+        UserJpa owner = new UserJpa(
+                "unknown-recipe-menu-user",
+                "unknown-recipe-menu@example.com",
+                false
+        );
+        entityManager.persist(owner);
+
         Long unknownRecipeId = 999999L;
 
         SaveNewMenuRequest requestContent =
@@ -212,9 +238,11 @@ class SaveNewMenuUseCaseIntegrationTest {
                 );
 
         SaveNewMenuRequestModel request =
-                new SaveNewMenuRequestModel(requestContent);
+                new SaveNewMenuRequestModel(
+                        requestContent,
+                        owner.getId()
+                );
 
-        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("save of menu didn't work")

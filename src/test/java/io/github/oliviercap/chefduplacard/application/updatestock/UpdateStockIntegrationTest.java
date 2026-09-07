@@ -3,15 +3,19 @@ package io.github.oliviercap.chefduplacard.application.updatestock;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.IngredientJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeTypeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UserJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.web.updatestock.UpdateStockViewModel;
 import io.github.oliviercap.chefduplacard.adapters.web.updatestock.presenters.UpdateStockPresenter;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +49,11 @@ class UpdateStockIntegrationTest {
     @Autowired
     private IUnitJpaRepository unitJpaRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Test
     void should_update_stock_when_initial_stock_is_sufficient() {
-        // Given
         AlimentJpa apple = alimentJpaRepository.save(
                 new AlimentJpa(
                         "integration-update-stock-sufficient-apple",
@@ -63,8 +69,16 @@ class UpdateStockIntegrationTest {
                 )
         );
 
+        UserJpa owner = new UserJpa(
+                "update-sufficient-user",
+                "update-sufficient@example.com",
+                false
+        );
+        entityManager.persist(owner);
+
         StockJpa stock = new StockJpa(
-                "integration-update-stock-sufficient"
+                "integration-update-stock-sufficient",
+                owner
         );
         stock.addStockLine(
                 new StockLineJpa(
@@ -73,8 +87,12 @@ class UpdateStockIntegrationTest {
                         BigDecimal.valueOf(20)
                 )
         );
-
         StockJpa savedStock = stockJpaRepository.save(stock);
+
+        RecipeTypeJpa recipeType = new RecipeTypeJpa(
+                "integration-update-stock-sufficient-type"
+        );
+        entityManager.persist(recipeType);
 
         RecipeJpa recipe = new RecipeJpa(
                 "integration-update-stock-sufficient-recipe",
@@ -82,6 +100,7 @@ class UpdateStockIntegrationTest {
                 5,
                 "1"
         );
+        recipeType.addRecipe(recipe);
         recipe.addIngredient(
                 new IngredientJpa(
                         recipe,
@@ -90,26 +109,23 @@ class UpdateStockIntegrationTest {
                         BigDecimal.valueOf(10)
                 )
         );
-
         RecipeJpa savedRecipe = recipeJpaRepository.save(recipe);
 
         UpdateStockRequestModel request = new UpdateStockRequestModel(
                 savedStock.getId(),
                 savedRecipe.getId(),
-                1
+                1,
+                owner.getId()
         );
 
-        // When
         useCase.execute(request);
 
         UpdateStockViewModel result = presenter.getViewModel();
 
-        // Then: use-case response
         assertThat(result.sufficientStock()).isTrue();
         assertThat(result.responseMessage())
                 .isEqualTo("Stock Updated, sufficient initial stock");
 
-        // Then: real persistence
         StockJpa updatedStock = stockJpaRepository
                 .findCompleteById(savedStock.getId())
                 .orElseThrow();
@@ -121,7 +137,6 @@ class UpdateStockIntegrationTest {
 
     @Test
     void should_correct_stock_to_zero_when_initial_stock_is_insufficient() {
-        // Given
         AlimentJpa apple = alimentJpaRepository.save(
                 new AlimentJpa(
                         "integration-update-stock-insufficient-apple",
@@ -137,8 +152,16 @@ class UpdateStockIntegrationTest {
                 )
         );
 
+        UserJpa owner = new UserJpa(
+                "update-insufficient-user",
+                "update-insufficient@example.com",
+                false
+        );
+        entityManager.persist(owner);
+
         StockJpa stock = new StockJpa(
-                "integration-update-stock-insufficient"
+                "integration-update-stock-insufficient",
+                owner
         );
         stock.addStockLine(
                 new StockLineJpa(
@@ -147,8 +170,12 @@ class UpdateStockIntegrationTest {
                         BigDecimal.valueOf(5)
                 )
         );
-
         StockJpa savedStock = stockJpaRepository.save(stock);
+
+        RecipeTypeJpa recipeType = new RecipeTypeJpa(
+                "integration-update-stock-insufficient-type"
+        );
+        entityManager.persist(recipeType);
 
         RecipeJpa recipe = new RecipeJpa(
                 "integration-update-stock-insufficient-recipe",
@@ -156,6 +183,7 @@ class UpdateStockIntegrationTest {
                 5,
                 "1"
         );
+        recipeType.addRecipe(recipe);
         recipe.addIngredient(
                 new IngredientJpa(
                         recipe,
@@ -164,26 +192,23 @@ class UpdateStockIntegrationTest {
                         BigDecimal.valueOf(10)
                 )
         );
-
         RecipeJpa savedRecipe = recipeJpaRepository.save(recipe);
 
         UpdateStockRequestModel request = new UpdateStockRequestModel(
                 savedStock.getId(),
                 savedRecipe.getId(),
-                1
+                1,
+                owner.getId()
         );
 
-        // When
         useCase.execute(request);
 
         UpdateStockViewModel result = presenter.getViewModel();
 
-        // Then: use-case response
         assertThat(result.sufficientStock()).isFalse();
         assertThat(result.responseMessage())
                 .isEqualTo("Stock Corrected, insufficient initial stock");
 
-        // Then: real persistence
         StockJpa updatedStock = stockJpaRepository
                 .findCompleteById(savedStock.getId())
                 .orElseThrow();

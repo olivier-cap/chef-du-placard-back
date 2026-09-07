@@ -1,9 +1,6 @@
 package io.github.oliviercap.chefduplacard.application.getstock;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockJpa;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.*;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
@@ -11,6 +8,8 @@ import io.github.oliviercap.chefduplacard.adapters.web.getstock.GetStockViewMode
 import io.github.oliviercap.chefduplacard.adapters.web.getstock.GetStockViewModel.StockLineViewModel;
 import io.github.oliviercap.chefduplacard.adapters.web.getstock.presenters.GetStockPresenter;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,79 +26,44 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @Transactional
 class GetStockUseCaseIntegrationTest {
 
-    @Autowired
-    private GetStockUseCase useCase;
-
-    @Autowired
-    private GetStockPresenter presenter;
-
-    @Autowired
-    private IStockJpaRepository stockJpaRepository;
-
-    @Autowired
-    private IAlimentJpaRepository alimentJpaRepository;
-
-    @Autowired
-    private IUnitJpaRepository unitJpaRepository;
+    @Autowired private GetStockUseCase useCase;
+    @Autowired private GetStockPresenter presenter;
+    @Autowired private IStockJpaRepository stockJpaRepository;
+    @Autowired private IAlimentJpaRepository alimentJpaRepository;
+    @Autowired private IUnitJpaRepository unitJpaRepository;
+    @PersistenceContext private EntityManager entityManager;
 
     @Test
     void should_get_stock_with_real_persistence_pipeline() {
-        // Given
-        AlimentJpa apple = alimentJpaRepository.save(
-                new AlimentJpa(
-                        "integration-get-stock-apple",
-                        "fruit",
-                        true
-                )
-        );
+        AlimentJpa apple = alimentJpaRepository.save(new AlimentJpa(
+                "integration-get-stock-apple", "fruit", true));
+        UnitJpa gram = unitJpaRepository.save(new UnitJpa("gramme", "g"));
 
-        UnitJpa gram = unitJpaRepository.save(
-                new UnitJpa(
-                        "gramme",
-                        "g"
-                )
-        );
+        UserJpa owner = new UserJpa(
+                "get-stock-user", "get-stock@example.com", false);
+        entityManager.persist(owner);
 
-        StockJpa stock = new StockJpa("integration-test-stock");
-        stock.addStockLine(
-                new StockLineJpa(
-                        apple,
-                        gram,
-                        BigDecimal.valueOf(20)
-                )
-        );
-
+        StockJpa stock = new StockJpa("integration-test-stock", owner);
+        stock.addStockLine(new StockLineJpa(
+                apple, gram, BigDecimal.valueOf(20)));
         StockJpa savedStock = stockJpaRepository.save(stock);
 
-        GetStockRequestModel request =
-                new GetStockRequestModel(savedStock.getId());
-
-        // When
-        useCase.execute(request);
+        useCase.execute(new GetStockRequestModel(savedStock.getId()));
 
         GetStockViewModel result = presenter.getViewModel();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.stockLineViewModelList()).hasSize(1);
-
-        StockLineViewModel line =
-                result.stockLineViewModelList().getFirst();
-
-        assertThat(line.alimentName())
-                .isEqualTo("integration-get-stock-apple");
+        StockLineViewModel line = result.stockLineViewModelList().getFirst();
+        assertThat(line.alimentName()).isEqualTo("integration-get-stock-apple");
         assertThat(line.unitSymbol()).isEqualTo("g");
-        assertThat(line.quantity())
-                .isEqualByComparingTo(BigDecimal.valueOf(20));
+        assertThat(line.quantity()).isEqualByComparingTo(BigDecimal.valueOf(20));
     }
 
     @Test
     void should_throw_domain_exception_when_stock_id_is_null() {
-        // Given
-        GetStockRequestModel request =
-                new GetStockRequestModel(null);
+        GetStockRequestModel request = new GetStockRequestModel(null);
 
-        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("stockid must not be null");
