@@ -2,6 +2,7 @@ package io.github.oliviercap.chefduplacard.configuration.root;
 
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IUserRepository;
 import io.github.oliviercap.chefduplacard.application.updatestock.UpdateStockUseCase;
 import io.github.oliviercap.chefduplacard.application.updatestock.port.IUpdateStockOutputPort;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +15,14 @@ public class UpdateStockRoot {
     public UpdateStockUseCase UpdateStockUseCase(
         IStockRepository stockRepository,
         IRecipeRepository recipeRepository,
-        IUpdateStockOutputPort outputPort
+        IUpdateStockOutputPort outputPort,
+        IUserRepository userRepository
     ) {
         return new UpdateStockUseCase(
                 recipeRepository,
                 stockRepository,
-                outputPort
+                outputPort,
+                userRepository
         );
     }
 }

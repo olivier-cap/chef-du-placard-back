@@ -2,12 +2,14 @@ package io.github.oliviercap.chefduplacard.application.updatestock;
 
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IUserRepository;
 import io.github.oliviercap.chefduplacard.application.updatestock.port.IUpdateStockInputPort;
 import io.github.oliviercap.chefduplacard.application.updatestock.port.IUpdateStockOutputPort;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
+import io.github.oliviercap.chefduplacard.domain.user.User;
 
 import java.util.List;
 
@@ -20,25 +22,30 @@ public class UpdateStockUseCase implements IUpdateStockInputPort {
     private final IRecipeRepository recipeRepository;
     private final IStockRepository stockRepository;
     private final IUpdateStockOutputPort outputPort;
+    private final IUserRepository userRepository;
 
     public UpdateStockUseCase(IRecipeRepository recipeRepository,
                               IStockRepository stockRepository,
-                              IUpdateStockOutputPort outputPort) {
+                              IUpdateStockOutputPort outputPort,
+                              IUserRepository userRepository) {
         this.recipeRepository = recipeRepository;
         this.stockRepository = stockRepository;
         this.outputPort = outputPort;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void execute(UpdateStockRequestModel requestModel) {
-        UpdateStockResponseModel response = updateStockByRecipe(requestModel.stockId(), requestModel.recipeId(), requestModel.nbPeople());
+        UpdateStockResponseModel response = updateStockByRecipe(
+                requestModel.stockId(), requestModel.recipeId(),
+                requestModel.nbPeople(), requestModel.userId());
         outputPort.updateStockResponse(response);
     }
 
     //Necessite ecriture du stock dans base de données
     //Necessite verification/transaction de cette action: soit stock maj, soit non :)
     //envoie true si stock effectivement maj
-    private UpdateStockResponseModel updateStockByRecipe(Long stockId, Long recipeId, int nbPeople) {
+    private UpdateStockResponseModel updateStockByRecipe(Long stockId, Long recipeId, int nbPeople, Long userId) {
         String responseMessage;
         boolean sufficientStock;
 
@@ -62,9 +69,17 @@ public class UpdateStockUseCase implements IUpdateStockInputPort {
             responseMessage = "Stock Corrected, insufficient initial stock";
         }
 
+        User user;
+        //Recherche de l'utilisateur
+        try {
+            user = userRepository.findUserById(userId);
+        } catch (Exception e) {
+            throw new DomainException("User not found", e);
+        }
+
         //si le commit de la sauvegarde du stock ne passe pas, on soulève une erreur
         try {
-            stockRepository.save(stock);
+            stockRepository.save(stock, user);
         } catch (Exception e) {
             throw new DomainException("stock save did not succeeded",e);
         }

@@ -25,12 +25,14 @@ public class UpdateStockController {
     public UpdateStockViewModel updateStock(
             @RequestParam Long recipeId,
             @RequestParam int nbPeople,
-            @RequestParam Long stockId
+            @RequestParam Long stockId,
+            @RequestParam Long userId
     ) {
         inputPort.execute(new UpdateStockRequestModel(
                 stockId,
                 recipeId,
-                nbPeople
+                nbPeople,
+                userId
         ));
 
         return outputPort.getViewModel();
