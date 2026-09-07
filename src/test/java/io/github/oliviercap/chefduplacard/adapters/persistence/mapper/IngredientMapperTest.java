@@ -5,6 +5,7 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Ing
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment.AlimentMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.aliment_type.AlimentTypeMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.ingredient.IngredientMapper;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.unit.UnitMapper;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
@@ -15,6 +16,17 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class IngredientMapperTest {
+
+    private final AlimentMapper alimentMapper = new AlimentMapper(
+            new AlimentTypeMapper()
+    );
+
+    private final UnitMapper unitMapper = new UnitMapper();
+
+    private final IngredientMapper ingredientMapper = new IngredientMapper(
+            alimentMapper,
+            unitMapper
+    );
 
     @Test
     void creates_domain_ingredient_from_jpa() {
@@ -44,14 +56,6 @@ class IngredientMapperTest {
                 alimentJpa,
                 unitJpa,
                 BigDecimal.ONE
-        );
-
-        AlimentMapper alimentMapper = new AlimentMapper();
-        UnitMapper unitMapper = new UnitMapper();
-
-        IngredientMapper ingredientMapper = new IngredientMapper(
-                alimentMapper,
-                unitMapper
         );
 
         Ingredient result = ingredientMapper.toDomain(ingredientJpa);

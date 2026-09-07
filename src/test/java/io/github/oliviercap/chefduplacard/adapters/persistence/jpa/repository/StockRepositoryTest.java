@@ -4,10 +4,12 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Ali
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UserJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stockline.IStockLineJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.user.IUserJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -23,32 +25,65 @@ public class StockRepositoryTest {
 
     @Autowired
     private IStockJpaRepository stockJpaRepository;
+
     @Autowired
     private IStockLineJpaRepository stockLineJpaRepository;
+
     @Autowired
     private IAlimentJpaRepository alimentJpaRepository;
+
     @Autowired
     private IUnitJpaRepository unitJpaRepository;
 
+    @Autowired
+    private IUserJpaRepository userJpaRepository;
+
     @Test
     void save_and_load_stock() {
-        AlimentJpa apple = new AlimentJpa("apple", "fruit", true);
-        UnitJpa unit = new UnitJpa("gramme","g");
-        StockJpa stock = new StockJpa("name");
-        StockLineJpa stockLine = new StockLineJpa(stock, apple, unit, BigDecimal.valueOf(12));
+
+        UserJpa user = new UserJpa(
+                "olivier",
+                "olivier@test.fr",
+                false
+        );
+
+        userJpaRepository.save(user);
+
+        AlimentJpa apple = new AlimentJpa(
+                "apple",
+                "fruit",
+                true
+        );
+
+        UnitJpa unit = new UnitJpa(
+                "gramme",
+                "g"
+        );
+
+        StockJpa stock = new StockJpa(
+                "name",
+                user
+        );
+
+        StockLineJpa stockLine = new StockLineJpa(
+                stock,
+                apple,
+                unit,
+                BigDecimal.valueOf(12)
+        );
 
         stock.addStockLine(stockLine);
 
         alimentJpaRepository.save(apple);
         unitJpaRepository.save(unit);
         stockJpaRepository.save(stock);
-
         stockLineJpaRepository.save(stockLine);
 
         var result = stockJpaRepository.findAll();
 
         assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getStockLineJpa().getFirst().getAlimentJpa().getName()).isEqualTo("apple");
+        assertThat(result.getFirst().getStockLineJpa().getFirst().getAlimentJpa().getName())
+                .isEqualTo("apple");
         assertThat(result.getFirst()).isEqualTo(stock);
     }
 }

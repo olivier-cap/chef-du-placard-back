@@ -3,6 +3,7 @@ package io.github.oliviercap.chefduplacard.application.getonerecipe;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.IngredientJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeTypeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
@@ -10,6 +11,8 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.un
 import io.github.oliviercap.chefduplacard.adapters.web.getonerecipe.GetOneRecipeViewModel;
 import io.github.oliviercap.chefduplacard.adapters.web.getonerecipe.presenters.GetOneRecipePresenter;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +45,11 @@ class GetOneRecipeUseCaseIntegrationTest {
     @Autowired
     private IUnitJpaRepository unitJpaRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Test
     void should_get_one_recipe_with_real_persistence_pipeline() {
-        // Given
         AlimentJpa apple = alimentJpaRepository.save(
                 new AlimentJpa(
                         "integration-one-recipe-apple",
@@ -60,12 +65,18 @@ class GetOneRecipeUseCaseIntegrationTest {
                 )
         );
 
+        RecipeTypeJpa recipeType = new RecipeTypeJpa(
+                "integration-one-recipe-dessert"
+        );
+        entityManager.persist(recipeType);
+
         RecipeJpa recipe = new RecipeJpa(
                 "integration-one-recipe-apple-pie",
                 "Cut apples and bake.",
                 30,
                 "easy"
         );
+        recipeType.addRecipe(recipe);
 
         recipe.addIngredient(
                 new IngredientJpa(
@@ -81,12 +92,10 @@ class GetOneRecipeUseCaseIntegrationTest {
         GetOneRecipeRequestModel request =
                 new GetOneRecipeRequestModel(savedRecipe.getId());
 
-        // When
         useCase.execute(request);
 
         GetOneRecipeViewModel result = presenter.getViewModel();
 
-        // Then: recipe
         assertThat(result).isNotNull();
         assertThat(result.name())
                 .isEqualTo("integration-one-recipe-apple-pie");
@@ -97,7 +106,6 @@ class GetOneRecipeUseCaseIntegrationTest {
         assertThat(result.difficulty())
                 .isEqualTo("easy");
 
-        // Then: ingredients
         assertThat(result.ingredients()).hasSize(1);
 
         GetOneRecipeViewModel.IngredientViewModel ingredient =
@@ -116,11 +124,9 @@ class GetOneRecipeUseCaseIntegrationTest {
 
     @Test
     void should_throw_domain_exception_when_recipe_id_is_null() {
-        // Given
         GetOneRecipeRequestModel request =
                 new GetOneRecipeRequestModel(null);
 
-        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("recipeId must not be null");
@@ -128,13 +134,11 @@ class GetOneRecipeUseCaseIntegrationTest {
 
     @Test
     void should_throw_domain_exception_when_recipe_does_not_exist() {
-        // Given
         Long unknownRecipeId = 999999L;
 
         GetOneRecipeRequestModel request =
                 new GetOneRecipeRequestModel(unknownRecipeId);
 
-        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("recipe not found " + unknownRecipeId);

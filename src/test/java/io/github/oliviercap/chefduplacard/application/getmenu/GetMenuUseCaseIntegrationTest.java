@@ -5,7 +5,9 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Ing
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.MenuJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.MenuLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeTypeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UserJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu.IMenuJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
@@ -13,6 +15,8 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.un
 import io.github.oliviercap.chefduplacard.adapters.web.getmenu.GetMenuViewModel;
 import io.github.oliviercap.chefduplacard.adapters.web.getmenu.presenters.GetMenuPresenter;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +52,11 @@ class GetMenuUseCaseIntegrationTest {
     @Autowired
     private IUnitJpaRepository unitJpaRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Test
     void should_get_menu_with_real_persistence_pipeline() {
-        // Given
         AlimentJpa apple = alimentJpaRepository.save(
                 new AlimentJpa(
                         "integration-menu-apple",
@@ -74,12 +80,18 @@ class GetMenuUseCaseIntegrationTest {
                 )
         );
 
+        RecipeTypeJpa recipeType = new RecipeTypeJpa(
+                "integration-menu-dessert"
+        );
+        entityManager.persist(recipeType);
+
         RecipeJpa applePie = new RecipeJpa(
                 "integration-menu-apple-pie",
                 "Cut apples and bake.",
                 30,
                 "easy"
         );
+        recipeType.addRecipe(applePie);
 
         applePie.addIngredient(
                 new IngredientJpa(
@@ -96,6 +108,7 @@ class GetMenuUseCaseIntegrationTest {
                 45,
                 "medium"
         );
+        recipeType.addRecipe(bananaCake);
 
         bananaCake.addIngredient(
                 new IngredientJpa(
@@ -109,20 +122,34 @@ class GetMenuUseCaseIntegrationTest {
         RecipeJpa savedApplePie = recipeJpaRepository.save(applePie);
         RecipeJpa savedBananaCake = recipeJpaRepository.save(bananaCake);
 
+        UserJpa owner = new UserJpa(
+                "get-menu-user",
+                "get-menu@example.com",
+                false
+        );
+        entityManager.persist(owner);
+
         MenuJpa menu = new MenuJpa();
         menu.setName("integration-menu-weekend");
+        menu.setUserJpa(owner);
 
         menu.addMenuLine(
                 new MenuLineJpa(
+                        menu,
                         savedApplePie,
-                        BigDecimal.valueOf(2)
+                        recipeType,
+                        BigDecimal.valueOf(2),
+                        null
                 )
         );
 
         menu.addMenuLine(
                 new MenuLineJpa(
+                        menu,
                         savedBananaCake,
-                        BigDecimal.valueOf(4)
+                        recipeType,
+                        BigDecimal.valueOf(4),
+                        null
                 )
         );
 
@@ -131,18 +158,15 @@ class GetMenuUseCaseIntegrationTest {
         GetMenuRequestModel request =
                 new GetMenuRequestModel(savedMenu.getId());
 
-        // When
         useCase.execute(request);
 
         GetMenuViewModel result = presenter.getViewModel();
 
-        // Then: menu
         assertThat(result).isNotNull();
         assertThat(result.menuName())
                 .isEqualTo("integration-menu-weekend");
         assertThat(result.menuLineViewModels()).hasSize(2);
 
-        // Then: apple pie line
         assertThat(result.menuLineViewModels())
                 .anySatisfy(menuLine -> {
                     assertThat(menuLine.nbPerson())
@@ -157,7 +181,6 @@ class GetMenuUseCaseIntegrationTest {
                             .isEqualTo("easy");
                 });
 
-        // Then: banana cake line
         assertThat(result.menuLineViewModels())
                 .anySatisfy(menuLine -> {
                     assertThat(menuLine.nbPerson())
@@ -175,11 +198,9 @@ class GetMenuUseCaseIntegrationTest {
 
     @Test
     void should_throw_domain_exception_when_menu_id_is_null() {
-        // Given
         GetMenuRequestModel request =
                 new GetMenuRequestModel(null);
 
-        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("menuId must not be blank");
@@ -187,13 +208,11 @@ class GetMenuUseCaseIntegrationTest {
 
     @Test
     void should_throw_domain_exception_when_menu_does_not_exist() {
-        // Given
         Long unknownMenuId = 999999L;
 
         GetMenuRequestModel request =
                 new GetMenuRequestModel(unknownMenuId);
 
-        // When and then
         assertThatThrownBy(() -> useCase.execute(request))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("menu not found " + unknownMenuId);

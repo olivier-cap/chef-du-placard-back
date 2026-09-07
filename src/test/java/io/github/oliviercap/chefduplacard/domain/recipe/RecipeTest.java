@@ -5,6 +5,8 @@ import io.github.oliviercap.chefduplacard.domain.food.Aliment;
 import io.github.oliviercap.chefduplacard.domain.food.AlimentId;
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 import io.github.oliviercap.chefduplacard.domain.food.IngredientId;
+import io.github.oliviercap.chefduplacard.domain.recipe_type.RecipeType;
+import io.github.oliviercap.chefduplacard.domain.recipe_type.RecipeTypeId;
 import io.github.oliviercap.chefduplacard.domain.unit.Unit;
 import io.github.oliviercap.chefduplacard.domain.unit.UnitId;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class RecipeTest {
 
     private static final RecipeId RECIPE_ID = new RecipeId(1L);
+
+    private static final RecipeType RECIPE_TYPE = new RecipeType(
+            new RecipeTypeId(1L),
+            "dessert"
+    );
 
     private static final Aliment APPLE = new Aliment(
             new AlimentId(1L),
@@ -93,7 +100,8 @@ class RecipeTest {
                 "instructions very complex",
                 Duration.ofMinutes(12),
                 "3",
-                INGREDIENTS
+                INGREDIENTS,
+                RECIPE_TYPE
         ))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("recipe name cannot be blank or null");
@@ -107,7 +115,8 @@ class RecipeTest {
                 "instructions very complex",
                 Duration.ofMinutes(12),
                 "3",
-                INGREDIENTS
+                INGREDIENTS,
+                RECIPE_TYPE
         ))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("recipe name cannot be blank or null");
@@ -121,7 +130,8 @@ class RecipeTest {
                 "instructions very complex",
                 Duration.ofMinutes(12),
                 "3",
-                null
+                null,
+                RECIPE_TYPE
         ))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("a recipe must have at least one ingredient");
@@ -135,7 +145,8 @@ class RecipeTest {
                 "instructions very complex",
                 Duration.ofMinutes(12),
                 "3",
-                List.of()
+                List.of(),
+                RECIPE_TYPE
         ))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("a recipe must have at least one ingredient");
@@ -149,7 +160,8 @@ class RecipeTest {
                 null,
                 Duration.ofMinutes(12),
                 "3",
-                INGREDIENTS
+                INGREDIENTS,
+                RECIPE_TYPE
         ))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("a recipe must have a description");
@@ -163,7 +175,8 @@ class RecipeTest {
                 " ",
                 Duration.ofMinutes(12),
                 "3",
-                INGREDIENTS
+                INGREDIENTS,
+                RECIPE_TYPE
         ))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("a recipe must have a description");
@@ -177,7 +190,8 @@ class RecipeTest {
                 "instructions very complex",
                 null,
                 "3",
-                INGREDIENTS
+                INGREDIENTS,
+                RECIPE_TYPE
         );
 
         assertThat(recipe.getDuration()).isEqualTo(Duration.ZERO);
@@ -191,7 +205,8 @@ class RecipeTest {
                 "instructions very complex",
                 Duration.ofMinutes(12),
                 null,
-                INGREDIENTS
+                INGREDIENTS,
+                RECIPE_TYPE
         );
 
         assertThat(recipe.getDifficulty()).isEmpty();
@@ -222,7 +237,8 @@ class RecipeTest {
                 "instructions very complex",
                 Duration.ofMinutes(12),
                 "3",
-                INGREDIENTS
+                INGREDIENTS,
+                RECIPE_TYPE
         );
     }
 }
