@@ -16,6 +16,9 @@ public class MenuJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
+    private String name;
+
     @OneToMany(
             fetch = FetchType.LAZY,
             mappedBy = "menuJpa",
@@ -24,8 +27,9 @@ public class MenuJpa {
     )
     private List<MenuLineJpa> menuLineJpaList = new ArrayList<>();
 
-    @Column(name = "nom", nullable = false, unique = true)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="user_id", nullable = false)
+    private UserJpa userJpa;
 
     public MenuJpa() {
     }
@@ -35,10 +39,24 @@ public class MenuJpa {
         this.name = name;
     }
 
+    public MenuJpa(String name, List<MenuLineJpa> menuLineJpaList, UserJpa userJpa) {
+        this.name = name;
+        this.menuLineJpaList = menuLineJpaList;
+        this.userJpa = userJpa;
+    }
+
     public void addMenuLine(MenuLineJpa menuLineJpa) {
         Objects.requireNonNull(menuLineJpa, "menuLineJpa must not be null");
         menuLineJpaList.add(menuLineJpa);
         menuLineJpa.setMenuJpa(this);
+    }
+
+    public UserJpa getUserJpa() {
+        return userJpa;
+    }
+
+    public void setUserJpa(UserJpa userJpa) {
+        this.userJpa = userJpa;
     }
 
     public Long getId() {
@@ -46,11 +64,7 @@ public class MenuJpa {
     }
 
     public List<MenuLineJpa> getMenuLineJpaList() {
-        return menuLineJpaList;
-    }
-
-    public void setMenuLineJpaList(List<MenuLineJpa> menuLineJpaList) {
-        this.menuLineJpaList = menuLineJpaList;
+        return List.copyOf(menuLineJpaList);
     }
 
     public String getName() {
@@ -60,4 +74,5 @@ public class MenuJpa {
     public void setName(String name) {
         this.name = name;
     }
+
 }

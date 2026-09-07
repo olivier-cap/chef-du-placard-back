@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Table(
         name = "stock_line",
         uniqueConstraints = @UniqueConstraint(
-                name = "uk_stockline_stock_aliment",
+                name = "uk_stock_line",
                 columnNames = {"stock_id", "aliment_id"}
         )
 )
@@ -32,10 +32,10 @@ public class StockLineJpa {
     private AlimentJpa alimentJpa;
 
     @ManyToOne(fetch = FetchType.LAZY , optional = false)
-    @JoinColumn(name = "unite_id", nullable = false)
+    @JoinColumn(name = "unit_id", nullable = false)
     private UnitJpa unitJpa;
 
-    @Column(name = "quantite", nullable = false)
+    @Column(name = "quantity", nullable = false)
     private BigDecimal quantity;
 
     protected StockLineJpa() {
