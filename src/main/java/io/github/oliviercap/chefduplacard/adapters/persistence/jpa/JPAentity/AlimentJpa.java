@@ -2,6 +2,9 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * JPA entity.Represents an Aliment.
  * Used to read / write data in database.
@@ -9,8 +12,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(
         name = "aliment",
-        uniqueConstraints = @UniqueConstraint(columnNames = "nom")
-
+        uniqueConstraints = @UniqueConstraint(columnNames = "name")
 )
 public class AlimentJpa {
 
@@ -18,7 +20,7 @@ public class AlimentJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom", nullable = false, length = 150)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
@@ -26,6 +28,14 @@ public class AlimentJpa {
 
     @Column(name = "actif", nullable = false)
     private boolean active;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "aliment_type_join",
+            joinColumns = @JoinColumn(name = "aliment_id"),
+            inverseJoinColumns = @JoinColumn(name = "aliment_type_id")
+    )
+    private Set<AlimentTypeJpa> alimentTypes = new HashSet<>();
 
     protected AlimentJpa() {
     }
@@ -73,6 +83,10 @@ public class AlimentJpa {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Set<AlimentTypeJpa> getAlimentTypes() {
+        return Set.copyOf(alimentTypes);
     }
 
 }
