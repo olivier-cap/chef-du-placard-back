@@ -4,6 +4,7 @@ import io.github.oliviercap.chefduplacard.adapters.web.savenewmenu.SaveNewMenuVi
 import io.github.oliviercap.chefduplacard.application.savenewmenu.SaveNewMenuRequestModel;
 import io.github.oliviercap.chefduplacard.application.savenewmenu.port.ISaveNewMenuInputPort;
 import io.github.oliviercap.chefduplacard.application.savenewmenu.port.ISaveNewMenuOutputPort;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +21,17 @@ public class SaveNewMenuController {
         this.outputPort = outputPort;
     }
 
-    @PostMapping("/api/saveNewMenu")
+    @PostMapping("/api/users/{userId}/menus")
     public SaveNewMenuViewModel saveNewMenuViewModel(
-        @RequestBody SaveNewMenuRequest newMenu
-    ){
-        inputPort.execute(new SaveNewMenuRequestModel(newMenu));
+            @PathVariable Long userId,
+            @RequestBody SaveNewMenuRequest newMenu
+    ) {
+        inputPort.execute(
+                new SaveNewMenuRequestModel(
+                        newMenu,
+                        userId
+                )
+        );
 
         return outputPort.getViewModel();
     }
