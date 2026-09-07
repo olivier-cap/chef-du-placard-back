@@ -5,7 +5,8 @@ import java.util.List;
 
 public record SaveNewMenuDTO(
         String menuName,
-        List<saveNewMenuLine> menuLines
+        List<SaveNewMenuLine> menuLines,
+        Long userId
 ) {
-    public record saveNewMenuLine(Long recipeId, BigDecimal nbPerson) {}
+    public record SaveNewMenuLine(Long recipeId, BigDecimal nbPerson) {}
 }

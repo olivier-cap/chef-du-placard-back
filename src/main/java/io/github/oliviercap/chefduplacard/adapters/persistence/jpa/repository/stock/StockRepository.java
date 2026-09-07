@@ -1,17 +1,16 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockJpa;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.StockLineJpa;
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
+import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.*;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.AlimentRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.synchronizer.stock.IStockJpaSynchronizer;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.stock.StockMapper;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IUnitRepository;
+import io.github.oliviercap.chefduplacard.application.ports.persistence.IUserRepository;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.stock.Stock;
+import io.github.oliviercap.chefduplacard.domain.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
@@ -31,17 +30,20 @@ public class StockRepository implements IStockRepository {
     private final StockMapper stockMapper;
     private final IAlimentRepository alimentRepository;
     private final IUnitRepository unitRepository;
+    private final IUserRepository userRepository;
 
     public StockRepository(IStockJpaRepository stockJpaRepository,
                            IStockJpaSynchronizer stockJpaSynchronizer,
                            StockMapper stockMapper,
                            AlimentRepository alimentRepository,
-                           IUnitRepository unitRepository) {
+                           IUnitRepository unitRepository,
+                           IUserRepository userRepository) {
         this.stockJpaRepository = stockJpaRepository;
         this.stockJpaSynchronizer = stockJpaSynchronizer;
         this.stockMapper = stockMapper;
         this.alimentRepository = alimentRepository;
         this.unitRepository = unitRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -64,12 +66,17 @@ public class StockRepository implements IStockRepository {
      */
     @Override
     @Transactional
-    public void save(Stock stock) {
+    public void save(Stock stock, User user) {
 
         //Recherche du stock dans la base. Permet à JPA de gérer le stock, le modifier.
         //Création d'un nouveau stock s'il n'existe pas en base
         StockJpa stockJpa = stockJpaRepository.findCompleteById(stock.getId().id())
-                .orElseGet(() -> new StockJpa(stock.getName()));
+                .orElseGet(
+                        () -> {
+                            UserJpa userJpa = userRepository.findUserJpa(user.getUserId().id());
+                            return new StockJpa(stock.getName(), userJpa);
+                        }
+                );
 
         List<AlimentJpa> existingAliments = alimentRepository.findAllJpa();
         List<UnitJpa> existingUnits = unitRepository.findAllJpa();
