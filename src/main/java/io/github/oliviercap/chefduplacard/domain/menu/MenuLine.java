@@ -1,6 +1,7 @@
 package io.github.oliviercap.chefduplacard.domain.menu;
 
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
+import io.github.oliviercap.chefduplacard.domain.recipe_type.RecipeType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,15 +15,16 @@ public class MenuLine {
     private final MenuLineId id;
     private Recipe recipe;
     private BigDecimal nbPerson;
-    //recipe type
+    private RecipeType type;
     private LocalDate date;
 
 
-    public MenuLine(MenuLineId id, Recipe recipe, BigDecimal nbPerson, LocalDate date) {
+    public MenuLine(MenuLineId id, Recipe recipe, BigDecimal nbPerson, LocalDate date, RecipeType type) {
         this.id = id;
         this.recipe = recipe;
         this.nbPerson = nbPerson;
         this.date = date;
+        this.type = type;
     }
 
     public Recipe getRecipe() {
@@ -51,6 +53,14 @@ public class MenuLine {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public RecipeType getType() {
+        return type;
+    }
+
+    public void setType(RecipeType type) {
+        this.type = type;
     }
 
     @Override
