@@ -2,6 +2,7 @@ package io.github.oliviercap.chefduplacard.adapters.persistence.mapper.menuline;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.MenuLineJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe.RecipeMapper;
+import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe_type.RecipeTypeMapper;
 import io.github.oliviercap.chefduplacard.domain.menu.MenuLine;
 import io.github.oliviercap.chefduplacard.domain.menu.MenuLineId;
 import org.springframework.stereotype.Component;
@@ -12,9 +13,11 @@ import java.util.Objects;
 public class MenuLineMapper {
 
     private final RecipeMapper recipeMapper;
+    private final RecipeTypeMapper recipeTypeMapper;
 
-    public MenuLineMapper(RecipeMapper recipeMapper) {
+    public MenuLineMapper(RecipeMapper recipeMapper, RecipeTypeMapper recipeTypeMapper) {
         this.recipeMapper = recipeMapper;
+        this.recipeTypeMapper = recipeTypeMapper;
     }
 
     public MenuLine toDomain(MenuLineJpa menuLineJpa) {
@@ -25,7 +28,8 @@ public class MenuLineMapper {
                 new MenuLineId(menuLineJpa.getId()),
                 recipeMapper.toDomain(menuLineJpa.getRecipeJpa()),
                 menuLineJpa.getNbPerson(),
-                menuLineJpa.getDate()
+                menuLineJpa.getDate(),
+                recipeTypeMapper.toDomain(menuLineJpa.getRecipeTypeJpa())
         );
     }
 

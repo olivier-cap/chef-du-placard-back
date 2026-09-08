@@ -7,13 +7,14 @@ import java.math.BigDecimal;
 public record MenuLineResponse(
         Long id,
         RecipeResponse recipeResponse,
-        BigDecimal nbPerson
-) {
+        BigDecimal nbPerson,
+        RecipeTypeResponse type) {
     public static MenuLineResponse from(MenuLine menuLine) {
         return new MenuLineResponse(
                 menuLine.getId().id(),
                 RecipeResponse.from(menuLine.getRecipe()),
-                menuLine.getNbPerson()
+                menuLine.getNbPerson(),
+                RecipeTypeResponse.from(menuLine.getType())
         );
     }
 }
