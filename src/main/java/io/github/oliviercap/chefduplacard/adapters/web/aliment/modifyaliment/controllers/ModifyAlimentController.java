@@ -1,0 +1,27 @@
+package io.github.oliviercap.chefduplacard.adapters.web.aliment.modifyaliment.controllers;
+
+import io.github.oliviercap.chefduplacard.adapters.web.aliment.modifyaliment.ModifyAlimentViewModel;
+import io.github.oliviercap.chefduplacard.application.aliment.modifyaliment.ModifyAlimentRequestModel;
+import io.github.oliviercap.chefduplacard.application.aliment.modifyaliment.ports.IModifyAlimentInputPort;
+import io.github.oliviercap.chefduplacard.application.aliment.modifyaliment.ports.IModifyAlimentOutputPort;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class ModifyAlimentController {
+
+    IModifyAlimentInputPort inputPort;
+    IModifyAlimentOutputPort outputPort;
+
+    @PostMapping("/api/modfiyAliment")
+    public ModifyAlimentViewModel modifyAliment(
+        @RequestParam Long alimentId,
+        @RequestParam String newAlimentName,
+        @RequestParam String alimentDescription
+    ){
+        inputPort.execute(new ModifyAlimentRequestModel(alimentId, newAlimentName, alimentDescription));
+
+        return outputPort.getViewModel();
+    }
+}
