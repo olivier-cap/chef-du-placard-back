@@ -1,7 +1,7 @@
 package io.github.oliviercap.chefduplacard.application.ports.persistence;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
-import io.github.oliviercap.chefduplacard.application.createnewrecipe.IngredientsData;
+import io.github.oliviercap.chefduplacard.application.recipes.createnewrecipe.IngredientsData;
 import io.github.oliviercap.chefduplacard.domain.recipe.Recipe;
 
 import java.time.Duration;
