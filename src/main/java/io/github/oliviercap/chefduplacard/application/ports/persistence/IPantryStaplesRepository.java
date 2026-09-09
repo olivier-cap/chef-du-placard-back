@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface IPantryStaplesRepository {
     PantryStaples findByUserId(Long userId);
+    Optional<PantryStaples> findBydId(Long pantryStaplesId);
 }

@@ -1,4 +1,4 @@
-package io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.findByUser;
+package io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.find_by_user;
 
 import java.math.BigDecimal;
 import java.util.List;

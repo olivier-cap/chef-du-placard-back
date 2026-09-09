@@ -1,9 +1,8 @@
-package io.github.oliviercap.chefduplacard.application.pantry_staples.findByUser;
+package io.github.oliviercap.chefduplacard.application.pantry_staples.find_by_user;
 
-import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.pantry_staples.PantryStaplesRepository;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.PantryStaplesResponse;
-import io.github.oliviercap.chefduplacard.application.pantry_staples.findByUser.ports.IFindByUserPantryStaplesInputPort;
-import io.github.oliviercap.chefduplacard.application.pantry_staples.findByUser.ports.IFindByUserPantryStaplesOutputPort;
+import io.github.oliviercap.chefduplacard.application.pantry_staples.find_by_user.ports.IFindByUserPantryStaplesInputPort;
+import io.github.oliviercap.chefduplacard.application.pantry_staples.find_by_user.ports.IFindByUserPantryStaplesOutputPort;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IPantryStaplesRepository;
 import io.github.oliviercap.chefduplacard.domain.pantry_staples.PantryStaples;
 

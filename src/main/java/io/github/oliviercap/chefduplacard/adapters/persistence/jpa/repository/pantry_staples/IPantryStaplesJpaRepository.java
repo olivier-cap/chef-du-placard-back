@@ -17,4 +17,12 @@ public interface IPantryStaplesJpaRepository extends JpaRepository<PantryStaples
             where p.userJpa.id = :userId
             """)
     Optional<PantryStaplesJpa> findByUserId(@Param("userId") Long userId);
+
+    @Query("""
+            select distinct p
+            from PantryStaplesJpa p
+            left join fetch p.pantryStaplesLineSet
+            where p.id = :id
+            """)
+    Optional<PantryStaplesJpa> findById(@Param("id") Long id);
 }

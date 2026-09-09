@@ -201,6 +201,17 @@ public final class Stock {
         return aggregatedIngredients.values().stream().toList();
     }
 
+    /**
+     * Recherche létat du stock pour une liste d'aliments donnés
+     */
+    public List<StockLine> getStockAliments(List<Aliment> aliments) {
+        List<StockLine> stockAliments = new ArrayList<>();
+        for(Aliment aliment : aliments) {
+            stockAliments.add(stockMap.get(aliment));
+        }
+        return stockAliments;
+    }
+
     /** Getters and Setters **/
     public Map<Aliment, StockLine> getStockMap() {
         return Map.copyOf(stockMap);

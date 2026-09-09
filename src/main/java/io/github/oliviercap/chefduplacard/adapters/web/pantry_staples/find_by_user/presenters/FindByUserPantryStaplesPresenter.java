@@ -1,8 +1,8 @@
-package io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.findByUser.presenters;
+package io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.find_by_user.presenters;
 
-import io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.findByUser.FindByUserPantryStaplesViewModel;
-import io.github.oliviercap.chefduplacard.application.pantry_staples.findByUser.FindByUserPantryStaplesResponseModel;
-import io.github.oliviercap.chefduplacard.application.pantry_staples.findByUser.ports.IFindByUserPantryStaplesOutputPort;
+import io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.find_by_user.FindByUserPantryStaplesViewModel;
+import io.github.oliviercap.chefduplacard.application.pantry_staples.find_by_user.FindByUserPantryStaplesResponseModel;
+import io.github.oliviercap.chefduplacard.application.pantry_staples.find_by_user.ports.IFindByUserPantryStaplesOutputPort;
 import org.springframework.stereotype.Component;
 
 @Component
