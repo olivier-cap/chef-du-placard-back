@@ -1,0 +1,32 @@
+package io.github.oliviercap.chefduplacard.application.recipes.getrecipelist;
+
+import io.github.oliviercap.chefduplacard.application.recipes.getrecipelist.ports.IGetRecipeListInputPort;
+import io.github.oliviercap.chefduplacard.application.recipes.getrecipelist.ports.IGetRecipeListOutPort;
+import io.github.oliviercap.chefduplacard.application.ports.query.IGetRecipeListViewQuery;
+
+import java.util.List;
+
+/**
+ * Propose une liste des recettes existantes. Ne donne pas tous les détails de chaque recette.
+ */
+public class GetRecipeListUseCase implements IGetRecipeListInputPort {
+
+    //private final IRecipeRepository recipeRepository;
+    private final IGetRecipeListViewQuery getRecipeListViewQuery;
+    private final IGetRecipeListOutPort outPort;
+
+    public GetRecipeListUseCase(IGetRecipeListViewQuery getRecipeListViewQuery,
+                                IGetRecipeListOutPort outPort) {
+        this.getRecipeListViewQuery = getRecipeListViewQuery;
+        this.outPort = outPort;
+    }
+
+    @Override
+    public void execute(GetRecipeListRequestModel requestModel) {
+        outPort.displayRecipeList(new GetRecipeListResponseModel(getRecipeList()));
+    }
+
+    private List<GetRecipeListQuery> getRecipeList() {
+        return getRecipeListViewQuery.getRecipeListQuery();
+    }
+}
