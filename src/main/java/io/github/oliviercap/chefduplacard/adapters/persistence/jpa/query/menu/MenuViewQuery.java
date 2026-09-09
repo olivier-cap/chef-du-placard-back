@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.query.menu;
 
-import io.github.oliviercap.chefduplacard.application.getmenu.GetMenuQuery;
+import io.github.oliviercap.chefduplacard.application.menu.getmenu.GetMenuQuery;
 import io.github.oliviercap.chefduplacard.application.ports.query.IMenuViewQuery;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import org.springframework.stereotype.Repository;
