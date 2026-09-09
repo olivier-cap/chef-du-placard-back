@@ -2,8 +2,10 @@ package io.github.oliviercap.chefduplacard.application.modifyaliment;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.modifyaliment.ModifyAlimentViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.modifyaliment.presenters.ModifyAlimentPresenter;
+import io.github.oliviercap.chefduplacard.adapters.web.aliment.modifyaliment.ModifyAlimentViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.aliment.modifyaliment.presenters.ModifyAlimentPresenter;
+import io.github.oliviercap.chefduplacard.application.aliment.modifyaliment.ModifyAlimentRequestModel;
+import io.github.oliviercap.chefduplacard.application.aliment.modifyaliment.ModifyAlimentUseCase;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;

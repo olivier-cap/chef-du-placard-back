@@ -2,9 +2,11 @@ package io.github.oliviercap.chefduplacard.application.getaliments;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.AlimentJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.getaliments.GetAlimentsViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.getaliments.GetAlimentsViewModel.AlimentViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.getaliments.presenters.GetAlimentsPresenter;
+import io.github.oliviercap.chefduplacard.adapters.web.aliment.getaliments.GetAlimentsViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.aliment.getaliments.GetAlimentsViewModel.AlimentViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.aliment.getaliments.presenters.GetAlimentsPresenter;
+import io.github.oliviercap.chefduplacard.application.aliment.getaliments.GetAlimentsRequestModel;
+import io.github.oliviercap.chefduplacard.application.aliment.getaliments.GetAlimentsUseCase;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,8 +2,11 @@ package io.github.oliviercap.chefduplacard.application.cookablerecipes;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.UpdateStockDTO;
-import io.github.oliviercap.chefduplacard.application.cookablerecipes.ports.IFindCookableRecipesOutputPort;
-import io.github.oliviercap.chefduplacard.application.createnewrecipe.IngredientsData;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.FindCookableRecipesRequestModel;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.FindCookableRecipesResponseModel;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.FindCookableRecipesUseCase;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.ports.IFindCookableRecipesOutputPort;
+import io.github.oliviercap.chefduplacard.application.recipes.createnewrecipe.IngredientsData;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IStockRepository;

@@ -1,9 +1,10 @@
 package io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.controllers;
 
-import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.CookableMenusViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.presenters.CookableMenusPresenter;
-import io.github.oliviercap.chefduplacard.application.cookablemenus.CookableMenusRequestModel;
-import io.github.oliviercap.chefduplacard.application.cookablemenus.ports.ICookableMenusInputPort;
+import io.github.oliviercap.chefduplacard.adapters.web.menu.cookablemenus.CookableMenusViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.menu.cookablemenus.controllers.CookableMenusController;
+import io.github.oliviercap.chefduplacard.adapters.web.menu.cookablemenus.presenters.CookableMenusPresenter;
+import io.github.oliviercap.chefduplacard.application.menu.cookablemenus.CookableMenusRequestModel;
+import io.github.oliviercap.chefduplacard.application.menu.cookablemenus.ports.ICookableMenusInputPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

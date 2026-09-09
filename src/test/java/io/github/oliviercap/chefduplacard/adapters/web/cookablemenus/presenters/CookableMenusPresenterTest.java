@@ -1,7 +1,8 @@
 package io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.presenters;
 
-import io.github.oliviercap.chefduplacard.adapters.web.cookablemenus.CookableMenusViewModel;
-import io.github.oliviercap.chefduplacard.application.cookablemenus.CookableMenusResponseModel;
+import io.github.oliviercap.chefduplacard.adapters.web.menu.cookablemenus.CookableMenusViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.menu.cookablemenus.presenters.CookableMenusPresenter;
+import io.github.oliviercap.chefduplacard.application.menu.cookablemenus.CookableMenusResponseModel;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.AlimentResponse;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.IngredientResponse;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;
