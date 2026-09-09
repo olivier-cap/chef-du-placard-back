@@ -1,0 +1,54 @@
+package io.github.oliviercap.chefduplacard.adapters.web.menu.getmenu.presenters;
+
+import io.github.oliviercap.chefduplacard.adapters.web.menu.getmenu.GetMenuViewModel;
+import io.github.oliviercap.chefduplacard.application.menu.getmenu.GetMenuQuery;
+import io.github.oliviercap.chefduplacard.application.menu.getmenu.GetMenuResponseModel;
+import io.github.oliviercap.chefduplacard.application.menu.getmenu.ports.IGetMenuOutputPort;
+import org.springframework.stereotype.Component;
+
+import java.time.Duration;
+
+@Component
+public class GetMenuPresenter implements IGetMenuOutputPort {
+
+    private GetMenuViewModel viewModel;
+
+    @Override
+    public void displayMenu(GetMenuResponseModel responseModel) {
+        viewModel = new GetMenuViewModel(
+                responseModel.getMenuQuery().getFirst().menuId(),
+                responseModel.getMenuQuery().getFirst().menuName(),
+                responseModel.getMenuQuery().stream()
+                        .map(this::toMenuLineViewModel)
+                        .toList()
+        );
+    }
+
+    @Override
+    public GetMenuViewModel getViewModel() {
+        return viewModel;
+    }
+
+    private GetMenuViewModel.MenuLineViewModel toMenuLineViewModel(GetMenuQuery getMenuQuery) {
+        return new GetMenuViewModel.MenuLineViewModel(
+                getMenuQuery.menuId(),
+                getMenuQuery.nbPerson(),
+                toRecipeViewModel(
+                        getMenuQuery.menuId(),
+                        getMenuQuery.name(),
+                        getMenuQuery.instructions(),
+                        getMenuQuery.duration(),
+                        getMenuQuery.difficulty()
+                ));
+    }
+
+    private GetMenuViewModel.RecipeViewModel toRecipeViewModel(Long id, String name, String instructions, Integer duration, String difficulty) {
+        return new GetMenuViewModel.RecipeViewModel(
+                id,
+                name,
+                instructions,
+                Duration.ofMinutes(duration),
+                difficulty
+        );
+    }
+}
