@@ -8,6 +8,7 @@ import io.github.oliviercap.chefduplacard.domain.pantry_staples.PantryStaples;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PantryStaplesRepository implements IPantryStaplesRepository {
@@ -35,5 +36,11 @@ public class PantryStaplesRepository implements IPantryStaplesRepository {
                                 () -> new DomainException("error find pantry staples for user " + userId)
                         )
         );
+    }
+
+    @Override
+    public Optional<PantryStaples> findBydId(Long pantryStaplesId) {
+        return jpaRepository.findById(pantryStaplesId)
+                .map(pantryStaplesMapper::toDomain);
     }
 }

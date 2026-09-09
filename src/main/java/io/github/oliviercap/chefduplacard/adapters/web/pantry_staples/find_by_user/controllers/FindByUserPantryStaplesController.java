@@ -1,9 +1,9 @@
-package io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.findByUser.controllers;
+package io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.find_by_user.controllers;
 
-import io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.findByUser.FindByUserPantryStaplesViewModel;
-import io.github.oliviercap.chefduplacard.application.pantry_staples.findByUser.FindByUserPantryStaplesRequestModel;
-import io.github.oliviercap.chefduplacard.application.pantry_staples.findByUser.ports.IFindByUserPantryStaplesInputPort;
-import io.github.oliviercap.chefduplacard.application.pantry_staples.findByUser.ports.IFindByUserPantryStaplesOutputPort;
+import io.github.oliviercap.chefduplacard.adapters.web.pantry_staples.find_by_user.FindByUserPantryStaplesViewModel;
+import io.github.oliviercap.chefduplacard.application.pantry_staples.find_by_user.FindByUserPantryStaplesRequestModel;
+import io.github.oliviercap.chefduplacard.application.pantry_staples.find_by_user.ports.IFindByUserPantryStaplesInputPort;
+import io.github.oliviercap.chefduplacard.application.pantry_staples.find_by_user.ports.IFindByUserPantryStaplesOutputPort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
