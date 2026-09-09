@@ -1,0 +1,4 @@
+package io.github.oliviercap.chefduplacard.application.stock.updatestock;
+
+public record UpdateStockRequestModel(Long stockId, Long recipeId, int nbPeople, Long userId) {
+}
