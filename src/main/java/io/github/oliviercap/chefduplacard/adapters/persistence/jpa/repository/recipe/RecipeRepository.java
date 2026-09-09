@@ -5,7 +5,7 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Ing
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.RecipeJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.UnitJpa;
 import io.github.oliviercap.chefduplacard.adapters.persistence.mapper.recipe.RecipeMapper;
-import io.github.oliviercap.chefduplacard.application.createnewrecipe.IngredientsData;
+import io.github.oliviercap.chefduplacard.application.recipes.createnewrecipe.IngredientsData;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IAlimentRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IUnitRepository;

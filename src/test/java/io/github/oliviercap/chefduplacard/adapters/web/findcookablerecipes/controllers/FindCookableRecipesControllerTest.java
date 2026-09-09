@@ -1,9 +1,10 @@
 package io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.controllers;
 
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.FindCookableRecipesPresenter;
-import io.github.oliviercap.chefduplacard.application.cookablerecipes.FindCookableRecipesRequestModel;
-import io.github.oliviercap.chefduplacard.application.cookablerecipes.ports.IFindCookableRecipesInputPort;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.findcookablerecipes.FindCookableRecipesViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.findcookablerecipes.controllers.FindCookableRecipesController;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.findcookablerecipes.presenters.FindCookableRecipesPresenter;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.FindCookableRecipesRequestModel;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.ports.IFindCookableRecipesInputPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

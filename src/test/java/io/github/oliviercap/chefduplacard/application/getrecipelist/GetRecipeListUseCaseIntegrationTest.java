@@ -7,9 +7,11 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.JPAentity.Uni
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.aliment.IAlimentJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.getrecipelist.GetRecipeListViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.getrecipelist.GetRecipeListViewModel.RecipeList;
-import io.github.oliviercap.chefduplacard.adapters.web.getrecipelist.presenters.GetRecipeListPresenter;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.getrecipelist.GetRecipeListViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.getrecipelist.GetRecipeListViewModel.RecipeList;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.getrecipelist.presenters.GetRecipeListPresenter;
+import io.github.oliviercap.chefduplacard.application.recipes.getrecipelist.GetRecipeListRequestModel;
+import io.github.oliviercap.chefduplacard.application.recipes.getrecipelist.GetRecipeListUseCase;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.query.stock;
 
-import io.github.oliviercap.chefduplacard.application.getstock.GetStockQuery;
+import io.github.oliviercap.chefduplacard.application.stock.getstock.GetStockQuery;
 import io.github.oliviercap.chefduplacard.application.ports.query.IGetStockViewQuery;
 import org.springframework.stereotype.Repository;
 

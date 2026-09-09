@@ -12,8 +12,10 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.al
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu.IMenuJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.getmenu.GetMenuViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.getmenu.presenters.GetMenuPresenter;
+import io.github.oliviercap.chefduplacard.adapters.web.menu.getmenu.GetMenuViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.menu.getmenu.presenters.GetMenuPresenter;
+import io.github.oliviercap.chefduplacard.application.menu.getmenu.GetMenuRequestModel;
+import io.github.oliviercap.chefduplacard.application.menu.getmenu.GetMenuUseCase;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

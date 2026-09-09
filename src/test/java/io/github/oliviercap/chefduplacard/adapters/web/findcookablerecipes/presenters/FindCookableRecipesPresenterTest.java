@@ -1,7 +1,8 @@
 package io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters;
 
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesViewModel;
-import io.github.oliviercap.chefduplacard.application.cookablerecipes.FindCookableRecipesResponseModel;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.findcookablerecipes.FindCookableRecipesViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.findcookablerecipes.presenters.FindCookableRecipesPresenter;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.FindCookableRecipesResponseModel;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.AlimentResponse;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.IngredientResponse;
 import io.github.oliviercap.chefduplacard.application.htttpresponse.RecipeResponse;

@@ -12,8 +12,10 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.al
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.updatestock.UpdateStockViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.updatestock.presenters.UpdateStockPresenter;
+import io.github.oliviercap.chefduplacard.adapters.web.stock.updatestock.UpdateStockViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.stock.updatestock.presenters.UpdateStockPresenter;
+import io.github.oliviercap.chefduplacard.application.stock.updatestock.UpdateStockRequestModel;
+import io.github.oliviercap.chefduplacard.application.stock.updatestock.UpdateStockUseCase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;

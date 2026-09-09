@@ -5,8 +5,10 @@ import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.al
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.recipe.IRecipeJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.stock.IStockJpaRepository;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.unit.IUnitJpaRepository;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.FindCookableRecipesViewModel;
-import io.github.oliviercap.chefduplacard.adapters.web.findcookablerecipes.presenters.FindCookableRecipesPresenter;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.findcookablerecipes.FindCookableRecipesViewModel;
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.findcookablerecipes.presenters.FindCookableRecipesPresenter;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.FindCookableRecipesRequestModel;
+import io.github.oliviercap.chefduplacard.application.recipes.cookablerecipes.FindCookableRecipesUseCase;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;

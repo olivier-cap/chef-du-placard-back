@@ -1,0 +1,14 @@
+package io.github.oliviercap.chefduplacard.adapters.web.aliment.getaliments;
+
+import java.util.List;
+
+public record GetAlimentsViewModel(
+    List<AlimentViewModel> alimentViewModelList
+) {
+    public record AlimentViewModel(
+            Long alimentId,
+            String alimentName,
+            String alimentDescription,
+            boolean isActive
+    ){}
+}

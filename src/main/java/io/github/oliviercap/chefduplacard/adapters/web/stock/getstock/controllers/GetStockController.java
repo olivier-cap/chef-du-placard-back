@@ -1,0 +1,31 @@
+package io.github.oliviercap.chefduplacard.adapters.web.stock.getstock.controllers;
+
+import io.github.oliviercap.chefduplacard.adapters.web.stock.getstock.GetStockViewModel;
+import io.github.oliviercap.chefduplacard.application.stock.getstock.GetStockRequestModel;
+import io.github.oliviercap.chefduplacard.application.stock.getstock.ports.IGetStockInputPort;
+import io.github.oliviercap.chefduplacard.application.stock.getstock.ports.IGetStockOutputPort;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class GetStockController {
+
+    private final IGetStockInputPort inputPort;
+    private final IGetStockOutputPort outputPort;
+
+    public GetStockController(IGetStockInputPort inputPort,
+                              IGetStockOutputPort outputPort) {
+        this.inputPort = inputPort;
+        this.outputPort = outputPort;
+    }
+
+    @GetMapping("/api/getStock")
+    GetStockViewModel getStock(
+            @RequestParam Long stockId
+    ) {
+        inputPort.execute(new GetStockRequestModel(stockId));
+
+        return outputPort.getViewModel();
+    }
+}

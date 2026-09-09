@@ -1,0 +1,31 @@
+package io.github.oliviercap.chefduplacard.adapters.web.recipes.getonerecipe.controllers;
+
+import io.github.oliviercap.chefduplacard.adapters.web.recipes.getonerecipe.GetOneRecipeViewModel;
+import io.github.oliviercap.chefduplacard.application.recipes.getonerecipe.GetOneRecipeRequestModel;
+import io.github.oliviercap.chefduplacard.application.recipes.getonerecipe.ports.IGetOneRecipeInputPort;
+import io.github.oliviercap.chefduplacard.application.recipes.getonerecipe.ports.IGetOneRecipeOutputPort;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class GetOneRecipeController {
+
+    private final IGetOneRecipeInputPort inputPort;
+    private final IGetOneRecipeOutputPort outputPort;
+
+    public GetOneRecipeController(IGetOneRecipeInputPort inputPort,
+                                  IGetOneRecipeOutputPort outputPort) {
+        this.inputPort = inputPort;
+        this.outputPort = outputPort;
+    }
+
+    @GetMapping("/api/getOneRecipe")
+    public GetOneRecipeViewModel getOneRecipe(
+            @RequestParam Long recipeId
+    ) {
+        inputPort.execute(new GetOneRecipeRequestModel(recipeId));
+
+        return outputPort.getViewModel();
+    }
+}

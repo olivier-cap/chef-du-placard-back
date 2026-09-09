@@ -1,6 +1,6 @@
 package io.github.oliviercap.chefduplacard.adapters.persistence.jpa.query.recipe;
 
-import io.github.oliviercap.chefduplacard.application.getrecipelist.GetRecipeListQuery;
+import io.github.oliviercap.chefduplacard.application.recipes.getrecipelist.GetRecipeListQuery;
 import io.github.oliviercap.chefduplacard.application.ports.query.IGetRecipeListViewQuery;
 import org.springframework.stereotype.Repository;
 
