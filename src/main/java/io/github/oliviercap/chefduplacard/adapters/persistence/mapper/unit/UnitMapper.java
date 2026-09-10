@@ -23,13 +23,4 @@ public class UnitMapper{
         );
     }
 
-    public UnitJpa toEntity(Unit unit) {
-        Objects.requireNonNull(unit, "unit must not be null");
-
-        return new UnitJpa(
-                unit.getName(),
-                unit.getSymbol()
-        );
-    }
-
 }

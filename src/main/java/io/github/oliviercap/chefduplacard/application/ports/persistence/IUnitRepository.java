@@ -12,4 +12,6 @@ public interface IUnitRepository {
 
     List<UnitJpa> findAllJpa();
     UnitJpa getReferenceById(Long id);
+
+    List<Unit> findAll();
 }
