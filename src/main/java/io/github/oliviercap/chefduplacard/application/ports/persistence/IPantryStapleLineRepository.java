@@ -7,4 +7,5 @@ import java.math.BigDecimal;
 public interface IPantryStapleLineRepository {
     PantryStaplesLine modifyPantryStaplesLine(Long pantryStaplesLineId, BigDecimal quantity, Long unitId);
     void deletePantryStaplesLine(Long pantryStaplesLineId);
+    PantryStaplesLine createPantryStaplesLine(Long pantryStaplesId, Long alimentId, BigDecimal quantity, Long unitId);
 }
