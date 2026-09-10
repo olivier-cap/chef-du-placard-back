@@ -41,4 +41,11 @@ public class UnitRepository implements IUnitRepository {
     public UnitJpa getReferenceById(Long id) {
         return unitJpaRepository.getReferenceById(id);
     }
+
+    @Override
+    public List<Unit> findAll() {
+        return unitJpaRepository.findAll().stream()
+                .map(unitMapper::toDomain)
+                .toList();
+    }
 }
