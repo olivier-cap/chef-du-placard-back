@@ -42,4 +42,6 @@ public class PantryStaplesRepository implements IPantryStaplesRepository {
         return jpaRepository.findCompleteById(pantryStaplesId)
                 .map(pantryStaplesMapper::toDomain);
     }
+
+
 }

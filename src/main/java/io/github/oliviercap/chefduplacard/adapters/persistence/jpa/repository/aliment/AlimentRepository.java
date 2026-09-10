@@ -95,11 +95,6 @@ public class AlimentRepository implements IAlimentRepository {
     }
 
     @Override
-    public Optional<AlimentJpa> findJpaById(Long id) {
-        return alimentJpaRepository.findById(id);
-    }
-
-    @Override
     public AlimentJpa getReferenceById(Long id) {
         return alimentJpaRepository.getReferenceById(id);
     }
