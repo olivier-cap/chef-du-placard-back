@@ -7,6 +7,7 @@ import io.github.oliviercap.chefduplacard.application.ports.persistence.IPantryS
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IUnitRepository;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 import io.github.oliviercap.chefduplacard.domain.pantry_staples.PantryStaplesLine;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ public class PantryStaplesLineRepository implements IPantryStapleLineRepository 
     }
 
 
+    @Transactional
     @Override
     public PantryStaplesLine modifyPantryStaplesLine(Long pantryStaplesLineId, BigDecimal quantity, Long unitId) {
 
@@ -39,5 +41,12 @@ public class PantryStaplesLineRepository implements IPantryStapleLineRepository 
         lineJpa.setUnitJpa(unitJpa);
 
         return lineMapper.toDomain(lineJpa);
+    }
+
+
+    @Transactional
+    @Override
+    public void deletePantryStaplesLine(Long pantryStaplesLineId) {
+        jpaRepository.deleteById(pantryStaplesLineId);
     }
 }
