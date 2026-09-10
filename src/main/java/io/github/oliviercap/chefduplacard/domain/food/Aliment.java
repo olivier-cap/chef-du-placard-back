@@ -43,8 +43,7 @@ public final class Aliment {
         this.description = description;
         this.active = active;
         this.identifier = computeIdentifier(name, description);
-        this.types = types;
-    }
+        this.types = types == null ? Set.of() : Set.copyOf(types);    }
 
     public Aliment(
             AlimentId id,

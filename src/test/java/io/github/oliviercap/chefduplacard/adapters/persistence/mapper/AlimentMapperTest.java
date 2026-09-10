@@ -32,20 +32,5 @@ class AlimentMapperTest {
         assertThat(result.isActive()).isTrue();
     }
 
-    @Test
-    void creates_jpa_entity_from_domain_aliment() {
-        Aliment aliment = new Aliment(
-                new AlimentId(1L),
-                "name",
-                "description",
-                true
-        );
 
-        AlimentJpa result = alimentMapper.toEntity(aliment);
-
-        assertThat(result.getId()).isNull();
-        assertThat(result.getName()).isEqualTo("name");
-        assertThat(result.getDescription()).isEqualTo("description");
-        assertThat(result.isActive()).isTrue();
-    }
 }

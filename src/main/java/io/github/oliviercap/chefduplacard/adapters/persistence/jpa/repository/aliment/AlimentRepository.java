@@ -40,16 +40,27 @@ public class AlimentRepository implements IAlimentRepository {
         return alimentJpaRepository.findAll();
     }
 
+    /**
+     * Enregistre un nouvel aliment en base
+     * @param newAliment
+     */
     @Transactional
     @Override
     public void save(Aliment newAliment) {
         Objects.requireNonNull(newAliment);
 
+        //à déplacer vers le usecase (?)
         if(!newAliment.check()) {
             throw new DomainException("Incorrect aliment data");
         }
 
-        alimentJpaRepository.save(alimentMapper.toEntity(newAliment));
+        AlimentJpa alimentJpa = new AlimentJpa(
+                newAliment.getName(),
+                newAliment.getDescription(),
+                newAliment.isActive()
+        );
+
+        alimentJpaRepository.save(alimentJpa);
     }
 
     @Transactional
