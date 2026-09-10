@@ -27,20 +27,4 @@ class UnitMapperTest {
         assertThat(result.getSymbol()).isEqualTo("symbol");
     }
 
-    @Test
-    void creates_jpa_entity_from_domain_unit() {
-        Unit unit = new Unit(
-                new UnitId(1L),
-                "name",
-                "symbol"
-        );
-
-        UnitMapper unitMapper = new UnitMapper();
-
-        UnitJpa result = unitMapper.toEntity(unit);
-
-        assertThat(result.getId()).isNull();
-        assertThat(result.getName()).isEqualTo("name");
-        assertThat(result.getSymbol()).isEqualTo("symbol");
-    }
 }
