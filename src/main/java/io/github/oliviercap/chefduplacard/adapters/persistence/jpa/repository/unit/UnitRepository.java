@@ -38,11 +38,6 @@ public class UnitRepository implements IUnitRepository {
     }
 
     @Override
-    public Optional<UnitJpa> findJpaById(Long id) {
-        return unitJpaRepository.findUnitJpaById(id);
-    }
-
-    @Override
     public UnitJpa getReferenceById(Long id) {
         return unitJpaRepository.getReferenceById(id);
     }

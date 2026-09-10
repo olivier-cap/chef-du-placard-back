@@ -11,6 +11,5 @@ public interface IUnitRepository {
     Optional<UnitJpa> findUnitJpaById(Long id);
 
     List<UnitJpa> findAllJpa();
-    Optional<UnitJpa> findJpaById(Long id);
     UnitJpa getReferenceById(Long id);
 }
