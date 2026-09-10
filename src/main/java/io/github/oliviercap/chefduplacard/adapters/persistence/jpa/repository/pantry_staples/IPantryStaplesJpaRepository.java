@@ -13,6 +13,7 @@ public interface IPantryStaplesJpaRepository extends JpaRepository<PantryStaples
     @Query("""
             select distinct p
             from PantryStaplesJpa p
+            left join fetch p.userJpa
             left join fetch p.pantryStaplesLineSet
             where p.userJpa.id = :userId
             """)
@@ -21,8 +22,12 @@ public interface IPantryStaplesJpaRepository extends JpaRepository<PantryStaples
     @Query("""
             select distinct p
             from PantryStaplesJpa p
-            left join fetch p.pantryStaplesLineSet
+            left join fetch p.userJpa
+            left join fetch p.pantryStaplesLineSet line
+            left join fetch line.unitJpa
+            left join fetch line.alimentJpa al
+            left join fetch al.alimentTypes
             where p.id = :id
             """)
-    Optional<PantryStaplesJpa> findById(@Param("id") Long id);
+    Optional<PantryStaplesJpa> findCompleteById(@Param("id") Long id);
 }
