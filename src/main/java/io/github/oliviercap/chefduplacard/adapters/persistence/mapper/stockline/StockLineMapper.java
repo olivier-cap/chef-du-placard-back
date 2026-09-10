@@ -33,15 +33,4 @@ public class StockLineMapper{
         );
     }
 
-    public StockLineJpa toEntity(StockLine stockLine) {
-        Objects.requireNonNull(stockLine, "stockline must not be null");
-        Objects.requireNonNull(stockLine.getAliment(), "aliment must not be null");
-        Objects.requireNonNull(stockLine.getUnit(), "unit must not be null");
-
-        return new StockLineJpa(
-                alimentMapper.toEntity(stockLine.getAliment()),
-                unitMapper.toEntity(stockLine.getUnit()),
-                stockLine.getQuantity()
-        );
-    }
 }

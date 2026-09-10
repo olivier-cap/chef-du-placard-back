@@ -15,8 +15,10 @@ public interface IStockJpaRepository extends JpaRepository<StockJpa, Long> {
     @Query("""
             select distinct s
             from StockJpa s
+            left join fetch s.userJpa
             left join fetch s.stockLineJpa sl
-                left join fetch sl.alimentJpa
+                left join fetch sl.alimentJpa al
+                left join fetch al.alimentTypes
                 left join fetch sl.unitJpa
             where s.id =:id
             """)
@@ -26,6 +28,7 @@ public interface IStockJpaRepository extends JpaRepository<StockJpa, Long> {
     @Query("""
             select distinct s
             from StockJpa s
+            left join fetch s.userJpa
             left join fetch s.stockLineJpa sl
                 left join fetch sl.alimentJpa a
                 left join fetch sl.unitJpa
