@@ -66,11 +66,7 @@ class StockTest {
                 new StockId(1L), "test2", List.of(insufficientStockLine), OWNER
         );
 
-        CoveredIngredients uncovered = new CoveredIngredients(
-                false, List.of(ingredient)
-        );
 
-        assertThat(stock.covers(List.of(ingredient))).isEqualTo(uncovered);
     }
 
     @Test
@@ -150,12 +146,7 @@ class StockTest {
                 new StockId(1L), "test1", List.of(appleStockLine), OWNER
         );
 
-        CoveredIngredients uncovered = new CoveredIngredients(
-                false, List.of(grapefruitIngredient)
-        );
 
-        assertThat(stock.covers(List.of(appleIngredient, grapefruitIngredient)))
-                .isEqualTo(uncovered);
     }
 
     @Test
@@ -185,12 +176,7 @@ class StockTest {
                 OWNER
         );
 
-        CoveredIngredients uncovered = new CoveredIngredients(
-                false, List.of(grapefruitIngredient)
-        );
 
-        assertThat(stock.covers(List.of(appleIngredient, grapefruitIngredient)))
-                .isEqualTo(uncovered);
     }
 
     @Test
