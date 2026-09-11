@@ -67,7 +67,7 @@ public final class Stock {
      * @param requiredIngredients liste des ingrédients à tester
      * @return coveredIngredient, à true si tout est couvert, à false + liste non couverts sinon.
      */
-    public CoveredIngredients covers(List<Ingredient> requiredIngredients){
+    public CoveredIngredients covers(List<Ingredient> requiredIngredients) {
         if (requiredIngredients == null) {
             throw new DomainException("required ingredients list must not be null");
         }
@@ -77,50 +77,41 @@ public final class Stock {
         }
 
         if (requiredIngredients.stream().anyMatch(Objects::isNull)) {
-            throw new DomainException("required ingredients list must not contain null elements");
-        }
-
-        List<Ingredient> uncoveredIngredients = new ArrayList<>();
-        CoveredIngredients coveredIngredients;
-        boolean covered = true;
-
-        List<Ingredient> aggregatedIngredients = aggregateQuantities(requiredIngredients);
-
-        //Calcul ingrédients présents en quantité suffisante ou non
-        for(Ingredient ingredient : aggregatedIngredients) {
-            boolean alimentIsInStock = stockMap.containsKey(ingredient.getAliment());
-            if(alimentIsInStock) {
-                BigDecimal quantityStock = stockMap.get(ingredient.getAliment()).getQuantity();
-                if(ingredient.getQuantity().compareTo(quantityStock) > 0) {
-                    covered = false;
-                    uncoveredIngredients.add(ingredient);
-                }
-            }
-            else {
-                covered = false;
-                uncoveredIngredients.add(ingredient);
-            }
-        }
-
-
-        //Calcul de la quantité manquante par ingrédient
-        List<CoveredIngredients.Uncovered> uncoveredList = new ArrayList<>();
-        for (Ingredient uncoveredIngredient: uncoveredIngredients) {
-            int index = aggregatedIngredients.indexOf(uncoveredIngredient);
-
-            BigDecimal missingQuantity =
-                    aggregatedIngredients.get(index).getQuantity().subtract(uncoveredIngredient.getQuantity());
-
-            uncoveredList.add(
-                    new CoveredIngredients.Uncovered(
-                            uncoveredIngredient,
-                            missingQuantity
-                    )
+            throw new DomainException(
+                    "required ingredients list must not contain null elements"
             );
         }
 
-        coveredIngredients = new CoveredIngredients(covered, uncoveredList);
-        return coveredIngredients;
+        List<Ingredient> aggregatedIngredients =
+                aggregateQuantities(requiredIngredients);
+
+        List<CoveredIngredients.Uncovered> uncoveredIngredients =
+                new ArrayList<>();
+
+        for (Ingredient ingredient : aggregatedIngredients) {
+            StockLine stockLine = stockMap.get(ingredient.getAliment());
+
+            BigDecimal quantityInStock = stockLine == null
+                    ? BigDecimal.ZERO
+                    : stockLine.getQuantity();
+
+            BigDecimal missingQuantity =
+                    ingredient.getQuantity().subtract(quantityInStock);
+
+            if (missingQuantity.compareTo(BigDecimal.ZERO) > 0) {
+                uncoveredIngredients.add(
+                        new CoveredIngredients.Uncovered(
+                                ingredient,
+                                missingQuantity
+                        )
+                );
+            }
+        }
+
+        return new CoveredIngredients(
+                uncoveredIngredients.isEmpty(),
+                List.copyOf(uncoveredIngredients)
+        );
     }
 
     /*Créer une copie de ce stock pour obtenir une copie virtuelle
@@ -206,7 +197,6 @@ public final class Stock {
                 aggregatedIngredients.put(
                         aliment,
                         new Ingredient(
-                                ingredient.getId(),
                                 ingredient.getQuantity(),
                                 ingredient.getAliment(),
                                 ingredient.getUnit()
