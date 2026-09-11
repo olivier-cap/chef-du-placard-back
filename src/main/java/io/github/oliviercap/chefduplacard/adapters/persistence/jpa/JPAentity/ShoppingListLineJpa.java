@@ -39,6 +39,12 @@ public class ShoppingListLineJpa {
         this.quantity = quantity;
     }
 
+    public ShoppingListLineJpa(AlimentJpa alimentJpa, UnitJpa unitJpa, BigDecimal quantity) {
+        this.alimentJpa = alimentJpa;
+        this.unitJpa = unitJpa;
+        this.quantity = quantity;
+    }
+
     public Long getId() {
         return id;
     }

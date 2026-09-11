@@ -2,8 +2,8 @@ package io.github.oliviercap.chefduplacard.domain.stock;
 
 import io.github.oliviercap.chefduplacard.domain.food.Ingredient;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Réponse à la question "liste d'aliments est disponible dans le stock ?"
@@ -13,12 +13,10 @@ import java.util.Objects;
  */
 public record CoveredIngredients(
         boolean covered,
-        List<Ingredient> uncoveredIngredients
+        List<Uncovered> uncoveredIngredients
 ) {
-    public CoveredIngredients {
-        Objects.requireNonNull(
-                uncoveredIngredients,
-                "Uncovered ingredients list must not be null"
-        );
-    }
+    public record Uncovered(
+            Ingredient ingredient,
+            BigDecimal missingQuantity
+    ){}
 }

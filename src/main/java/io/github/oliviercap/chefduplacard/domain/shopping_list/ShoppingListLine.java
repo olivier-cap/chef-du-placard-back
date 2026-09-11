@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class ShoppingListLine {
 
-    private final ShoppingListLineId id;
+    private ShoppingListLineId id;
     private Aliment aliment;
     private Unit unit;
     private BigDecimal quantity;
@@ -28,6 +28,21 @@ public class ShoppingListLine {
             throw new DomainException("quantity must be positive and non null");
         }
         this.id = id;
+        this.aliment = aliment;
+        this.unit = unit;
+        this.quantity = quantity;
+    }
+
+    public ShoppingListLine(Aliment aliment, Unit unit, BigDecimal quantity) {
+        if (aliment == null) {
+            throw new DomainException("aliment must not be null");
+        }
+        if (unit == null) {
+            throw new DomainException("unit must not be null");
+        }
+        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DomainException("quantity must be positive and non null");
+        }
         this.aliment = aliment;
         this.unit = unit;
         this.quantity = quantity;

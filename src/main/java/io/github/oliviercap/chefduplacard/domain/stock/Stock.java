@@ -102,7 +102,24 @@ public final class Stock {
             }
         }
 
-        coveredIngredients = new CoveredIngredients(covered, uncoveredIngredients);
+
+        //Calcul de la quantité manquante par ingrédient
+        List<CoveredIngredients.Uncovered> uncoveredList = new ArrayList<>();
+        for (Ingredient uncoveredIngredient: uncoveredIngredients) {
+            int index = aggregatedIngredients.indexOf(uncoveredIngredient);
+
+            BigDecimal missingQuantity =
+                    aggregatedIngredients.get(index).getQuantity().subtract(uncoveredIngredient.getQuantity());
+
+            uncoveredList.add(
+                    new CoveredIngredients.Uncovered(
+                            uncoveredIngredient,
+                            missingQuantity
+                    )
+            );
+        }
+
+        coveredIngredients = new CoveredIngredients(covered, uncoveredList);
         return coveredIngredients;
     }
 

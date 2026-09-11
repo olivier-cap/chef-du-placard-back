@@ -100,7 +100,7 @@ public final class Ingredient {
      * Definir ou modifier la quantite d'un aliment
      * @param quantity
      */
-    private void setQuantity(BigDecimal quantity) {
+    public void setQuantity(BigDecimal quantity) {
         if (quantity == null || quantity.compareTo(BigDecimal.ZERO) < 0) {
             throw new DomainException("quantityPerPerson must not be less than zero or null");
         }
