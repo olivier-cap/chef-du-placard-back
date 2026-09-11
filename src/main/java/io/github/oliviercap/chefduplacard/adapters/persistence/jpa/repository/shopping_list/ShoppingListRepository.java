@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ShoppingListRepository implements IShoppingListRepository {
@@ -69,5 +70,11 @@ public class ShoppingListRepository implements IShoppingListRepository {
         ShoppingListJpa saved = shoppingListJpaRepository.save(newShoppingListJpa);
 
         return shoppingListMapper.toDomain(saved);
+    }
+
+    @Override
+    public Optional<ShoppingList> findById(Long shoppingListId) {
+        return shoppingListJpaRepository.findCompleteById(shoppingListId)
+                .map(shoppingListMapper::toDomain);
     }
 }
