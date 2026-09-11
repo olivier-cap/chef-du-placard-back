@@ -72,14 +72,12 @@ public class ShoppingListFromMenuUseCase implements IShoppingListFromMenuInputPo
 
         List<Ingredient> ingredientsList = new ArrayList<>();
 
-        for(MenuLine menuLine: menu.getMenuLines()) {
-            for(Ingredient ingredient : menuLine.getRecipe().getIngredients()) {
-                //quantité de l'aliment pour le nb personnes prévu dans le menu
-                ingredient.setQuantity(
-                        ingredient.getQuantity().multiply(menuLine.getNbPerson())
-                );
-                ingredientsList.add(ingredient);
-            }
+        for (MenuLine menuLine : menu.getMenuLines()) {
+            ingredientsList.addAll(
+                    menuLine.getRecipe().computeRequiredIngredients(
+                            menuLine.getNbPerson().intValueExact()
+                    )
+            );
         }
 
         //Création d'une liste "d'ingrédients" pour calcul par le stock des aliments manquants
