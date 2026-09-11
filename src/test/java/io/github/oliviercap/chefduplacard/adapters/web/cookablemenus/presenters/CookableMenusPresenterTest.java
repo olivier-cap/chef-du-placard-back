@@ -41,6 +41,7 @@ public class CookableMenusPresenterTest {
                 new CookableMenusResponseModel(
                         true,
                         List.of(recipeResponse),
+                        List.of(),
                         "message"
                 );
 

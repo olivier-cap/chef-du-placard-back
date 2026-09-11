@@ -13,8 +13,10 @@ public interface IRecipeJpaRepository extends JpaRepository<RecipeJpa, Long> {
         select distinct r
         from RecipeJpa r
         left join fetch r.ingredients i
-            left join fetch i.alimentJpa
+            left join fetch i.alimentJpa a
+                 left join fetch a.alimentTypes
             left join fetch i.unitJpa
+        left join fetch r.recipeTypeJpa
     """)
     List<RecipeJpa> findAllComplete();
 

@@ -7,6 +7,7 @@ import java.util.List;
 public record CookableMenusResponseModel(
         boolean nbMealCovered,
         List<RecipeResponse> recipes,
+        List<RecipeResponse> proposalRecipes,
         String message
 ) {
 }

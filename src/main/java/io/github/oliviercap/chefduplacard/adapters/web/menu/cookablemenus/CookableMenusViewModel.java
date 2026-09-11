@@ -7,6 +7,7 @@ import java.util.List;
 public record CookableMenusViewModel(
         boolean covered,
         List<RecipeViewModel> recipes,
+        List<RecipeViewModel> proposal,
         String message
 ) {
     public record RecipeViewModel(

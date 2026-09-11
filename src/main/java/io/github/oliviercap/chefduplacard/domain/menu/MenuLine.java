@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class MenuLine {
 
-    private final MenuLineId id;
+    private MenuLineId id;
     private Recipe recipe;
     private BigDecimal nbPerson;
     private RecipeType type;
@@ -25,6 +25,13 @@ public class MenuLine {
         this.nbPerson = nbPerson;
         this.date = date;
         this.type = type;
+    }
+
+    public MenuLine(Recipe recipe, BigDecimal nbPerson, RecipeType type, LocalDate date) {
+        this.recipe = recipe;
+        this.nbPerson = nbPerson;
+        this.type = type;
+        this.date = date;
     }
 
     public Recipe getRecipe() {

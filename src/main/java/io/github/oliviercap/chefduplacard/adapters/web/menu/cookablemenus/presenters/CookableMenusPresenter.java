@@ -21,6 +21,9 @@ public class CookableMenusPresenter implements ICookableMenusOutputPort {
                 responseModel.recipes().stream()
                         .map(this::toRecipeViewModel)
                         .toList(),
+                responseModel.proposalRecipes().stream()
+                        .map(this::toRecipeViewModel)
+                        .toList(),
                 responseModel.message()
         );
     }
