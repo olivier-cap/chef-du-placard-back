@@ -52,6 +52,7 @@ class CookableMenusControllerTest {
                 new CookableMenusViewModel(
                         true,
                         List.of(recipe),
+                        List.of(),
                         "message"
                 );
 
