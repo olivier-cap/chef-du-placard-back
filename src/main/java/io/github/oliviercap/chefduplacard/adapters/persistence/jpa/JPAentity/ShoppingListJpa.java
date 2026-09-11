@@ -40,6 +40,15 @@ public class ShoppingListJpa {
         this.date = date;
     }
 
+    public void addShoppingListLine(ShoppingListLineJpa shoppingListLineJpa) {
+        shoppingListLineJpa.setShoppingListJpa(this);
+        this.shoppingListLineJpaList.add(shoppingListLineJpa);
+    }
+
+    public void removeShoppingListLine(ShoppingListLineJpa shoppingListLineJpa) {
+        this.shoppingListLineJpaList.remove(shoppingListLineJpa);
+    }
+
     public Long getId() {
         return id;
     }
