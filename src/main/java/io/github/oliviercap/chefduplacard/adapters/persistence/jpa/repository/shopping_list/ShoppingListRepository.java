@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,7 @@ public class ShoppingListRepository implements IShoppingListRepository {
         UserJpa userJpa = userRepository.findUserJpa(userId);
 
         ShoppingListJpa newShoppingListJpa = new ShoppingListJpa(
-            userJpa, List.of(), LocalDate.now()
+                userJpa, new ArrayList<>(), LocalDate.now()
         );
 
         for (ShoppingListLine shoppingListLine : shoppingListLines) {

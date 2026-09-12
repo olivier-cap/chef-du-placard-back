@@ -12,7 +12,7 @@ public class SaveNewMenuPresenter implements ISaveNewMenuOutputPort {
 
     @Override
     public void saved(SaveNewMenuResponseModel responseModel) {
-        viewModel = new SaveNewMenuViewModel(responseModel.saved());
+        viewModel = new SaveNewMenuViewModel(responseModel.newMenuId());
     }
 
     @Override

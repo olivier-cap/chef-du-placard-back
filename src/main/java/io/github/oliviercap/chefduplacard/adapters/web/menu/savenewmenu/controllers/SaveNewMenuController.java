@@ -21,15 +21,20 @@ public class SaveNewMenuController {
         this.outputPort = outputPort;
     }
 
-    @PostMapping("/api/users/{userId}/menus")
+    @PostMapping("/api/savenewmenu")
     public SaveNewMenuViewModel saveNewMenuViewModel(
-            @PathVariable Long userId,
             @RequestBody SaveNewMenuRequest newMenu
     ) {
         inputPort.execute(
                 new SaveNewMenuRequestModel(
-                        newMenu,
-                        userId
+                        newMenu.userId(),
+                        newMenu.menuName(),
+                        newMenu.menuLines().stream().map(
+                                line -> new SaveNewMenuRequestModel.MenuLine(
+                                        line.nbPerson(),
+                                        line.recipeId()
+                                )
+                        ).toList()
                 )
         );
 

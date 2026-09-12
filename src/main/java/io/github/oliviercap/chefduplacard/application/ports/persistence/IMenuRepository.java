@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface IMenuRepository {
     Optional<Menu> findById(Long menuId);
-    void save(SaveNewMenuDTO menuDTO);
+    Long save(SaveNewMenuDTO menuDTO);
 }

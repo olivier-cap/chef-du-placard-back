@@ -4,10 +4,7 @@ import io.github.oliviercap.chefduplacard.adapters.web.shopping_list.shopping_li
 import io.github.oliviercap.chefduplacard.application.shopping_list.shopping_list_from_menu.ShoppingListFromMenuRequestModel;
 import io.github.oliviercap.chefduplacard.application.shopping_list.shopping_list_from_menu.ports.IShoppingListFromMenuInputPort;
 import io.github.oliviercap.chefduplacard.application.shopping_list.shopping_list_from_menu.ports.IShoppingListFromMenuOutputPort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ShoppingListFromMenuController {
@@ -26,11 +23,14 @@ public class ShoppingListFromMenuController {
 
     @GetMapping("/api/shoppinglistmenu")
     public ShoppingListFromMenuViewModel shoppingListFromMenu(
-            @RequestBody ShoppingListFromMenuRequest request
+        @RequestParam Long userId,
+        @RequestParam Long menuId,
+        @RequestParam Long stockId,
+        @RequestParam Long pantryStaplesId
     ) {
 
         inputPort.execute(new ShoppingListFromMenuRequestModel(
-                request.userId(), request.menuId(), request.stockId(), request.pantryStaplesId()
+                userId, menuId, stockId, pantryStaplesId
         ));
 
         return outputPort.getViewModel();

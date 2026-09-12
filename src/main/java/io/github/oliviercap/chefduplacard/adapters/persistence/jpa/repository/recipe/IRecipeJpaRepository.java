@@ -23,8 +23,10 @@ public interface IRecipeJpaRepository extends JpaRepository<RecipeJpa, Long> {
     @Query("""
         select distinct r
         from RecipeJpa r
+        left join fetch r.recipeTypeJpa
         left join fetch r.ingredients i
-            left join fetch i.alimentJpa
+            left join fetch i.alimentJpa a
+                left join fetch a.alimentTypes
             left join fetch i.unitJpa
         where r.id = :recipeID
     """)

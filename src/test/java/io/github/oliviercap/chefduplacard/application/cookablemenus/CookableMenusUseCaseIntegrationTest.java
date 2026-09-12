@@ -79,7 +79,7 @@ class CookableMenusUseCaseIntegrationTest {
         assertThat(result).isNotNull();
         assertThat(result.recipes()).hasSize(2);
         assertThat(result.recipes())
-                .extracting(CookableMenusViewModel.RecipeViewModel::recipeName)
+                .extracting(CookableMenusViewModel.RecipeViewModel::name)
                 .containsExactly(
                         "integration-cookable-menu-r1",
                         "integration-cookable-menu-r2");
