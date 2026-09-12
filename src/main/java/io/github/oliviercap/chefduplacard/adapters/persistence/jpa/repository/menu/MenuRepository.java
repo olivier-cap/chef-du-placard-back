@@ -69,7 +69,7 @@ public class MenuRepository implements IMenuRepository {
 
     @Override
     @Transactional
-    public void save(SaveNewMenuDTO menuDTO) {
+    public Long save(SaveNewMenuDTO menuDTO) {
         Objects.requireNonNull(menuDTO, "menu must not be null");
 
         //Récupération de l'actuel portant ce nom s'il existe
@@ -127,6 +127,7 @@ public class MenuRepository implements IMenuRepository {
         }
 
         //Sauvegarde du nouveau menu
-        menuJpaRepository.save(newMenuJpa);
+        MenuJpa savedMenuJpa =  menuJpaRepository.save(newMenuJpa);
+        return savedMenuJpa.getId();
     }
 }

@@ -203,7 +203,7 @@
             }
             if(menusRecipes.size() < nbMealToPrepare && !recipes.isEmpty()) {
                 int nbMealRestant = nbMealToPrepare - menusRecipes.size();
-                for(int i=0; i < nbMealRestant - 1; i++) {
+                for(int i=0; i < nbMealRestant; i++) {
                     if(recipes.size() > i) {
                         menusRecipesNoStock.add(recipes.get(i));
                     } else {

@@ -59,17 +59,17 @@ public class CookableMenusPresenterTest {
                 .hasSize(1)
                 .first()
                 .satisfies(recipe -> {
-                    assertThat(recipe.recipeName()).isEqualTo("r1");
-                    assertThat(recipe.recipeInstructions()).isEqualTo("instructions");
+                    assertThat(recipe.name()).isEqualTo("r1");
+                    assertThat(recipe.instructions()).isEqualTo("instructions");
                     assertThat(recipe.duration()).isEqualTo(Duration.ofMinutes(5));
                     assertThat(recipe.difficulty()).isEqualTo("easy");
 
                     assertThat(recipe.ingredients()).hasSize(1);
                     assertThat(recipe.ingredients().getFirst().quantityPerPerson())
                             .isEqualByComparingTo(BigDecimal.valueOf(3));
-                    assertThat(recipe.ingredients().getFirst().alimentName())
+                    assertThat(recipe.ingredients().getFirst().name())
                             .isEqualTo("apple");
-                    assertThat(recipe.ingredients().getFirst().unitSymbol())
+                    assertThat(recipe.ingredients().getFirst().symbol())
                             .isEqualTo("g");
                 });
 

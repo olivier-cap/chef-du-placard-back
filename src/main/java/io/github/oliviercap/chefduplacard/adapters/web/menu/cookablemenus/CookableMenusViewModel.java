@@ -11,9 +11,9 @@ public record CookableMenusViewModel(
         String message
 ) {
     public record RecipeViewModel(
-            Long recipeId,
-            String recipeName,
-            String recipeInstructions,
+            Long id,
+            String name,
+            String instructions,
             Duration duration,
             String difficulty,
             List<IngredientViewModel> ingredients
@@ -21,10 +21,10 @@ public record CookableMenusViewModel(
     }
 
     public record IngredientViewModel(
-            Long ingredientId,
+            Long id,
             BigDecimal quantityPerPerson,
-            String alimentName,
-            String unitSymbol
+            String name,
+            String symbol
     ) {
     }
 }

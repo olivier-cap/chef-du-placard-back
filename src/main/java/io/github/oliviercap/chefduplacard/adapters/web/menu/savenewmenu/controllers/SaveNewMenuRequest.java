@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record SaveNewMenuRequest(
+        Long userId,
         String menuName,
         List<MenuLine> menuLines
 ) {

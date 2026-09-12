@@ -1,26 +1,22 @@
 package io.github.oliviercap.chefduplacard.application.menu.savenewmenu;
 
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu.SaveNewMenuDTO;
-import io.github.oliviercap.chefduplacard.adapters.web.menu.savenewmenu.controllers.SaveNewMenuRequest;
 import io.github.oliviercap.chefduplacard.application.ports.persistence.IMenuRepository;
-import io.github.oliviercap.chefduplacard.application.ports.persistence.IRecipeRepository;
 import io.github.oliviercap.chefduplacard.application.menu.savenewmenu.port.ISaveNewMenuInputPort;
 import io.github.oliviercap.chefduplacard.application.menu.savenewmenu.port.ISaveNewMenuOutputPort;
 import io.github.oliviercap.chefduplacard.domain.exceptions.DomainException;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
 
     private final IMenuRepository menuRepository;
-    private final IRecipeRepository recipeRepository;
     private final ISaveNewMenuOutputPort outputPort;
 
     public SaveNewMenuUseCase(IMenuRepository menuRepository,
-                              IRecipeRepository recipeRepository,
                               ISaveNewMenuOutputPort outputPort) {
         this.menuRepository = menuRepository;
-        this.recipeRepository = recipeRepository;
         this.outputPort = outputPort;
     }
 
@@ -28,14 +24,17 @@ public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
     public void execute(SaveNewMenuRequestModel requestModel) {
         Objects.requireNonNull(requestModel, "requestModel must not be null");
 
-        boolean saved = saveNewMenu(requestModel.newMenuRecord(), requestModel.userId()) ? true : false;
-        outputPort.saved(new SaveNewMenuResponseModel(saved));
+        Long newMenuId = saveNewMenu(requestModel.lines(), requestModel.userId(), requestModel.menuName());
+        outputPort.saved(new SaveNewMenuResponseModel(newMenuId));
     }
 
-    private boolean saveNewMenu(
-            SaveNewMenuRequest newMenuRecord,
-            Long userId
+    private Long saveNewMenu(
+            List<SaveNewMenuRequestModel.MenuLine> newMenuRecord,
+            Long userId,
+            String menuName
     ) {
+        Long newMenuId;
+
         Objects.requireNonNull(
                 newMenuRecord,
                 "menu must not be null"
@@ -45,14 +44,13 @@ public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
             throw new DomainException("userId must not be null");
         }
 
-        if (newMenuRecord.menuName() == null
-                || newMenuRecord.menuName().isBlank()) {
+        if (menuName == null || menuName.isBlank()) {
             throw new DomainException("menu name must not be blank");
         }
 
         SaveNewMenuDTO menuDTO = new SaveNewMenuDTO(
-                newMenuRecord.menuName(),
-                newMenuRecord.menuLines().stream()
+                menuName,
+                newMenuRecord.stream()
                         .map(ml -> new SaveNewMenuDTO.SaveNewMenuLine(
                                 ml.recipeId(),
                                 ml.nbPerson()
@@ -62,7 +60,7 @@ public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
         );
 
         try {
-            menuRepository.save(menuDTO);
+            newMenuId = menuRepository.save(menuDTO);
         } catch (Exception e) {
             throw new DomainException(
                     "save of menu didn't work",
@@ -70,6 +68,6 @@ public class SaveNewMenuUseCase implements ISaveNewMenuInputPort {
             );
         }
 
-        return true;
+        return newMenuId;
     }
 }

@@ -13,12 +13,10 @@ public class SaveNewMenuRoot {
     @Bean
     public SaveNewMenuUseCase SaveNewMenuRoot(
         IMenuRepository menuRepository,
-        IRecipeRepository recipeRepository,
         ISaveNewMenuOutputPort outputPort
     ) {
         return new SaveNewMenuUseCase(
                 menuRepository,
-                recipeRepository,
                 outputPort
         );
     }

@@ -1,6 +1,11 @@
 package io.github.oliviercap.chefduplacard.application.menu.savenewmenu;
 
-import io.github.oliviercap.chefduplacard.adapters.web.menu.savenewmenu.controllers.SaveNewMenuRequest;
+import java.math.BigDecimal;
+import java.util.List;
 
-public record SaveNewMenuRequestModel(SaveNewMenuRequest newMenuRecord,Long userId) {
+public record SaveNewMenuRequestModel(Long userId, String menuName, List<MenuLine> lines) {
+    public record MenuLine(
+            BigDecimal nbPerson,
+            Long recipeId
+    ) {}
 }
