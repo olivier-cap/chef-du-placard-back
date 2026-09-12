@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IMenuJpaRepository extends JpaRepository<MenuJpa, Long> {
@@ -14,7 +15,20 @@ public interface IMenuJpaRepository extends JpaRepository<MenuJpa, Long> {
         from MenuJpa m
         left join fetch m.menuLineJpaList ml
             left join fetch ml.recipeJpa 
+            left join fetch ml.recipeTypeJpa
         where m.id = :menuId
     """)
     Optional<MenuJpa> findMenuDetailsById(@Param("menuId") Long menuId);
+
+
+    @Query("""
+        select distinct m
+        from MenuJpa m
+        left join fetch m.userJpa
+        left join fetch m.menuLineJpaList ml
+            left join fetch ml.recipeJpa
+            left join fetch ml.recipeTypeJpa
+        where m.userJpa.id = :userId
+    """)
+    List<MenuJpa> findAllMenusByUser(@Param("userId") Long userId);
 }

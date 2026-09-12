@@ -130,4 +130,11 @@ public class MenuRepository implements IMenuRepository {
         MenuJpa savedMenuJpa =  menuJpaRepository.save(newMenuJpa);
         return savedMenuJpa.getId();
     }
+
+    @Override
+    public List<Menu> findAllByUser(Long userId) {
+        return menuJpaRepository.findAllMenusByUser(userId).stream()
+                .map(menuMapper::toDomain)
+                .toList();
+    }
 }

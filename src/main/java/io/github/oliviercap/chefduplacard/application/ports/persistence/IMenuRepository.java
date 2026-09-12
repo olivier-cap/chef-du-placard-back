@@ -3,9 +3,11 @@ package io.github.oliviercap.chefduplacard.application.ports.persistence;
 import io.github.oliviercap.chefduplacard.adapters.persistence.jpa.repository.menu.SaveNewMenuDTO;
 import io.github.oliviercap.chefduplacard.domain.menu.Menu;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IMenuRepository {
     Optional<Menu> findById(Long menuId);
     Long save(SaveNewMenuDTO menuDTO);
+    List<Menu> findAllByUser(Long userId);
 }
